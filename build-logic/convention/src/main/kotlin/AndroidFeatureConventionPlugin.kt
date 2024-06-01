@@ -20,6 +20,8 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
+                add("implementation", project(":core:designsystem"))
+
                 add("implementation", versionCatalog().findLibrary("koin.android").get())
                 add("implementation", versionCatalog().findLibrary("koin.androidx.compose").get())
 

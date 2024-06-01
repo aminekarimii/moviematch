@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Movie-Matcher"
 include(":app")
+include(":core:designsystem")
