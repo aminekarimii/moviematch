@@ -19,6 +19,6 @@ data class Dimens(
 )
 
 /**
- * A composition local for [BackgroundTheme].
+ * A composition local for [Dimens].
  */
-val LocalBackgroundTheme = staticCompositionLocalOf { Dimens() }
+val LocalDimens = staticCompositionLocalOf { Dimens() }
