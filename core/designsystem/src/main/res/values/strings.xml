@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    Sign in screen-->
+    <string name="sign_in_screen_title_part1">Can’t decide which \nmovie?\nStart a</string>
+    <string name="sign_in_screen_title_part2">Matcher</string>
+    <string name="sign_in_screen_google">Sign in with Google</string>
+    <string name="sign_in_screen_guest">Continue as a guest</string>
+    <string name="sign_in_screen_footer_title">By signing in you agree to our\n</string>
+    <string name="sign_in_screen_footer_and">&#160;and&#160;</string>
+    <string name="sign_in_screen_terms_of_services">Terms of services</string>
+    <string name="sign_in_screen_privacy_policy">Privacy policy</string>
+</resources>
