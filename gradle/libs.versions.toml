@@ -18,6 +18,9 @@ koin = "3.4.0"
 lifecycle = "2.8.1"
 navigationCompose = "2.7.7"
 
+playServices = "4.4.1"
+playServicesAuth = "20.1.0"
+
 [libraries]
 #core
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +49,8 @@ androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lif
 #navigation
 androidx-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
+#googleService
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 
 # Dependencies of the included build-logic
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
@@ -55,4 +60,5 @@ kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", v
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-play-services = { id = "com.google.gms.google-services", version.ref = "playServices" }
 
