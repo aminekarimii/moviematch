@@ -5,6 +5,7 @@ import com.moviematcher.convention.versionCatalog
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 
 class AndroidApplicationConventionPlugin : Plugin<Project> {
@@ -35,6 +36,10 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 }
                 val extension = extensions.getByType<ApplicationExtension>()
                 configureAndroidCompose(extension)
+            }
+            dependencies {
+                add("implementation", versionCatalog().findLibrary("koin.android").get())
+                add("implementation", versionCatalog().findLibrary("koin.androidx.compose").get())
             }
         }
     }
