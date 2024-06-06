@@ -72,6 +72,7 @@ fun LoginScreen(
                         withStyle(SpanStyle(Color.Unspecified)) {
                             append(stringResource(R.string.sign_in_screen_title_part1))
                         }
+                        append(" ")
                         withStyle(SpanStyle(MaterialTheme.colorScheme.primary)) {
                             append(stringResource(id = R.string.sign_in_screen_title_part2))
                         }
@@ -152,7 +153,10 @@ fun Footer(
     val tos = stringResource(id = R.string.sign_in_screen_terms_of_services)
     val pp = stringResource(id = R.string.sign_in_screen_privacy_policy)
     val normalSpan = SpanStyle(color = Color(0xFF475467))
-    val linkSpan = SpanStyle(textDecoration = TextDecoration.Underline)
+    val linkSpan = SpanStyle(
+        color = MaterialTheme.colorScheme.onPrimary,
+        textDecoration = TextDecoration.Underline
+    )
     val footer = buildAnnotatedString {
         withStyle(normalSpan) {
             append(stringResource(id = R.string.sign_in_screen_footer_title))
