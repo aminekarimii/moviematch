@@ -36,6 +36,7 @@ import com.moviematcher.designsystem.component.button.SecondaryButton
 import com.moviematcher.designsystem.component.button.getSocialMediaColorScheme
 import com.moviematcher.designsystem.theme.LocalDimens
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
+import com.moviematcher.designsystem.theme.dimens
 
 @Composable
 fun LoginRoute() {
@@ -60,8 +61,8 @@ fun LoginScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = LocalDimens.current.screenPaddingHorizontal)
-                .padding(top = 70.dp, bottom = LocalDimens.current.large)
+                .padding(horizontal = MaterialTheme.dimens.screenPaddingHorizontal)
+                .padding(top = 70.dp, bottom =  MaterialTheme.dimens.large)
                 .verticalScroll(rememberScrollState()),
         ) {
             Column(
@@ -80,7 +81,7 @@ fun LoginScreen(
                     style = MaterialTheme.typography.headlineLarge,
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(LocalDimens.current.extraBig))
+                Spacer(modifier = Modifier.height( MaterialTheme.dimens.extraBig))
                 Image(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -89,7 +90,7 @@ fun LoginScreen(
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds
                 )
-                Spacer(modifier = Modifier.height(LocalDimens.current.extraBig))
+                Spacer(modifier = Modifier.height( MaterialTheme.dimens.extraBig))
                 Buttons(
                     onSignInClicked = onSignInClicked,
                     onSignInAsGuestClicked = onSignInAsGuestClicked
@@ -133,10 +134,10 @@ fun Buttons(
             painter = painterResource(id = R.drawable.ic_google),
             contentDescription = null
         )
-        Spacer(modifier = Modifier.width(LocalDimens.current.large))
+        Spacer(modifier = Modifier.width( MaterialTheme.dimens.large))
         Text(text = stringResource(id = R.string.sign_in_screen_google))
     }
-    Spacer(modifier = Modifier.height(LocalDimens.current.large))
+    Spacer(modifier = Modifier.height( MaterialTheme.dimens.large))
 
     SecondaryButton(
         text = stringResource(id = R.string.sign_in_screen_guest),

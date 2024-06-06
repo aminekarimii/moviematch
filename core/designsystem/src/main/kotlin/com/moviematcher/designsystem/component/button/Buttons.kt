@@ -42,7 +42,7 @@ fun PrimaryButton(
         modifier = Modifier
             .height(buttonHeight)
             .then(modifier),
-        shape = MaterialTheme.shapes.medium,
+        shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(),
         colors = colors,
         onClick = onClick,
@@ -69,7 +69,7 @@ fun PrimaryButton(
             .height(buttonHeight)
             .then(modifier),
         colors = colors,
-        shape = MaterialTheme.shapes.medium,
+        shape = MaterialTheme.shapes.small,
         contentPadding = PaddingValues(),
         onClick = onClick,
         enabled = enabled,
@@ -98,7 +98,7 @@ fun SecondaryButton(
             .height(buttonHeight)
             .then(modifier),
         onClick = onClick,
-        shape = MaterialTheme.shapes.medium,
+        shape = MaterialTheme.shapes.small,
         enabled = enabled
     ) {
         Text(text = text, color = MaterialTheme.colorScheme.onSecondary)
