@@ -13,11 +13,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +31,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.moviematcher.designsystem.R
+import com.moviematcher.designsystem.component.button.PrimaryButton
+import com.moviematcher.designsystem.component.button.SecondaryButton
+import com.moviematcher.designsystem.component.button.getSocialMediaColorScheme
 import com.moviematcher.designsystem.theme.LocalDimens
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 
@@ -55,48 +56,50 @@ fun LoginScreen(
     onTermOfServicesClicked: () -> Unit,
     onPrivacyPolicyClicked: () -> Unit,
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = LocalDimens.current.screenPaddingHorizontal)
-            .padding(top = 70.dp, bottom = LocalDimens.current.large)
-            .verticalScroll(rememberScrollState()),
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+    Surface {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = LocalDimens.current.screenPaddingHorizontal)
+                .padding(top = 70.dp, bottom = LocalDimens.current.large)
+                .verticalScroll(rememberScrollState()),
         ) {
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(SpanStyle(Color.Unspecified)) {
-                        append(stringResource(R.string.sign_in_screen_title_part1))
-                    }
-                    withStyle(SpanStyle(MaterialTheme.colorScheme.error)) {
-                        append(stringResource(id = R.string.sign_in_screen_title_part2))
-                    }
-                },
-                style = MaterialTheme.typography.headlineLarge,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(LocalDimens.current.extraBig))
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f),
-                painter = painterResource(id = R.drawable.img_login),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds
-            )
-            Spacer(modifier = Modifier.height(LocalDimens.current.extraBig))
-            Buttons(
-                onSignInClicked = onSignInClicked,
-                onSignInAsGuestClicked = onSignInAsGuestClicked
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(SpanStyle(Color.Unspecified)) {
+                            append(stringResource(R.string.sign_in_screen_title_part1))
+                        }
+                        withStyle(SpanStyle(MaterialTheme.colorScheme.primary)) {
+                            append(stringResource(id = R.string.sign_in_screen_title_part2))
+                        }
+                    },
+                    style = MaterialTheme.typography.headlineLarge,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(LocalDimens.current.extraBig))
+                Image(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f),
+                    painter = painterResource(id = R.drawable.img_login),
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds
+                )
+                Spacer(modifier = Modifier.height(LocalDimens.current.extraBig))
+                Buttons(
+                    onSignInClicked = onSignInClicked,
+                    onSignInAsGuestClicked = onSignInAsGuestClicked
+                )
+            }
+            Footer(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                onTermOfServicesClicked = onTermOfServicesClicked,
+                onPrivacyPolicyClicked = onPrivacyPolicyClicked
             )
         }
-        Footer(
-            modifier = Modifier.align(Alignment.BottomCenter),
-            onTermOfServicesClicked = onTermOfServicesClicked,
-            onPrivacyPolicyClicked = onPrivacyPolicyClicked
-        )
     }
 }
 
@@ -114,15 +117,16 @@ private fun LoginScreenPreview() {
     }
 }
 
+
 @Composable
 fun Buttons(
     onSignInClicked: () -> Unit,
     onSignInAsGuestClicked: () -> Unit,
 ) {
-    Button(
+    PrimaryButton(
         modifier = Modifier.fillMaxWidth(),
+        colors = getSocialMediaColorScheme(),
         onClick = onSignInClicked,
-        colors = ButtonDefaults.buttonColors()
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_google),
@@ -132,9 +136,11 @@ fun Buttons(
         Text(text = stringResource(id = R.string.sign_in_screen_google))
     }
     Spacer(modifier = Modifier.height(LocalDimens.current.large))
-    TextButton(onClick = onSignInAsGuestClicked) {
-        Text(text = stringResource(id = R.string.sign_in_screen_guest))
-    }
+
+    SecondaryButton(
+        text = stringResource(id = R.string.sign_in_screen_guest),
+        onClick = onSignInAsGuestClicked
+    )
 }
 
 @Composable
