@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">matching</string>
+    <string name="matching_right_label">right</string>
+    <string name="matching_left_label">left</string>
+</resources>
