@@ -6,3 +6,7 @@ plugins {
 android {
     namespace = "com.moviematcher.feature.matching"
 }
+
+dependencies {
+    implementation(libs.io.coil)
+}

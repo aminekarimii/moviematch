@@ -1,12 +1,16 @@
 package com.moviematcher.matching
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,12 +20,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,36 +36,45 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.moviematcher.app.components.rememberSwipeableCardState
+import com.moviematcher.app.components.swipableCard
 import com.moviematcher.designsystem.component.divider.VerticalDivider
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
+import com.moviematcher.designsystem.theme.backgroundGradient
 import com.moviematcher.designsystem.theme.dimens
 
 @Composable
 fun MatchingScreenRoute() {
-
 }
 
-@Preview(showSystemUi = true, showBackground = true)
+@Preview(showSystemUi = false, showBackground = true)
 @Composable
 fun PreviewMatchingScreen() {
     MovieMatcherTheme {
-        MatchingScreen()
+        MatchingScreen(padding = PaddingValues(0.dp))
     }
-
 }
 
 @Composable
-fun MatchingScreen() {
-
-    var counter by remember { mutableStateOf(0) }
+fun MatchingScreen(padding: PaddingValues) {
+    var counter by remember { mutableIntStateOf(0) }
+    var items = remember {
+        listOf(dummy, dummy1, dummy, dummy1, dummy, dummy1)
+    }
+    var currentItem by remember { mutableStateOf(items[0]) }
 
     Surface(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .background(backgroundGradient)
+            .fillMaxSize()
+            .padding(padding)
     ) {
-        Box {
-
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Spacer(modifier = Modifier.height(60.dp))
@@ -70,8 +85,110 @@ fun MatchingScreen() {
                     counter++
                 })
             }
-        }
 
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                val swipeStates = items.map { rememberSwipeableCardState() }
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp)
+                ) {
+                    items.forEachIndexed { index, profile ->
+                        DraggableCardView(
+                            profile = profile,
+                            modifier = Modifier
+                                .aspectRatio(.7f)
+                                .swipableCard(
+                                    state = swipeStates[index],
+                                    onSwiped = {
+                                        items = items.dropLast(1)
+                                        currentItem = profile
+                                    }
+                                ),
+                        )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .animateContentSize()
+                        .padding(horizontal = 8.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Column {
+                        Text(
+                            text = currentItem.name,
+                            color = Color.White,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            style = MaterialTheme.typography.bodyMedium,
+                            text = currentItem.age.toString(),
+                            color = Color.White,
+                        )
+                    }
+                    Row(
+                        modifier = Modifier,
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(24.dp),
+                            imageVector = Icons.Default.Star,
+                            tint = Color.White,
+                            contentDescription = null
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            style = MaterialTheme.typography.titleMedium,
+                            text = dummy.age.toString(),
+                            color = Color.White,
+                        )
+                    }
+                }
+
+
+            }
+            Footer(
+                modifier = Modifier
+                    .padding(bottom = MaterialTheme.dimens.large),
+                counter = counter
+            )
+        }
+    }
+}
+
+@Composable
+fun Footer(
+    modifier: Modifier = Modifier,
+    counter: Int
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            modifier = Modifier
+                .border(
+                    width = 1.dp,
+                    color = Color.White,
+                    shape = MaterialTheme.shapes.medium
+                )
+                .padding(vertical = 24.dp, horizontal = 16.dp),
+            text = counter.toString(),
+            style = MaterialTheme.typography.headlineMedium
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        val title =
+            if (counter > 0) {
+                "Your teammate has\nmatched some movies"
+            } else "Swipe more to match\nwith your teammate"
+        Text(
+            text = title,
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }
 
