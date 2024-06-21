@@ -1,4 +1,4 @@
-package com.moviematcher.authentication.login.presentation
+package com.moviematcher.authentication.login.presentation.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -34,7 +34,6 @@ import com.moviematcher.designsystem.R
 import com.moviematcher.designsystem.component.button.PrimaryButton
 import com.moviematcher.designsystem.component.button.SecondaryButton
 import com.moviematcher.designsystem.component.button.getSocialMediaColorScheme
-import com.moviematcher.designsystem.theme.LocalDimens
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.dimens
 
