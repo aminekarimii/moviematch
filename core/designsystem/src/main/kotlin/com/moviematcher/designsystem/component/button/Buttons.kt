@@ -49,7 +49,7 @@ fun PrimaryButton(
         enabled = enabled,
     ) {
         Text(
-            style = MaterialTheme.typography.displayMedium,
+            style = MaterialTheme.typography.titleSmall,
             text = text,
             color = MaterialTheme.colorScheme.onPrimary,
         )

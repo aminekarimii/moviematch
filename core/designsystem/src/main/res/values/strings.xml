@@ -9,4 +9,6 @@
     <string name="sign_in_screen_footer_and">&#160;and&#160;</string>
     <string name="sign_in_screen_terms_of_services">Terms of services</string>
     <string name="sign_in_screen_privacy_policy">Privacy policy</string>
+    <string name="tutorial_screen_title_part1">Here is how you can start your first</string>
+    <string name="tutorial_screen_title_part2">Matcher</string>
 </resources>
