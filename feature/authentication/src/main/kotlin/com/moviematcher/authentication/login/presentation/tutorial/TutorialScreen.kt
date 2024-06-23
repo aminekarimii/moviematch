@@ -14,6 +14,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
 import com.moviematcher.designsystem.R
@@ -32,12 +33,14 @@ fun TutorialScreen(modifier: Modifier = Modifier) {
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(MaterialTheme.dimens.medium),
+                .padding(MaterialTheme.dimens.default),
         ) {
             val (title, steps, button) = createRefs()
 
             TutorialTitle(modifier = Modifier.constrainAs(title) {
-
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
             })
             Steps(modifier = Modifier.constrainAs(steps) {
                 top.linkTo(title.bottom)
