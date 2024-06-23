@@ -1,15 +1,12 @@
 package com.moviematcher.authentication.login.presentation.tutorial
 
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +20,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.moviematcher.authentication.R
 import com.moviematcher.designsystem.theme.DeepBlue20
 import com.moviematcher.designsystem.theme.Grey60
@@ -87,15 +83,14 @@ fun TutorialRow(item: TutorialStep) {
             painter = painterResource(id = item.illustration),
             contentDescription = null
         )
-        Spacer(modifier = Modifier.width(16.dp))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = 16.dp)
                 .weight(.6f),
         ) {
             Text(
                 color = DeepBlue20,
-                fontWeight = FontWeight.ExtraBold,
                 style = MaterialTheme.typography.headlineMedium,
                 text = item.index
             )

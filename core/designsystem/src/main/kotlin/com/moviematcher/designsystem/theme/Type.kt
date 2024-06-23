@@ -40,7 +40,7 @@ val Typography = Typography(
     ),
     headlineMedium = TextStyle(
         fontWeight = FontWeight.Normal,
-        fontFamily = FontFamily(Font(R.font.nunitosans_regular)),
+        fontFamily = FontFamily(Font(R.font.nunitosans_extra_bold)),
         fontSize = 28.sp,
         lineHeight = 36.sp,
         letterSpacing = 0.sp,
