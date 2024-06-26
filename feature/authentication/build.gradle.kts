@@ -6,3 +6,9 @@ plugins {
 android {
     namespace = "com.moviematcher.authentication"
 }
+
+dependencies {
+    implementation(libs.play.services.auth)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.auth.ktx)
+}
