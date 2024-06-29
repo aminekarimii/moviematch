@@ -4,6 +4,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.moviematcher.authentication.login.domain.models.Account
+import com.moviematcher.authentication.login.domain.models.User
 import com.moviematcher.authentication.login.domain.repositories.AuthRepository
 import kotlinx.coroutines.tasks.await
 
@@ -15,6 +16,10 @@ class AuthRepositoryImpl(
     override suspend fun login(account: Account) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         firebaseAuth.signInWithCredential(credential).await()
+    }
+
+    override fun getCurrentUser(): User? {
+        return firebaseAuth.currentUser?.let { User(it.email) }
     }
 
     override fun logout() {

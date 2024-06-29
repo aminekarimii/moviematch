@@ -27,6 +27,8 @@ dependencies {
 
     // Google auth
     implementation(libs.play.services.auth)
+    // Firebase auth
+    implementation(libs.firebase.auth)
 
     // Core
     implementation(libs.androidx.core.ktx)
@@ -34,5 +36,6 @@ dependencies {
     // Activity
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.firebase.auth)
+
+    implementation(libs.androidx.navigation)
 }
