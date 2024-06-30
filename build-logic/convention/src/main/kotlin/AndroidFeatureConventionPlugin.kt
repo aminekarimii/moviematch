@@ -10,7 +10,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply {
-                apply("hackertab.android.library")
+                apply("moviematcher.android.library")
             }
             extensions.configure<LibraryExtension> {
                 defaultConfig {
