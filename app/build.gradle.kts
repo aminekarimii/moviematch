@@ -1,6 +1,7 @@
 plugins {
     id("moviematcher.android.application")
     id("moviematcher.android.application.compose")
+    alias(libs.plugins.google.play.services)
 }
 
 android {
@@ -22,6 +23,12 @@ android {
 
 dependencies {
     implementation(project(":core:designsystem"))
+    implementation(project(":feature:authentication"))
+
+    // Google auth
+    implementation(libs.play.services.auth)
+    // Firebase auth
+    implementation(libs.firebase.auth)
 
     // Core
     implementation(libs.androidx.core.ktx)
@@ -29,4 +36,6 @@ dependencies {
     // Activity
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)
+
+    implementation(libs.androidx.navigation)
 }
