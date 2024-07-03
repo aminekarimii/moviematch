@@ -1,4 +1,4 @@
-package com.moviematcher.authentication.login.presentation.login
+package com.moviematcher.authentication.login.presentation
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts

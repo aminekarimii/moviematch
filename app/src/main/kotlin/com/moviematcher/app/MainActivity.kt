@@ -5,8 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -26,7 +24,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.moviematcher.app.navigation.MMNavHost
 import com.moviematcher.app.navigation.StartDestinationUseCase
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
-import com.moviematcher.matching.MatchingScreen
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.core.context.loadKoinModules

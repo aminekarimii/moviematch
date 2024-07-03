@@ -1,4 +1,4 @@
-package com.moviematcher.authentication.login.presentation.tutorial
+package com.moviematcher.authentication.tutorial
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -37,19 +37,19 @@ val TUTORIAL_STEPS = listOf(
         index = "1.",
         title = "Invite your friend",
         description = "Share the generated code with your friend",
-        illustration = R.drawable.share_session_pin_ill
+        illustration = R.drawable.img_share_session_pin
     ),
     TutorialStep(
         index = "2.",
         title = "Swipe together",
         description = "Swipe right if you like a movie and swipe right if you don’t",
-        illustration = R.drawable.tuto_swipe_cards_ill
+        illustration = R.drawable.img_tuto_swipe_cards
     ),
     TutorialStep(
         index = "1.",
         title = "You got a match!",
         description = "You will get a list of movies or series that you have matched with your teammate.",
-        illustration = R.drawable.tuto_confetti_ill
+        illustration = R.drawable.img_tuto_confetti
     )
 )
 
@@ -119,7 +119,7 @@ private fun TutorialScreenPreview() {
                 index = "1.",
                 title = "Invite your friend",
                 description = "Share the generated code with your friend",
-                illustration = R.drawable.share_session_pin_ill
+                illustration = R.drawable.img_share_session_pin
             )
             TutorialRow(dummy)
         }
