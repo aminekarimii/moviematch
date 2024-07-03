@@ -10,4 +10,7 @@
     <string name="sign_in_screen_terms_of_services">Terms of services</string>
     <string name="sign_in_screen_privacy_policy">Privacy policy</string>
     <string name="sign_in_screen_error">Something wont wrong, please verify your connexion and retry</string>
+
+    <string name="tutorial_screen_title_part1">Here is how you can start your first</string>
+    <string name="tutorial_screen_title_part2">Matcher</string>
 </resources>
