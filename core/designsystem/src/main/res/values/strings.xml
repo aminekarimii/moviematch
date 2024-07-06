@@ -13,4 +13,8 @@
 
     <string name="tutorial_screen_title_part1">Here is how you can start your first</string>
     <string name="tutorial_screen_title_part2">Matcher</string>
+
+    <string name="start_or_join_session_screen_title">Want to try your first\nMatching Session?</string>
+    <string name="start_or_join_session_screen_start_session">Start a session</string>
+    <string name="start_or_join_session_screen_join_session">Join a session</string>
 </resources>
