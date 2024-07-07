@@ -1,4 +1,4 @@
-package com.moviematcher.session.presentation
+package com.moviematcher.session.presentation.start_or_join
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column

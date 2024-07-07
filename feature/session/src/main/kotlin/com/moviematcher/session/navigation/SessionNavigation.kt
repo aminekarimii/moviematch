@@ -4,8 +4,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.moviematcher.session.presentation.StartOrJoinSessionScreen
-import com.moviematcher.session.presentation.TutorialScreen
+import com.moviematcher.session.presentation.start_or_join.StartOrJoinSessionScreen
+import com.moviematcher.session.presentation.tutorial.TutorialScreen
 
 enum class SessionScreen {
     START_OR_JOIN_SESSION, TUTORIAL
