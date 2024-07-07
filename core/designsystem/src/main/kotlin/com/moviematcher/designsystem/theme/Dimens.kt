@@ -18,7 +18,8 @@ data class Dimens(
     val big: Dp = 20.dp,
     val bigger: Dp = 24.dp,
     val extraBig: Dp = 40.dp,
-    val screenPaddingHorizontal: Dp = 20.dp
+    val screenPaddingHorizontal: Dp = 20.dp,
+    val screenPaddingVertical: Dp = 40.dp
 )
 
 /**

@@ -199,7 +199,7 @@ private fun MatchHeader(onClick: () -> Unit) {
             .clickable { onClick() }
             .height(46.dp)
             .background(Color(0xFF1B0A22), shape = MaterialTheme.shapes.large)
-            .padding(horizontal = MaterialTheme.dimens.extraBig),
+            .padding(horizontal = MaterialTheme.dimens.screenPaddingHorizontal),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {

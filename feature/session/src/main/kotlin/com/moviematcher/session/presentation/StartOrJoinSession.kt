@@ -39,7 +39,7 @@ fun StartOrJoinSessionScreen(
             .verticalScroll(scrollState)
             .padding(
                 horizontal = MaterialTheme.dimens.screenPaddingHorizontal,
-                vertical = MaterialTheme.dimens.extraBig
+                vertical = MaterialTheme.dimens.screenPaddingVertical
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
