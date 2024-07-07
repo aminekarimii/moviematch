@@ -1,4 +1,4 @@
-package com.moviematcher.authentication.tutorial
+package com.moviematcher.session.presentation
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxSize
