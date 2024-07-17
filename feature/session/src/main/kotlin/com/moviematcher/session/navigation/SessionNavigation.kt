@@ -5,10 +5,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.moviematcher.session.presentation.start_or_join.StartOrJoinSessionScreen
+import com.moviematcher.session.presentation.start_session.StartSessionScreen
 import com.moviematcher.session.presentation.tutorial.TutorialScreen
 
 enum class SessionScreen {
-    START_OR_JOIN_SESSION, TUTORIAL
+    START_OR_JOIN_SESSION, TUTORIAL, START_SESSION
 }
 
 fun NavGraphBuilder.sessionNavigation(
@@ -26,8 +27,13 @@ fun NavGraphBuilder.sessionNavigation(
         }
         composable(SessionScreen.TUTORIAL.name) {
             TutorialScreen(
-                onStartSession = {}
+                onStartSession = {
+                    navHostController.navigate(SessionScreen.START_SESSION.name)
+                }
             )
+        }
+        composable(SessionScreen.START_SESSION.name) {
+            StartSessionScreen()
         }
     }
 }

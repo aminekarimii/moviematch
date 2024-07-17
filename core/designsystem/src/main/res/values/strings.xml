@@ -17,4 +17,6 @@
     <string name="start_or_join_session_screen_title">Want to try your first\nMatching Session?</string>
     <string name="start_or_join_session_screen_start_session">Start a session</string>
     <string name="start_or_join_session_screen_join_session">Join a session</string>
+
+    <string name="start_session_screen_title">Have a friend\nto share the session with</string>
 </resources>
