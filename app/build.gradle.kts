@@ -25,6 +25,7 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":feature:authentication"))
     implementation(project(":feature:session"))
+    implementation(project(":feature:matching"))
 
     // Google auth
     implementation(libs.play.services.auth)

@@ -40,7 +40,9 @@ import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.dimens
 
 @Composable
-fun JoinSessionScreen() {
+fun JoinSessionScreen(
+    onJoinSession: (String) -> Unit
+) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     var sessionCode by remember { mutableStateOf("") }
@@ -91,7 +93,7 @@ fun JoinSessionScreen() {
             text = stringResource(id = R.string.start_or_join_session_screen_join_session),
             enabled = sessionCode.isNotBlank()
         ) {
-
+            onJoinSession(sessionCode)
         }
         Image(
             painter = painterResource(id = com.moviematcher.session.R.drawable.img_waves),
@@ -108,7 +110,7 @@ fun JoinSessionScreen() {
 private fun JoinSessionScreenPreview() {
     MovieMatcherTheme {
         Surface {
-            JoinSessionScreen()
+            JoinSessionScreen({})
         }
     }
 }

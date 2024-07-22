@@ -15,7 +15,8 @@ enum class SessionScreen {
 
 fun NavGraphBuilder.sessionNavigation(
     graphRoute: String,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    onJoinSession: (String) -> Unit
 ) {
     navigation(startDestination = SessionScreen.START_OR_JOIN_SESSION.name, route = graphRoute) {
         composable(SessionScreen.START_OR_JOIN_SESSION.name) {
@@ -39,7 +40,7 @@ fun NavGraphBuilder.sessionNavigation(
             StartSessionScreen()
         }
         composable(SessionScreen.JOIN_SESSION.name) {
-            JoinSessionScreen()
+            JoinSessionScreen(onJoinSession = onJoinSession)
         }
     }
 }
