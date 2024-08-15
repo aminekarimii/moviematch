@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.moviematcher.authentication.login.presentation.LoginRoute
-import com.moviematcher.matching.presentation.MatchingScreenRoute
+import com.moviematcher.matching.navigation.matcherNavigation
 import com.moviematcher.session.navigation.sessionNavigation
 
 @Composable
@@ -34,8 +34,9 @@ fun MMNavHost(
                 navController.navigate(Screen.MATCHING.name)
             }
         )
-        composable(Screen.MATCHING.name) {
-            MatchingScreenRoute()
-        }
+        matcherNavigation(
+            graphRoute = Screen.MATCHING.name,
+            navHostController = navController,
+        )
     }
 }

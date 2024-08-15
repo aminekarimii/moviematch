@@ -1,4 +1,4 @@
-package com.moviematcher.matching.presentation
+package com.moviematcher.matching.presentation.match
 
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.ui.Modifier

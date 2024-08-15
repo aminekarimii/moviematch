@@ -1,4 +1,4 @@
-package com.moviematcher.matching.presentation
+package com.moviematcher.matching.presentation.match
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Row

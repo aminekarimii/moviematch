@@ -1,4 +1,4 @@
-package com.moviematcher.matching.presentation
+package com.moviematcher.matching.presentation.match
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -41,12 +41,18 @@ import com.moviematcher.designsystem.theme.backgroundGradient
 import com.moviematcher.designsystem.theme.dimens
 
 @Composable
-fun MatchingScreenRoute() {
-    MatchingScreen()
+fun MatchingRoute(
+    onMatchingComplete: () -> Unit
+) {
+    MatchingScreen(
+        onMatchingComplete = onMatchingComplete
+    )
 }
 
 @Composable
-fun MatchingScreen() {
+fun MatchingScreen(
+    onMatchingComplete: () -> Unit
+) {
     var counter by remember { mutableIntStateOf(0) }
     var items = remember {
         listOf(dummy, dummy1, dummy, dummy1, dummy, dummy1)
@@ -148,14 +154,6 @@ fun MatchingScreen() {
     }
 }
 
-@Preview(showSystemUi = false, showBackground = true)
-@Composable
-fun PreviewMatchingScreen() {
-    MovieMatcherTheme {
-        MatchingScreen()
-    }
-}
-
 @Composable
 fun Footer(
     modifier: Modifier = Modifier,
@@ -232,5 +230,13 @@ private fun MatchHeader(onClick: () -> Unit) {
                 modifier = Modifier.size(24.dp)
             )
         }
+    }
+}
+
+@Preview(showSystemUi = false, showBackground = true)
+@Composable
+fun PreviewMatchingScreen() {
+    MovieMatcherTheme {
+        MatchingScreen {}
     }
 }
