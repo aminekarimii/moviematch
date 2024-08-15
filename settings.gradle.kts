@@ -29,3 +29,4 @@ include(":core:designsystem")
 // Include features modules here
 include(":feature:authentication")
 include(":feature:matching")
+include(":feature:session")

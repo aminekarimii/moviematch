@@ -1,4 +1,4 @@
-package com.moviematcher.authentication.tutorial
+package com.moviematcher.session.presentation.tutorial
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -20,10 +20,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.moviematcher.authentication.R
 import com.moviematcher.designsystem.theme.DeepBlue20
 import com.moviematcher.designsystem.theme.Grey60
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
+import com.moviematcher.session.R
 
 data class TutorialStep(
     val index: String,

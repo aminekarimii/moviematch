@@ -1,4 +1,4 @@
-package com.moviematcher.authentication.tutorial
+package com.moviematcher.session.presentation.tutorial
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -23,42 +24,44 @@ import com.moviematcher.designsystem.theme.Red50
 import com.moviematcher.designsystem.theme.dimens
 
 @Composable
-fun TutorialScreen(modifier: Modifier = Modifier) {
-    Surface(
+fun TutorialScreen(
+    onStartSession: () -> Unit
+) {
+    ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .then(modifier)
+            .padding(
+                horizontal = MaterialTheme.dimens.screenPaddingHorizontal,
+                vertical = MaterialTheme.dimens.screenPaddingVertical
+            ),
     ) {
-        ConstraintLayout(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(MaterialTheme.dimens.default),
-        ) {
-            val (title, steps, button) = createRefs()
+        val (title, steps, button) = createRefs()
 
-            TutorialTitle(modifier = Modifier.constrainAs(title) {
+        TutorialTitle(
+            modifier = Modifier.constrainAs(title) {
                 top.linkTo(parent.top)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
-            })
-            Steps(modifier = Modifier.constrainAs(steps) {
+            }
+        )
+        Steps(
+            modifier = Modifier.constrainAs(steps) {
                 top.linkTo(title.bottom)
                 bottom.linkTo(button.top)
                 height = fillToConstraints
-            })
-            PrimaryButton(
-                modifier = Modifier
-                    .constrainAs(button) {
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                    }
-                    .fillMaxWidth(),
-                text = "Start a session"
-            ) {
-
             }
-        }
+        )
+        PrimaryButton(
+            modifier = Modifier
+                .constrainAs(button) {
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                }
+                .fillMaxWidth(),
+            text = "Start a session",
+            onClick = onStartSession
+        )
     }
 }
 
@@ -85,6 +88,7 @@ fun TutorialTitle(
         modifier = modifier,
         text = footer,
         style = MaterialTheme.typography.titleLarge,
+        textAlign = TextAlign.Center
     )
 }
 
@@ -95,6 +99,8 @@ fun TutorialTitle(
 @Composable
 private fun TutorialScreenPreview() {
     MovieMatcherTheme {
-        TutorialScreen()
+        Surface {
+            TutorialScreen {}
+        }
     }
 }

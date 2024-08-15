@@ -6,7 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.moviematcher.authentication.login.presentation.LoginRoute
-import com.moviematcher.authentication.tutorial.TutorialScreen
+import com.moviematcher.matching.MatchingScreenRoute
+import com.moviematcher.session.navigation.sessionNavigation
 
 @Composable
 fun MMNavHost(
@@ -19,15 +20,22 @@ fun MMNavHost(
         navController = navController,
         startDestination = startDestination
     ) {
-        composable(Screen.AUTH.route) {
+        composable(Screen.AUTH.name) {
             LoginRoute(
                 onUserLoggedIn = {
-                    navController.navigate(Screen.TUTORIAL.route)
+                    navController.navigate(Screen.SESSION.name)
                 }
             )
         }
-        composable(Screen.TUTORIAL.route) {
-            TutorialScreen()
+        sessionNavigation(
+            graphRoute = Screen.SESSION.name,
+            navHostController = navController,
+            onJoinSession = {
+                navController.navigate(Screen.MATCHING.name)
+            }
+        )
+        composable(Screen.MATCHING.name) {
+            MatchingScreenRoute()
         }
     }
 }

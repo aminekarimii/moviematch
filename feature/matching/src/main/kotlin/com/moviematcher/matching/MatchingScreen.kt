@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -45,18 +44,11 @@ import com.moviematcher.designsystem.theme.dimens
 
 @Composable
 fun MatchingScreenRoute() {
-}
-
-@Preview(showSystemUi = false, showBackground = true)
-@Composable
-fun PreviewMatchingScreen() {
-    MovieMatcherTheme {
-        MatchingScreen(padding = PaddingValues(0.dp))
-    }
+    MatchingScreen()
 }
 
 @Composable
-fun MatchingScreen(padding: PaddingValues) {
+fun MatchingScreen() {
     var counter by remember { mutableIntStateOf(0) }
     var items = remember {
         listOf(dummy, dummy1, dummy, dummy1, dummy, dummy1)
@@ -67,7 +59,6 @@ fun MatchingScreen(padding: PaddingValues) {
         modifier = Modifier
             .background(backgroundGradient)
             .fillMaxSize()
-            .padding(padding)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -159,6 +150,14 @@ fun MatchingScreen(padding: PaddingValues) {
     }
 }
 
+@Preview(showSystemUi = false, showBackground = true)
+@Composable
+fun PreviewMatchingScreen() {
+    MovieMatcherTheme {
+        MatchingScreen()
+    }
+}
+
 @Composable
 fun Footer(
     modifier: Modifier = Modifier,
@@ -199,7 +198,7 @@ private fun MatchHeader(onClick: () -> Unit) {
             .clickable { onClick() }
             .height(46.dp)
             .background(Color(0xFF1B0A22), shape = MaterialTheme.shapes.large)
-            .padding(horizontal = MaterialTheme.dimens.extraBig),
+            .padding(horizontal = MaterialTheme.dimens.screenPaddingHorizontal),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {

@@ -8,6 +8,6 @@ class StartDestinationUseCase(
     operator fun invoke(): String {
         val isConnected = authRepository.getCurrentUser() != null
 
-        return if (isConnected) Screen.HOME.route else Screen.AUTH.route
+        return if (isConnected) Screen.SESSION.name else Screen.AUTH.name
     }
 }
