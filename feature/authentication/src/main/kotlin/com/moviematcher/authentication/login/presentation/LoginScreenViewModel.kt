@@ -25,8 +25,8 @@ class LoginScreenViewModel(
         viewModelScope.launch {
             try {
                 _viewState.update { it.copy(isLoading = true) }
-                val task = GoogleSignIn.getSignedInAccountFromIntent(activityResult.data)
-                val account = task.await().let { Account(it.email!!, it.idToken!!) }
+                val task = GoogleSignIn.getSignedInAccountFromIntent(activityResult.data).await()
+                val account = Account(task.idToken!!)
                 authRepository.login(account)
                 _viewState.update { it.copy(isLoading = false, errorMsg = null, loggedIn = true) }
             } catch (e: ApiException) {

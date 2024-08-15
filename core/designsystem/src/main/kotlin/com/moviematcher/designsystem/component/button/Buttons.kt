@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -103,4 +104,31 @@ fun SecondaryButton(
     ) {
         Text(text = text, color = MaterialTheme.colorScheme.onSecondary)
     }
+}
+
+/*
+######################################################
+||                                                  ||
+||                   Icon Button                    ||
+||                    Text only                     ||
+||                                                  ||
+######################################################
+*/
+
+@Composable
+fun ClickableIcon(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+    trailingIcon: @Composable () -> Unit,
+) {
+    FilledIconButton(
+        modifier = Modifier
+            .height(buttonHeight)
+            .then(modifier),
+        onClick = onClick,
+        shape = MaterialTheme.shapes.medium,
+        enabled = enabled,
+        content = trailingIcon
+    )
 }
