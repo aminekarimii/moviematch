@@ -1,4 +1,4 @@
-package com.moviematcher.matching
+package com.moviematcher.matching.presentation
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -35,8 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.moviematcher.app.components.rememberSwipeableCardState
-import com.moviematcher.app.components.swipableCard
 import com.moviematcher.designsystem.component.divider.VerticalDivider
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.backgroundGradient

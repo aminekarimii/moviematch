@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.moviematcher.authentication.login.presentation.LoginRoute
-import com.moviematcher.matching.MatchingScreenRoute
+import com.moviematcher.matching.presentation.MatchingScreenRoute
 import com.moviematcher.session.navigation.sessionNavigation
 
 @Composable

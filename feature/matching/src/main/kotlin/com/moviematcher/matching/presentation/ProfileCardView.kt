@@ -1,4 +1,4 @@
-package com.moviematcher.matching
+package com.moviematcher.matching.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
