@@ -1,0 +1,184 @@
+package com.moviematcher.matching.presentation.matched_list
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import com.moviematcher.designsystem.theme.Grey80Transparent
+import com.moviematcher.designsystem.theme.MovieMatcherTheme
+import com.moviematcher.designsystem.theme.dimens
+
+@Composable
+fun MatchedResultListRoute() {
+    MatchedResultListScreen()
+}
+
+@Composable
+fun MatchedResultListScreen() {
+    Surface(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Column {
+            Text(
+                style = MaterialTheme.typography.titleLarge,
+                text = "Congratulations \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89"
+            )
+            LazyColumn (
+                modifier = Modifier.padding(
+                    horizontal = MaterialTheme.dimens.screenPaddingHorizontal
+                )
+            ){
+                items(10) {
+                    MatchedMovieItem(
+                        movie = MovieModel(
+                            title = "Movie Title",
+                            year = "2021",
+                            length = "2h 30m",
+                            posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg"
+                        ),
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+internal fun MatchedMovieItem(movie: MovieModel) {
+    Box {
+        Box(
+            modifier = Modifier
+                .height(60.dp)
+                .fillMaxWidth()
+                .background(
+                    shape = RoundedCornerShape(
+                        0.dp, 0.dp, 16.dp, 16.dp
+                    ),
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Grey80Transparent
+                        )
+                    )
+                )
+                .align(
+                    Alignment.BottomCenter
+                )
+        )
+        ConstraintLayout(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    bottom = 8.dp
+                )
+        ) {
+            val (image, details) = createRefs()
+            Image(
+                modifier = Modifier
+                    .height(150.dp)
+                    .constrainAs(image) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                    },
+                painter = painterResource(id = com.moviematcher.designsystem.R.drawable.img_movies_placeholder),
+                contentDescription = null
+            )
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .constrainAs(details) {
+                        top.linkTo(image.top)
+                        start.linkTo(image.end)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(image.bottom)
+                        height = Dimension.fillToConstraints
+                        width = Dimension.fillToConstraints
+                    }
+                    .padding(16.dp)
+                //.padding(start = 16.dp, end = 16.dp)
+            ) {
+                Column {
+                    Text(
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.fillMaxWidth(),
+                        text = movie.title
+                    )
+                    Text(
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.fillMaxWidth(),
+                        text = movie.description
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        style = MaterialTheme.typography.bodyMedium,
+                        text = "4.5",
+                    )
+
+                    Text(
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontSize = 28.sp
+                        ),
+                        color = Color.Red,
+                        text = "#1",
+                    )
+                }
+            }
+        }
+    }
+}
+
+data class MovieModel(
+    val title: String,
+    val year: String,
+    val length: String,
+    val posterUrl: String
+) {
+    val description: String
+        get() = "$year - $length"
+}
+
+@Preview(showSystemUi = false, showBackground = true)
+@Composable
+fun PreviewMatchedResultListScreen() {
+    MovieMatcherTheme {
+        MatchedResultListScreen()
+        /*MatchedMovieItem(
+            movie = MovieModel(
+                title = "Movie Title",
+                year = "2018",
+                length = "5 seasons",
+                posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg"
+            )
+        )*/
+    }
+}

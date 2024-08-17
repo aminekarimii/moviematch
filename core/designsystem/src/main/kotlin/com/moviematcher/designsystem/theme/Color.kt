@@ -28,5 +28,7 @@ val Red60 = Color(0xFF980707)
 val Red50 = Color(0xFFA80606)
 
 val Red70Transparent = Color(0x4B980707)
+val Grey80Transparent = Color(0x9A2C2C30)
+
 
 
