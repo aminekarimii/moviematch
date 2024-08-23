@@ -24,8 +24,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
@@ -76,7 +79,8 @@ fun MatchedResultListScreen() {
                                 title = "Money Heist - La casa de papel 2017 from Netflix",
                                 year = "2021",
                                 length = "2h 30m",
-                                posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg"
+                                posterUrl = "https://image.tmdb.org/t/p/w300/tOmYnPiCsmEWn8pmLQ523Nt5wGd.jpg",
+                                rating = "4.5"
                             ),
                         )
                         Spacer(modifier = Modifier.height(24.dp))
@@ -120,20 +124,23 @@ internal fun MatchedMovieItem(movie: MovieModel) {
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    bottom = 8.dp
-                )
+                .padding(bottom = 8.dp)
         ) {
             val (image, details) = createRefs()
-            Image(
+            AsyncImage(
+                model = movie.posterUrl,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .height(150.dp)
+                    .width(110.dp)
+                    .height(160.dp)
+                    .padding(start = 8.dp)
+                    .clip(RoundedCornerShape(12.dp))
                     .constrainAs(image) {
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
                     },
-                painter = painterResource(id = com.moviematcher.designsystem.R.drawable.img_movies_placeholder),
+                // painter = painterResource(id = com.moviematcher.designsystem.R.drawable.img_movies_placeholder),
                 contentDescription = null
             )
             Column(
@@ -181,7 +188,7 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             style = MaterialTheme.typography.bodyLarge,
-                            text = "4.5",
+                            text = movie.rating,
                         )
                     }
 
@@ -203,7 +210,8 @@ data class MovieModel(
     val title: String,
     val year: String,
     val length: String,
-    val posterUrl: String
+    val posterUrl: String,
+    val rating: String
 ) {
     val description: String
         get() = "$year - $length"
