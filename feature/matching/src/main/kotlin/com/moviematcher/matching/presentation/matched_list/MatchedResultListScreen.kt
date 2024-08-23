@@ -169,10 +169,21 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        style = MaterialTheme.typography.bodyMedium,
-                        text = "4.5",
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(20.dp),
+                            painter = painterResource(id = com.moviematcher.designsystem.R.drawable.ic_star_colored),
+                            contentDescription = null,
+                            tint = Color.Unspecified
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            style = MaterialTheme.typography.bodyLarge,
+                            text = "4.5",
+                        )
+                    }
 
                     Text(
                         style = MaterialTheme.typography.titleLarge.copy(
