@@ -22,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,18 +45,23 @@ fun MatchedResultListScreen() {
     ) {
         Column {
             Text(
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = MaterialTheme.dimens.extraBig),
                 style = MaterialTheme.typography.titleLarge,
                 text = "Congratulations \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89"
             )
-            LazyColumn (
+            LazyColumn(
                 modifier = Modifier.padding(
                     horizontal = MaterialTheme.dimens.screenPaddingHorizontal
                 )
-            ){
+            ) {
                 items(10) {
                     MatchedMovieItem(
                         movie = MovieModel(
-                            title = "Movie Title",
+                            index = it + 1,
+                            title = "Money Heist - La casa de papel 2017 from Netflix",
                             year = "2021",
                             length = "2h 30m",
                             posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg"
@@ -126,7 +133,9 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                     Text(
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.fillMaxWidth(),
-                        text = movie.title
+                        text = movie.title,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2
                     )
                     Text(
                         style = MaterialTheme.typography.bodyMedium,
@@ -149,7 +158,7 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                             fontSize = 28.sp
                         ),
                         color = Color.Red,
-                        text = "#1",
+                        text = "#${movie.index}",
                     )
                 }
             }
@@ -158,6 +167,7 @@ internal fun MatchedMovieItem(movie: MovieModel) {
 }
 
 data class MovieModel(
+    val index: Int,
     val title: String,
     val year: String,
     val length: String,
