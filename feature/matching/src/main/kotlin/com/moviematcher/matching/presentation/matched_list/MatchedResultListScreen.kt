@@ -7,16 +7,21 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -29,9 +34,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.moviematcher.designsystem.theme.Grey80Transparent
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.dimens
+import com.moviematcher.feature.matching.R
 
 @Composable
 fun MatchedResultListRoute() {
@@ -40,37 +49,51 @@ fun MatchedResultListRoute() {
 
 @Composable
 fun MatchedResultListScreen() {
-    Surface(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Column {
-            Text(
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = MaterialTheme.dimens.extraBig),
-                style = MaterialTheme.typography.titleLarge,
-                text = "Congratulations \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89"
-            )
-            LazyColumn(
-                modifier = Modifier.padding(
-                    horizontal = MaterialTheme.dimens.screenPaddingHorizontal
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.success_icon)
+    )
+
+    Surface {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column {
+                Text(
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = MaterialTheme.dimens.extraBig),
+                    style = MaterialTheme.typography.titleLarge,
+                    text = "Congratulations \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89"
                 )
-            ) {
-                items(10) {
-                    MatchedMovieItem(
-                        movie = MovieModel(
-                            index = it + 1,
-                            title = "Money Heist - La casa de papel 2017 from Netflix",
-                            year = "2021",
-                            length = "2h 30m",
-                            posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg"
-                        ),
+                LazyColumn(
+                    modifier = Modifier.padding(
+                        horizontal = MaterialTheme.dimens.screenPaddingHorizontal
                     )
-                    Spacer(modifier = Modifier.height(24.dp))
+                ) {
+                    items(10) {
+                        MatchedMovieItem(
+                            movie = MovieModel(
+                                index = it + 1,
+                                title = "Money Heist - La casa de papel 2017 from Netflix",
+                                year = "2021",
+                                length = "2h 30m",
+                                posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg"
+                            ),
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
                 }
             }
+
+            LottieAnimation(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth()
+                    .fillMaxHeight(.4f),
+                //.background(Color.White),
+                composition = composition,
+            )
         }
+
     }
 }
 
@@ -92,9 +115,7 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                         )
                     )
                 )
-                .align(
-                    Alignment.BottomCenter
-                )
+                .align(Alignment.BottomCenter)
         )
         ConstraintLayout(
             modifier = Modifier
@@ -182,13 +203,5 @@ data class MovieModel(
 fun PreviewMatchedResultListScreen() {
     MovieMatcherTheme {
         MatchedResultListScreen()
-        /*MatchedMovieItem(
-            movie = MovieModel(
-                title = "Movie Title",
-                year = "2018",
-                length = "5 seasons",
-                posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg"
-            )
-        )*/
     }
 }
