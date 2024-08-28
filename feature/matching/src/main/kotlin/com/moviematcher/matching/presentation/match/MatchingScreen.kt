@@ -1,5 +1,6 @@
 package com.moviematcher.matching.presentation.match
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +41,8 @@ import com.moviematcher.designsystem.component.divider.VerticalDivider
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.backgroundGradient
 import com.moviematcher.designsystem.theme.dimens
+import com.moviematcher.matching.presentation.matched_list.MovieModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MatchingRoute(
@@ -51,106 +55,124 @@ fun MatchingRoute(
 
 @Composable
 fun MatchingScreen(
-    onMatchingComplete: () -> Unit
+    viewModel: MatcherViewModel = koinViewModel(),
+    onMatchingComplete: () -> Unit,
 ) {
-    var counter by remember { mutableIntStateOf(0) }
-    var items = remember {
-        listOf(dummy, dummy1, dummy, dummy1, dummy, dummy1)
-    }
-    var currentItem by remember { mutableStateOf(items[0]) }
-
+    val viewState = viewModel.viewState.collectAsState().value
     Surface(
         modifier = Modifier
             .background(backgroundGradient)
             .fillMaxSize()
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Spacer(modifier = Modifier.height(60.dp))
-                AnimatedCounter(count = counter)
-
-                Spacer(modifier = Modifier.height(21.dp))
-                MatchHeader(onClick = {
-                    counter++
-                })
+        when(viewState) {
+            is MatcherViewState.Loading -> {
+                // Loading state
             }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                val swipeStates = items.map { rememberSwipeableCardState() }
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                ) {
-                    items.forEachIndexed { index, profile ->
-                        DraggableCardView(
-                            profile = profile,
-                            modifier = Modifier
-                                .aspectRatio(.7f)
-                                .swipableCard(
-                                    state = swipeStates[index],
-                                    onSwiped = {
-                                        items = items.dropLast(1)
-                                        currentItem = profile
-                                    }
-                                ),
-                        )
-                    }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .animateContentSize()
-                        .padding(horizontal = 8.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Column {
-                        Text(
-                            text = currentItem.name,
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Text(
-                            style = MaterialTheme.typography.bodyMedium,
-                            text = currentItem.age.toString(),
-                            color = Color.White,
-                        )
-                    }
-                    Row(
-                        modifier = Modifier,
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            imageVector = Icons.Default.Star,
-                            tint = Color.White,
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            style = MaterialTheme.typography.titleMedium,
-                            text = dummy.age.toString(),
-                            color = Color.White,
-                        )
-                    }
-                }
-
-
+            is MatcherViewState.Success -> {
+                MatchingContent(
+                    movies = viewState.matches,
+                    onRemoveLastProfile = viewModel::removeLastProfile
+                )
             }
-            Footer(
-                modifier = Modifier
-                    .padding(bottom = MaterialTheme.dimens.large),
-                counter = counter
-            )
+            is MatcherViewState.Error -> {
+                // Error state
+            }
         }
+    }
+}
+
+@Composable
+fun MatchingContent(
+    movies: List<MovieModel>,
+    onRemoveLastProfile: () -> Unit
+) {
+    var counter by remember { mutableIntStateOf(0) }
+    // var currentItem by remember { mutableStateOf(items[0]) }
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(modifier = Modifier.height(60.dp))
+            AnimatedCounter(count = counter)
+
+            Spacer(modifier = Modifier.height(21.dp))
+            MatchHeader(onClick = {
+                counter++
+            })
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            val swipeStates = movies.map { rememberSwipeableCardState() }
+            Box(modifier = Modifier.padding(horizontal = 12.dp)) {
+                movies.forEachIndexed { index, movie ->
+                    DraggableCardView(
+                        movie = movie,
+                        modifier = Modifier
+                            .aspectRatio(.7f)
+                            .swipableCard(
+                                state = swipeStates[index],
+                                onSwiped = {
+                                    onRemoveLastProfile()
+                                    /*items = items.dropLast(1)
+                                    currentItem = profile*/
+                                }
+                            ),
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .animateContentSize()
+                    .padding(horizontal = 8.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Column {
+                    Text(
+                        text = "currentItem.name",
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        style = MaterialTheme.typography.bodyMedium,
+                        text = "currentItem.age.toString()",
+                        color = Color.White,
+                    )
+                }
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        imageVector = Icons.Default.Star,
+                        tint = Color.White,
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        style = MaterialTheme.typography.titleMedium,
+                        text = "dummy.age.toString()",
+                        color = Color.White,
+                    )
+                }
+            }
+
+
+        }
+        Footer(
+            modifier = Modifier
+                .padding(bottom = MaterialTheme.dimens.large),
+            counter = counter
+        )
     }
 }
 
