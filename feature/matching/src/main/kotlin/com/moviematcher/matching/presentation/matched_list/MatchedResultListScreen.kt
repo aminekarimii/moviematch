@@ -15,12 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,59 +43,91 @@ import com.moviematcher.designsystem.theme.Grey80Transparent
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.dimens
 import com.moviematcher.feature.matching.R
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MatchedResultListRoute() {
-    MatchedResultListScreen()
+fun MatchedResultListRoute(
+    viewModel: MatchedResultViewModel = koinViewModel()
+) {
+    MatchedResultListScreen(
+        viewState = viewModel.viewState.collectAsStateWithLifecycle(MatchedResultState.Loading).value
+    )
 }
 
 @Composable
-fun MatchedResultListScreen() {
+fun MatchedResultListScreen(viewState: MatchedResultState) {
+    Surface {
+        when (viewState) {
+            MatchedResultState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Loading...",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+            }
+
+            MatchedResultState.Error -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "There is an error please try again later",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+            }
+
+            is MatchedResultState.MatchedResults -> {
+                MatchedResultListContent(
+                    moviesList = viewState.movies
+                )
+            }
+        }
+    }
+}
+
+@Composable
+internal fun MatchedResultListContent(
+    moviesList: List<MovieModel>
+) {
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.success_icon)
     )
 
-    Surface {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column {
-                Text(
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = MaterialTheme.dimens.extraBig),
-                    style = MaterialTheme.typography.titleLarge,
-                    text = "Congratulations \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89"
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column {
+            Text(
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = MaterialTheme.dimens.extraBig),
+                style = MaterialTheme.typography.titleLarge,
+                text = "Congratulations \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89"
+            )
+            LazyColumn(
+                modifier = Modifier.padding(
+                    horizontal = MaterialTheme.dimens.screenPaddingHorizontal
                 )
-                LazyColumn(
-                    modifier = Modifier.padding(
-                        horizontal = MaterialTheme.dimens.screenPaddingHorizontal
-                    )
-                ) {
-                    items(10) {
-                        MatchedMovieItem(
-                            movie = MovieModel(
-                                index = it + 1,
-                                title = "Money Heist - La casa de papel 2017 from Netflix",
-                                year = "2021",
-                                length = "2h 30m",
-                                posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg"
-                            ),
-                        )
-                        Spacer(modifier = Modifier.height(24.dp))
-                    }
+            ) {
+                items(moviesList) {
+                    MatchedMovieItem(movie = it)
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
-
-            LottieAnimation(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .fillMaxWidth()
-                    .fillMaxHeight(.4f),
-                //.background(Color.White),
-                composition = composition,
-            )
         }
 
+        LottieAnimation(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .fillMaxHeight(.4f),
+            composition = composition,
+        )
     }
 }
 
@@ -148,7 +182,6 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                         width = Dimension.fillToConstraints
                     }
                     .padding(16.dp)
-                //.padding(start = 16.dp, end = 16.dp)
             ) {
                 Column {
                     Text(
@@ -209,10 +242,20 @@ data class MovieModel(
         get() = "$year - $length"
 }
 
-@Preview(showSystemUi = false, showBackground = true)
+@Preview(showSystemUi = false, showBackground = true, backgroundColor = 0xFF000000)
 @Composable
 fun PreviewMatchedResultListScreen() {
     MovieMatcherTheme {
-        MatchedResultListScreen()
+        Surface {
+            MatchedMovieItem(
+                movie = MovieModel(
+                    index = 1,
+                    title = "Money Heist - La casa de papel 2017 from Netflix",
+                    year = "2021",
+                    length = "2h 30m",
+                    posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg"
+                )
+            )
+        }
     }
 }
