@@ -57,7 +57,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginRoute(
-    onUserLoggedIn: () -> Unit
+    onUserLoggedIn: () -> Unit,
+    onContinueAsGuest: () -> Unit
 ) {
     val signInClient: GoogleSignInClient = get()
     val loginViewModel: LoginScreenViewModel = koinViewModel()
@@ -103,7 +104,7 @@ fun LoginRoute(
                 onSignInClicked = {
                     startForResult.launch(signInClient.signInIntent)
                 },
-                onSignInAsGuestClicked = {},
+                onSignInAsGuestClicked = onContinueAsGuest,
                 onTermOfServicesClicked = {},
                 onPrivacyPolicyClicked = {}
             )
