@@ -13,7 +13,8 @@ class MatchedResultViewModel : ViewModel() {
         title = "Money Heist - La casa de papel 2017 from Netflix",
         year = "2021",
         length = "2h 30m",
-        posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg"
+        posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg",
+        rating = 4.5f
     )
 
     private val _viewState = MutableSharedFlow<MatchedResultState>()

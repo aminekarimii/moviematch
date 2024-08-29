@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -237,7 +236,8 @@ data class MovieModel(
     val title: String,
     val year: String,
     val length: String,
-    val posterUrl: String
+    val posterUrl: String,
+    val rating: Float
 ) {
     val description: String
         get() = "$year - $length"
@@ -254,7 +254,8 @@ fun PreviewMatchedResultListScreen() {
                     title = "Money Heist - La casa de papel 2017 from Netflix",
                     year = "2021",
                     length = "2h 30m",
-                    posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg"
+                    posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg",
+                    rating = 4.5f
                 )
             )
         }
