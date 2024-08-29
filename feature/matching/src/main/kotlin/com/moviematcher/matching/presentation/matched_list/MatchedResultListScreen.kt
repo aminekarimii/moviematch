@@ -1,6 +1,5 @@
 package com.moviematcher.matching.presentation.matched_list
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,8 +24,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,10 +36,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import coil.compose.AsyncImage
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.moviematcher.designsystem.theme.DeepBlue20
 import com.moviematcher.designsystem.theme.Grey80Transparent
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.dimens
@@ -98,36 +101,37 @@ internal fun MatchedResultListContent(
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.success_icon)
     )
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column {
-            Text(
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = MaterialTheme.dimens.extraBig),
-                style = MaterialTheme.typography.titleLarge,
-                text = "Congratulations \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89"
-            )
-            LazyColumn(
-                modifier = Modifier.padding(
-                    horizontal = MaterialTheme.dimens.screenPaddingHorizontal
+    Surface {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column {
+                Text(
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = MaterialTheme.dimens.extraBig),
+                    style = MaterialTheme.typography.titleLarge,
+                    text = "Congratulations \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89"
                 )
-            ) {
-                items(moviesList) {
-                    MatchedMovieItem(movie = it)
-                    Spacer(modifier = Modifier.height(24.dp))
+                LazyColumn(
+                    modifier = Modifier.padding(
+                        horizontal = MaterialTheme.dimens.screenPaddingHorizontal
+                    )
+                ) {
+                    items(moviesList) {
+                        MatchedMovieItem(movie = it)
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
                 }
             }
-        }
 
-        LottieAnimation(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .fillMaxWidth()
-                .fillMaxHeight(.4f),
-            composition = composition,
-        )
+            LottieAnimation(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth()
+                    .fillMaxHeight(.4f),
+                composition = composition,
+            )
+        }
     }
 }
 
@@ -140,7 +144,9 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                 .fillMaxWidth()
                 .background(
                     shape = RoundedCornerShape(
-                        0.dp, 0.dp, 16.dp, 16.dp
+                        0.dp, 0.dp,
+                        MaterialTheme.dimens.default,
+                        MaterialTheme.dimens.default
                     ),
                     brush = Brush.verticalGradient(
                         colors = listOf(
@@ -154,20 +160,22 @@ internal fun MatchedMovieItem(movie: MovieModel) {
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    bottom = 8.dp
-                )
+                .padding(bottom = MaterialTheme.dimens.medium)
         ) {
             val (image, details) = createRefs()
-            Image(
+            AsyncImage(
+                model = movie.posterUrl,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .height(150.dp)
+                    .width(110.dp)
+                    .height(160.dp)
+                    .padding(start = MaterialTheme.dimens.medium)
+                    .clip(RoundedCornerShape(MaterialTheme.dimens.large))
                     .constrainAs(image) {
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
                     },
-                painter = painterResource(id = com.moviematcher.designsystem.R.drawable.img_movies_placeholder),
                 contentDescription = null
             )
             Column(
@@ -181,7 +189,7 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                         height = Dimension.fillToConstraints
                         width = Dimension.fillToConstraints
                     }
-                    .padding(16.dp)
+                    .padding(MaterialTheme.dimens.default)
             ) {
                 Column {
                     Text(
@@ -191,10 +199,14 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 2
                     )
+                    Spacer(modifier = Modifier.height(
+                        MaterialTheme.dimens.medium
+                    ))
                     Text(
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.fillMaxWidth(),
-                        text = movie.description
+                        text = movie.description,
+                        color = DeepBlue20
                     )
                 }
                 Row(
@@ -214,17 +226,19 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             style = MaterialTheme.typography.bodyLarge,
-                            text = "4.5",
+                            text = movie.rating,
                         )
                     }
 
-                    Text(
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontSize = 28.sp
-                        ),
-                        color = Color.Red,
-                        text = "#${movie.index}",
-                    )
+                    if (movie.index <= 3) {
+                        Text(
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontSize = 28.sp
+                            ),
+                            color = Color.Red,
+                            text = "#${movie.index}",
+                        )
+                    }
                 }
             }
         }
