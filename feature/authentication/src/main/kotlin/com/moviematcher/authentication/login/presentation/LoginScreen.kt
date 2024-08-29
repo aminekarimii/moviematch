@@ -2,6 +2,12 @@ package com.moviematcher.authentication.login.presentation
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.AnimationVector2D
+import androidx.compose.animation.core.TwoWayConverter
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateValueAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,7 +17,9 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
@@ -27,14 +35,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -43,7 +56,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.moviematcher.designsystem.R
 import com.moviematcher.designsystem.component.button.PrimaryButton
@@ -149,7 +164,7 @@ fun LoginScreen(
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(MaterialTheme.dimens.extraBig))
-        Image(
+        AnimatedImages(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f),
@@ -166,6 +181,72 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             onTermOfServicesClicked = onTermOfServicesClicked,
             onPrivacyPolicyClicked = onPrivacyPolicyClicked
+        )
+    }
+}
+
+@Composable
+fun AnimatedImages(modifier: Modifier = Modifier) {
+    var rotateState by remember { mutableStateOf(3f) }
+    var offsets by remember { mutableStateOf(Pair(0.dp, 0.dp)) }
+
+    val rotationState by animateValueAsState(
+        targetValue = RotationState(rotateState, -rotateState),
+        typeConverter = TwoWayConverter(
+            convertToVector = { AnimationVector2D(it.rotation1, it.rotation2) },
+            convertFromVector = { RotationState(it.v1, it.v2) }
+        ),
+        animationSpec = tween(durationMillis = 2000)
+    )
+
+    val animatedOffsets by animateValueAsState(
+        targetValue = offsets,
+        typeConverter = TwoWayConverter(
+            convertToVector = { AnimationVector2D(it.first.value, it.second.value) },
+            convertFromVector = { Pair(it.v1.dp, it.v2.dp) }
+        ),
+        animationSpec = tween(durationMillis = 2000)
+    )
+
+    LaunchedEffect(Unit) {
+        rotateState = 5f
+        offsets = Pair(10.dp, (-10).dp)
+    }
+
+    Box(modifier = modifier,
+            contentAlignment = Alignment.Center) {
+        Image(
+            painter = painterResource(id = R.drawable.img2),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(x = animatedOffsets.first)
+                .graphicsLayer(
+                    rotationZ = rotationState.rotation1
+                ),
+            contentScale = ContentScale.FillHeight
+        )
+
+        Image(
+            painter = painterResource(id = R.drawable.img1),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .offset(x = animatedOffsets.second)
+                .graphicsLayer(
+                    rotationZ = rotationState.rotation2
+                ),
+            contentScale = ContentScale.FillHeight
+        )
+
+        // Middle image with size animation
+        Image(
+            painter = painterResource(id = R.drawable.img0),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer(),
+            contentScale = ContentScale.FillHeight
         )
     }
 }
@@ -198,10 +279,10 @@ fun Buttons(
             painter = painterResource(id = R.drawable.ic_google),
             contentDescription = null
         )
-        Spacer(modifier = Modifier.width( MaterialTheme.dimens.large))
+        Spacer(modifier = Modifier.width(MaterialTheme.dimens.large))
         Text(text = stringResource(id = R.string.sign_in_screen_google))
     }
-    Spacer(modifier = Modifier.height( MaterialTheme.dimens.large))
+    Spacer(modifier = Modifier.height(MaterialTheme.dimens.large))
 
     SecondaryButton(
         text = stringResource(id = R.string.sign_in_screen_guest),
