@@ -1,6 +1,5 @@
 package com.moviematcher.matching.presentation.matched_list
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +39,7 @@ import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.moviematcher.designsystem.theme.DeepBlue20
 import com.moviematcher.designsystem.theme.Grey80Transparent
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.dimens
@@ -110,7 +110,9 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                 .fillMaxWidth()
                 .background(
                     shape = RoundedCornerShape(
-                        0.dp, 0.dp, 16.dp, 16.dp
+                        0.dp, 0.dp,
+                        MaterialTheme.dimens.default,
+                        MaterialTheme.dimens.default
                     ),
                     brush = Brush.verticalGradient(
                         colors = listOf(
@@ -124,7 +126,7 @@ internal fun MatchedMovieItem(movie: MovieModel) {
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp)
+                .padding(bottom = MaterialTheme.dimens.medium)
         ) {
             val (image, details) = createRefs()
             AsyncImage(
@@ -133,14 +135,13 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                 modifier = Modifier
                     .width(110.dp)
                     .height(160.dp)
-                    .padding(start = 8.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .padding(start = MaterialTheme.dimens.medium)
+                    .clip(RoundedCornerShape(MaterialTheme.dimens.large))
                     .constrainAs(image) {
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
                     },
-                // painter = painterResource(id = com.moviematcher.designsystem.R.drawable.img_movies_placeholder),
                 contentDescription = null
             )
             Column(
@@ -154,8 +155,7 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                         height = Dimension.fillToConstraints
                         width = Dimension.fillToConstraints
                     }
-                    .padding(16.dp)
-                //.padding(start = 16.dp, end = 16.dp)
+                    .padding(MaterialTheme.dimens.default)
             ) {
                 Column {
                     Text(
@@ -165,10 +165,14 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 2
                     )
+                    Spacer(modifier = Modifier.height(
+                        MaterialTheme.dimens.medium
+                    ))
                     Text(
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.fillMaxWidth(),
-                        text = movie.description
+                        text = movie.description,
+                        color = DeepBlue20
                     )
                 }
                 Row(
@@ -192,13 +196,15 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                         )
                     }
 
-                    Text(
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontSize = 28.sp
-                        ),
-                        color = Color.Red,
-                        text = "#${movie.index}",
-                    )
+                    if (movie.index <= 3) {
+                        Text(
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontSize = 28.sp
+                            ),
+                            color = Color.Red,
+                            text = "#${movie.index}",
+                        )
+                    }
                 }
             }
         }
