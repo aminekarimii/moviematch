@@ -1,4 +1,4 @@
-package com.moviematcher.app.components
+package com.moviematcher.matching.presentation.match
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec

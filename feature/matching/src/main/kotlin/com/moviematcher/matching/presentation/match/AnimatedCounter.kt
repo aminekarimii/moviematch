@@ -1,6 +1,4 @@
-@file:OptIn(ExperimentalAnimationApi::class)
-
-package com.moviematcher.matching
+package com.moviematcher.matching.presentation.match
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Row

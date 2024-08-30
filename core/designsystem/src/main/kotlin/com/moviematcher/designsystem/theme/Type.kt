@@ -76,7 +76,7 @@ val Typography = Typography(
     bodyLarge = TextStyle(
         fontWeight = FontWeight.Normal,
         fontFamily = FontFamily(Font(R.font.nunitosans_regular)),
-        fontSize = 16.sp,
+        fontSize = 18.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp,
     ),
