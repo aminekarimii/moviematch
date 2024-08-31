@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import coil.compose.AsyncImage
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
@@ -199,9 +199,11 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 2
                     )
-                    Spacer(modifier = Modifier.height(
-                        MaterialTheme.dimens.medium
-                    ))
+                    Spacer(
+                        modifier = Modifier.height(
+                            MaterialTheme.dimens.medium
+                        )
+                    )
                     Text(
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.fillMaxWidth(),
@@ -226,7 +228,7 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             style = MaterialTheme.typography.bodyLarge,
-                            text = movie.rating,
+                            text = movie.rating.toString(),
                         )
                     }
 
