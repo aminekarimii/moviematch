@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class LoginScreenViewModel(
     private val authRepository: AuthRepository
@@ -22,10 +21,11 @@ class LoginScreenViewModel(
     val viewState = _viewState.asStateFlow()
 
     fun signIn(activityResult: ActivityResult) {
+
         viewModelScope.launch {
             try {
                 _viewState.update { it.copy(isLoading = true) }
-                val task = GoogleSignIn.getSignedInAccountFromIntent(activityResult.data).await()
+                val task = GoogleSignIn.getSignedInAccountFromIntent(activityResult.data).result
                 val account = Account(task.idToken!!)
                 authRepository.login(account)
                 _viewState.update { it.copy(isLoading = false, errorMsg = null, loggedIn = true) }
