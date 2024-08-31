@@ -2,7 +2,7 @@ package com.moviematcher.authentication.login.data.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.moviematcher.authentication.login.data.repositories.AuthRepositoryImpl
-import com.moviematcher.authentication.login.domain.repositories.AuthRepository
+import com.moviematcher.domain.repositories.AuthRepository
 import org.koin.dsl.module
 
 val authModule = module {

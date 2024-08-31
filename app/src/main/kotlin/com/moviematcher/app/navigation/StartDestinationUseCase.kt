@@ -1,6 +1,7 @@
 package com.moviematcher.app.navigation
 
-import com.moviematcher.authentication.login.domain.repositories.AuthRepository
+import com.moviematcher.domain.repositories.AuthRepository
+
 
 class StartDestinationUseCase(
     private val authRepository: AuthRepository,

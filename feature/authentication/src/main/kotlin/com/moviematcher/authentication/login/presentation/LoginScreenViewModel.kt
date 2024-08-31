@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
 import com.google.android.gms.common.api.ApiException
-import com.moviematcher.authentication.login.domain.models.Account
-import com.moviematcher.authentication.login.domain.repositories.AuthRepository
 import com.moviematcher.designsystem.R
+import com.moviematcher.domain.models.Account
+import com.moviematcher.domain.repositories.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
