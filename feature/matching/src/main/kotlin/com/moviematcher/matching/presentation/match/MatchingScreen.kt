@@ -3,7 +3,6 @@ package com.moviematcher.matching.presentation.match
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,8 +24,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,6 +39,9 @@ import com.moviematcher.designsystem.component.divider.VerticalDivider
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.backgroundGradient
 import com.moviematcher.designsystem.theme.dimens
+import com.moviematcher.matching.presentation.matched_list.MovieModel
+import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MatchingRoute(
@@ -51,106 +54,140 @@ fun MatchingRoute(
 
 @Composable
 fun MatchingScreen(
-    onMatchingComplete: () -> Unit
+    viewModel: MatcherViewModel = koinViewModel(),
+    onMatchingComplete: () -> Unit,
 ) {
-    var counter by remember { mutableIntStateOf(0) }
-    var items = remember {
-        listOf(dummy, dummy1, dummy, dummy1, dummy, dummy1)
-    }
-    var currentItem by remember { mutableStateOf(items[0]) }
-
+    val viewState = viewModel.viewState.collectAsState().value
     Surface(
         modifier = Modifier
             .background(backgroundGradient)
             .fillMaxSize()
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Spacer(modifier = Modifier.height(60.dp))
-                AnimatedCounter(count = counter)
-
-                Spacer(modifier = Modifier.height(21.dp))
-                MatchHeader(onClick = {
-                    counter++
-                })
+        when (viewState) {
+            is MatcherViewState.Loading -> {
+                Text("Loading")
             }
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                val swipeStates = items.map { rememberSwipeableCardState() }
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                ) {
-                    items.forEachIndexed { index, profile ->
-                        DraggableCardView(
-                            profile = profile,
-                            modifier = Modifier
-                                .aspectRatio(.7f)
-                                .swipableCard(
-                                    state = swipeStates[index],
-                                    onSwiped = {
-                                        items = items.dropLast(1)
-                                        currentItem = profile
-                                    }
-                                ),
+            is MatcherViewState.Success -> {
+                MatchingContent(
+                    counter = viewState.counter,
+                    movies = viewState.matches,
+                    onSwipe = { swipingDirection ->
+                        viewModel.swipeLatestMovie(
+                            updateCounter = swipingDirection == SwipingDirection.Right
                         )
                     }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .animateContentSize()
-                        .padding(horizontal = 8.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Column {
-                        Text(
-                            text = currentItem.name,
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Text(
-                            style = MaterialTheme.typography.bodyMedium,
-                            text = currentItem.age.toString(),
-                            color = Color.White,
-                        )
-                    }
-                    Row(
-                        modifier = Modifier,
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            imageVector = Icons.Default.Star,
-                            tint = Color.White,
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            style = MaterialTheme.typography.titleMedium,
-                            text = dummy.age.toString(),
-                            color = Color.White,
-                        )
-                    }
-                }
-
-
+                )
             }
-            Footer(
-                modifier = Modifier
-                    .padding(bottom = MaterialTheme.dimens.large),
-                counter = counter
-            )
+
+            is MatcherViewState.MatchCompleted -> {
+                LaunchedEffect(Unit) { onMatchingComplete() }
+            }
+
+            is MatcherViewState.Error -> {
+                // Error state
+            }
         }
+    }
+}
+
+const val MATCHING_TIME = 60
+
+@Composable
+fun MatchingContent(
+    counter: Int = 0,
+    movies: List<MovieModel>,
+    onSwipe: (SwipingDirection) -> Unit
+) {
+    var timeLeft by remember { mutableStateOf(MATCHING_TIME) }
+
+    LaunchedEffect(key1 = timeLeft) {
+        while (timeLeft > 0) {
+            delay(1000L)
+            timeLeft--
+        }
+    }
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(modifier = Modifier.height(60.dp))
+            AnimatedCounter(count = timeLeft)
+
+            Spacer(modifier = Modifier.height(21.dp))
+            MatchHeader()
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            val swipeStates = movies.map { rememberSwipeableCardState() }
+            Box(modifier = Modifier.padding(horizontal = 12.dp)) {
+                movies.forEachIndexed { index, movie ->
+                    DraggableCardView(
+                        movie = movie,
+                        modifier = Modifier
+                            .aspectRatio(.7f)
+                            .swipableCard(
+                                state = swipeStates[index],
+                                onSwiped = {
+                                    onSwipe(it)
+                                }
+                            ),
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .animateContentSize()
+                    .padding(horizontal = 8.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Column {
+                    Text(
+                        text = movies[0].title,
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        style = MaterialTheme.typography.bodyMedium,
+                        text = movies[0].description,
+                        color = Color.White,
+                    )
+                }
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        imageVector = Icons.Default.Star,
+                        tint = Color.White,
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        style = MaterialTheme.typography.titleMedium,
+                        text = movies[0].rating.toString(),
+                        color = Color.White,
+                    )
+                }
+            }
+
+
+        }
+        Footer(
+            modifier = Modifier
+                .padding(bottom = MaterialTheme.dimens.large),
+            counter = counter
+        )
     }
 }
 
@@ -188,10 +225,9 @@ fun Footer(
 }
 
 @Composable
-private fun MatchHeader(onClick: () -> Unit) {
+private fun MatchHeader() {
     Row(
         modifier = Modifier
-            .clickable { onClick() }
             .height(46.dp)
             .background(Color(0xFF1B0A22), shape = MaterialTheme.shapes.large)
             .padding(horizontal = MaterialTheme.dimens.screenPaddingHorizontal),

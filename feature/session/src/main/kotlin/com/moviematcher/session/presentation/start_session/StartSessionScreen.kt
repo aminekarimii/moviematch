@@ -13,9 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -44,7 +42,8 @@ import com.moviematcher.designsystem.utils.UiUtils
 
 @Composable
 fun StartSessionScreen(
-    sessionCode: String = "S5lBW3rEV9I"
+    sessionCode: String = "S5lBW3rEV9I",
+    onJoinSession: (String) -> Unit = {}
 ) {
     Box {
         Canvas(
@@ -81,7 +80,7 @@ fun StartSessionScreen(
                 contentScale = ContentScale.FillBounds
             )
             Spacer(modifier = Modifier.height(MaterialTheme.dimens.big))
-            Footer(sessionCode = sessionCode)
+            Footer(sessionCode = sessionCode, onJoinSession = onJoinSession)
         }
 
     }
@@ -99,7 +98,8 @@ private fun StartSessionScreenPreview() {
 
 @Composable
 private fun Footer(
-    sessionCode: String
+    sessionCode: String,
+    onJoinSession: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
     ConstraintLayout {
@@ -145,7 +145,10 @@ private fun Footer(
                     height = Dimension.fillToConstraints
                 }
                 .aspectRatio(1f),
-            onClick = { UiUtils.shareCode(context = context, text = sessionCode) },
+            onClick = {
+                // UiUtils.shareCode(context = context, text = sessionCode)
+                onJoinSession("test123")
+            },
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_share),

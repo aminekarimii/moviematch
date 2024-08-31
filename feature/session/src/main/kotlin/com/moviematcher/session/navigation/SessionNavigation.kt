@@ -37,7 +37,7 @@ fun NavGraphBuilder.sessionNavigation(
             )
         }
         composable(SessionScreen.START_SESSION.name) {
-            StartSessionScreen()
+            StartSessionScreen(onJoinSession = onJoinSession)
         }
         composable(SessionScreen.JOIN_SESSION.name) {
             JoinSessionScreen(onJoinSession = onJoinSession)

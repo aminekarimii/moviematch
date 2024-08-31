@@ -14,26 +14,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import coil.compose.AsyncImage
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
+import com.moviematcher.matching.presentation.matched_list.MovieModel
 
-class Item(
-    val id: String,
-    val name: String,
-    val age: Int,
-    val picture: String
-)
-
-val dummy = Item(
-    id = "1",
-    name = "John Doe",
-    age = 25,
-    picture = "https://picsum.photos/200/300"
-)
-val dummy1 = Item(
-    id = "2",
-    name = "Hello from",
-    age = 19,
-    picture = "https://fastly.picsum.photos/id/923/200/300.jpg?hmac=eiYSYaG7v46VlrE38Amrg33bd2FzVjaCsQrLMdekyAU"
+private val demoMovie = MovieModel(
+    index = 1,
+    title = "Money Heist - La casa de papel 2017 from Netflix",
+    year = "2021",
+    length = "2h 30m",
+    posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg",
+    rating = 4.5f
 )
 
 @Preview(showSystemUi = true, showBackground = true)
@@ -41,7 +34,7 @@ val dummy1 = Item(
 fun PreviewDraggableCard() {
     MovieMatcherTheme {
         DraggableCardView(
-            profile = dummy,
+            movie = demoMovie,
             modifier = Modifier.aspectRatio(.6f)
         )
     }
@@ -50,7 +43,7 @@ fun PreviewDraggableCard() {
 @Composable
 fun DraggableCardView(
     modifier: Modifier = Modifier,
-    profile: Item,
+    movie: MovieModel,
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.Unspecified),
@@ -60,9 +53,10 @@ fun DraggableCardView(
         shape = MaterialTheme.shapes.extraLarge
     ) {
         Column(Modifier.fillMaxSize()) {
-            Image(
+            AsyncImage(
+                model = movie.posterUrl,
                 modifier = Modifier.fillMaxWidth(),
-                painter = painterResource(id = com.moviematcher.designsystem.R.drawable.img_movies_placeholder),
+                // painter = painterResource(id = com.moviematcher.designsystem.R.drawable.img_movies_placeholder),
                 contentScale = ContentScale.Crop,
                 contentDescription = null
             )

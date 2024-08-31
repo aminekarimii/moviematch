@@ -15,7 +15,7 @@ fun NavGraphBuilder.matcherNavigation(
     graphRoute: String,
     navHostController: NavHostController,
 ) {
-    navigation(startDestination = MatcherScreen.MoviesList.name, route = graphRoute) {
+    navigation(startDestination = MatcherScreen.Matcher.name, route = graphRoute) {
         composable(MatcherScreen.Matcher.name) {
             MatchingRoute(onMatchingComplete = {
                 navHostController.navigate(MatcherScreen.MoviesList.name)
