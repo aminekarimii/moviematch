@@ -169,9 +169,6 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f),
-            painter = painterResource(id = R.drawable.img_movies_placeholder),
-            contentDescription = null,
-            contentScale = ContentScale.FillBounds
         )
         Spacer(modifier = Modifier.height(MaterialTheme.dimens.extraBig))
         Buttons(

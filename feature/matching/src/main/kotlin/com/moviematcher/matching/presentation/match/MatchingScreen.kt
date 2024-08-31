@@ -45,19 +45,22 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MatchingRoute(
+    viewModel: MatcherViewModel = koinViewModel(),
     onMatchingComplete: () -> Unit
 ) {
     MatchingScreen(
+        viewState = viewModel.viewState.collectAsState().value,
+        onSwipe = viewModel::swipeLatestMovie,
         onMatchingComplete = onMatchingComplete
     )
 }
 
 @Composable
 fun MatchingScreen(
-    viewModel: MatcherViewModel = koinViewModel(),
+    viewState: MatcherViewState,
+    onSwipe: (Boolean) -> Unit,
     onMatchingComplete: () -> Unit,
 ) {
-    val viewState = viewModel.viewState.collectAsState().value
     Surface(
         modifier = Modifier
             .background(backgroundGradient)
@@ -73,9 +76,7 @@ fun MatchingScreen(
                     counter = viewState.counter,
                     movies = viewState.matches,
                     onSwipe = { swipingDirection ->
-                        viewModel.swipeLatestMovie(
-                            updateCounter = swipingDirection == SwipingDirection.Right
-                        )
+                        onSwipe(swipingDirection == SwipingDirection.Right)
                     }
                 )
             }
@@ -273,6 +274,6 @@ private fun MatchHeader() {
 @Composable
 fun PreviewMatchingScreen() {
     MovieMatcherTheme {
-        MatchingScreen {}
+        MatchingContent(counter = 0, movies = listOf(), onSwipe = {})
     }
 }
