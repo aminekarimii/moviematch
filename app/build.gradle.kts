@@ -23,6 +23,8 @@ android {
 
 dependencies {
     implementation(project(":core:designsystem"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:data"))
     implementation(project(":feature:authentication"))
     implementation(project(":feature:session"))
     implementation(project(":feature:matching"))
