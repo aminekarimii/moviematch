@@ -1,9 +1,25 @@
+import java.util.Properties
+
 plugins {
     id("moviematcher.android.library")
 }
 
 android {
     namespace = "com.moviematcher.data"
+
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    val keysFile = rootProject.file("keys.properties")
+    val properties = Properties().apply {
+        load(keysFile.inputStream())
+    }
+
+    defaultConfig {
+        buildConfigField("String", "TMDB_KEY_API", "\"${properties["TMDB_KEY_API"]}\"")
+    }
 }
 
 dependencies {
@@ -13,4 +29,5 @@ dependencies {
 
     implementation(libs.firebase.auth)
     implementation(libs.firebase.auth.ktx)
+
 }
