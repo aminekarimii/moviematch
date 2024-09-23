@@ -12,7 +12,7 @@ class MovieMatcher : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@MovieMatcher)
-            modules(presentationModule, dataModule)
+            modules(dataModule, presentationModule)
         }
     }
 }

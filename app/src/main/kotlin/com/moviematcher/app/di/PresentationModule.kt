@@ -8,11 +8,11 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val presentationModule = module {
+    single { StartDestinationUseCase(get()) }
 
     //View models
     viewModel { LoginScreenViewModel(get()) }
-    viewModel { MatchedResultViewModel() }
-    viewModel { MatcherViewModel() }
+    viewModel { MatchedResultViewModel(get()) }
+    viewModel { MatcherViewModel(get()) }
 
-    single { StartDestinationUseCase(get()) }
 }
