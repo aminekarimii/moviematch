@@ -1,6 +1,5 @@
 package com.moviematcher.matching.presentation.match
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,21 +11,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import coil.compose.AsyncImage
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
-import com.moviematcher.matching.presentation.matched_list.MovieModel
+import com.moviematcher.domain.models.Movie
 
-private val demoMovie = MovieModel(
+private val demoMovie = Movie(
     index = 1,
     title = "Money Heist - La casa de papel 2017 from Netflix",
-    year = "2021",
-    length = "2h 30m",
-    posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg",
-    rating = 4.5f
+    id = 2815,
+    firstAirDate = null,
+    name = "Glen Robbins",
+    originalLanguage = "quod",
+    overview = "pretium",
+    posterPath = null,
+    voteAverage = 6.7,
+    voteCount = 6322,
+
 )
 
 @Preview(showSystemUi = true, showBackground = true)
@@ -43,7 +44,7 @@ fun PreviewDraggableCard() {
 @Composable
 fun DraggableCardView(
     modifier: Modifier = Modifier,
-    movie: MovieModel,
+    movie: Movie,
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = Color.Unspecified),
@@ -54,7 +55,7 @@ fun DraggableCardView(
     ) {
         Column(Modifier.fillMaxSize()) {
             AsyncImage(
-                model = movie.posterUrl,
+                model = movie.getPosterUrl(),
                 modifier = Modifier.fillMaxWidth(),
                 // painter = painterResource(id = com.moviematcher.designsystem.R.drawable.img_movies_placeholder),
                 contentScale = ContentScale.Crop,

@@ -2,20 +2,14 @@ package com.moviematcher.matching.presentation.matched_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
+import com.moviematcher.domain.repositories.MovieRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
-class MatchedResultViewModel : ViewModel() {
-    private val demoMovie = MovieModel(
-        index = 1,
-        title = "Money Heist - La casa de papel 2017 from Netflix",
-        year = "2021",
-        length = "2h 30m",
-        posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg",
-        rating = 4.5f
-    )
+class MatchedResultViewModel(
+    private val movieRepository: MovieRepository
+) : ViewModel() {
 
     private val _viewState = MutableSharedFlow<MatchedResultState>()
     val viewState: SharedFlow<MatchedResultState> = _viewState
@@ -23,10 +17,12 @@ class MatchedResultViewModel : ViewModel() {
     init {
         viewModelScope.launch {
             _viewState.emit(MatchedResultState.Loading)
-            delay(500)
+            val movies = movieRepository.getMovies()
             _viewState.emit(
                 MatchedResultState.MatchedResults(
-                    movies = listOf(demoMovie, demoMovie, demoMovie, demoMovie)
+                    movies = movies.map { movie ->
+                        movie.copy(index = movie.id)
+                    }
                 )
             )
         }
