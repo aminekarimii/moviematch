@@ -1,5 +1,6 @@
 package com.moviematcher.data.dto
 
+import com.moviematcher.domain.models.Movie
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -22,4 +23,16 @@ data class MovieResponse(
     @SerialName("poster_path") val posterPath: String?,
     @SerialName("vote_average") val voteAverage: Double,
     @SerialName("vote_count") val voteCount: Int,
+)
+
+fun MovieResponse.toDomain() = Movie(
+    id = id,
+    name = name,
+    title = originalTitle,
+    overview = overview,
+    posterPath = posterPath,
+    voteAverage = voteAverage,
+    originalLanguage = originalLanguage,
+    voteCount = voteCount,
+    firstAirDate = firstAirDate,
 )

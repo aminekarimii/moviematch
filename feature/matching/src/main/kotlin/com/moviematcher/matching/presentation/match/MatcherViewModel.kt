@@ -14,7 +14,6 @@ class MatcherViewModel(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
 
-
     private val _viewState = MutableStateFlow<MatcherViewState>(MatcherViewState.Loading)
     val viewState = _viewState.asStateFlow()
 
