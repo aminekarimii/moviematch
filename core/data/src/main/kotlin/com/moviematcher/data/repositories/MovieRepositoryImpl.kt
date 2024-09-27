@@ -9,14 +9,14 @@ import com.moviematcher.domain.repositories.MovieRepository
 class MovieRepositoryImpl(
     private val movieClient: MovieClient,
 ) : MovieRepository {
-    override suspend fun getMovies(shouldFetchNextPage: Boolean): List<Movie> {
-        var pageNumber = 1
+    override suspend fun getMovies(pageNumber: Int): List<Movie> {
+
         val filters = mapOf(
             "sort_by" to "popularity.desc",
             "vote_average.gte" to 6.5f.toString(),
         )
         return movieClient.fetchMovies(
-            pageNumber = if (shouldFetchNextPage) pageNumber + 1 else pageNumber,
+            pageNumber = pageNumber,
             options = filters
         ).movies.map(MovieResponse::toDomain)
     }

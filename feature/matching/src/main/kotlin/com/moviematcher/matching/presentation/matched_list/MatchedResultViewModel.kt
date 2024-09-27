@@ -17,7 +17,7 @@ class MatchedResultViewModel(
     init {
         viewModelScope.launch {
             _viewState.emit(MatchedResultState.Loading)
-            val movies = movieRepository.getMovies(false)
+            val movies = movieRepository.getMovies(1)
             _viewState.emit(
                 MatchedResultState.MatchedResults(
                     movies = movies.map { movie ->

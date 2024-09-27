@@ -1,5 +1,6 @@
 package com.moviematcher.matching.presentation.match
 
+import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,11 +16,13 @@ private const val MIN_MOVIES_TO_FETCH_NEXT_PAGE = 10
 class MatcherViewModel(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
+    private var pageNumber = 1
 
     private val _viewState = MutableStateFlow<MatcherViewState>(MatcherViewState.Loading)
     val viewState = _viewState.asStateFlow()
 
     private val counter: MutableStateFlow<Int> = MutableStateFlow(0)
+    private val fetchedMovieIds = mutableSetOf<String>()
 
     init {
         fetchRandomMovies()
@@ -30,17 +33,25 @@ class MatcherViewModel(
             _viewState.update { MatcherViewState.Loading }
         }
 
-        val movies = movieRepository.getMovies(shouldFetchNextPage)
+        val fetchNextPage = if (shouldFetchNextPage) ++pageNumber else pageNumber
+        val movies = movieRepository.getMovies(fetchNextPage)
+
+        val uniqueMovies = movies.filter { movie ->
+            !fetchedMovieIds.contains(movie.id.toString())
+        }
+
+        fetchedMovieIds.addAll(uniqueMovies.map { it.id.toString() })
+
         _viewState.update { currentState ->
             when (currentState) {
                 is MatcherViewState.Success -> {
                     MatcherViewState.Success(
-                        matches = if (shouldFetchNextPage) currentState.matches + movies else movies,
+                        matches = if (shouldFetchNextPage) currentState.matches + uniqueMovies else uniqueMovies,
                         counter = counter.value
                     )
                 }
 
-                else -> MatcherViewState.Success(matches = movies, counter = counter.value)
+                else -> MatcherViewState.Success(matches = uniqueMovies, counter = counter.value)
             }
         }
     }
