@@ -1,7 +1,7 @@
 package com.moviematcher.data.di
 
 import com.moviematcher.data.BuildConfig
-import com.moviematcher.data.interceptor.ApiKeyInterceptor
+import com.moviematcher.data.network.interceptor.ApiKeyInterceptor
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.okhttp.OkHttp

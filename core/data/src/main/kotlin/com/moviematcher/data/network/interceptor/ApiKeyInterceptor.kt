@@ -1,4 +1,4 @@
-package com.moviematcher.data.interceptor
+package com.moviematcher.data.network.interceptor
 
 import okhttp3.Interceptor
 import okhttp3.Response
