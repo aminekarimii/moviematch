@@ -1,5 +1,6 @@
 package com.moviematcher.matching.presentation.match
 
+import android.util.Log
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -47,33 +48,25 @@ fun Modifier.swipableCard(
             onDragEnd = {
                 launch {
                     val coercedOffset = state.offset.targetValue
-                        .coerceIn(blockedDirections,
+                        .coerceIn(
+                            blockedDirections = blockedDirections,
                             maxHeight = state.maxHeight,
-                            maxWidth = state.maxWidth)
+                            maxWidth = state.maxWidth
+                        )
 
                     if (hasNotTravelledEnough(state, coercedOffset)) {
                         state.reset()
                         onSwipeCancel()
                     } else {
-                        val horizontalTravel = abs(state.offset.targetValue.x)
-                        val verticalTravel = abs(state.offset.targetValue.y)
-
-                        if (horizontalTravel > verticalTravel) {
-                            if (state.offset.targetValue.x > 0) {
-                                state.swipe(SwipingDirection.Right)
-                                onSwiped(SwipingDirection.Right)
-                            } else {
-                                state.swipe(SwipingDirection.Left)
-                                onSwiped(SwipingDirection.Left)
-                            }
+                        if (state.offset.targetValue.x > 0) {
+                            state.swipe(SwipingDirection.Right)
+                            onSwiped(SwipingDirection.Right)
+                            Log.d("SpecialTag", "targetValue.x: ${state.offset.targetValue.x}, Swiped right Right");
                         } else {
-                            if (state.offset.targetValue.y < 0) {
-                                state.swipe(SwipingDirection.Up)
-                                onSwiped(SwipingDirection.Up)
-                            } else {
-                                state.swipe(SwipingDirection.Down)
-                                onSwiped(SwipingDirection.Down)
-                            }
+                            state.swipe(SwipingDirection.Left)
+                            onSwiped(SwipingDirection.Left)
+                            Log.d("SpecialTag", "targetValue.x: ${state.offset.targetValue.x}, Swiped right Left");
+
                         }
                     }
                 }
@@ -104,11 +97,12 @@ private fun Offset.coerceIn(
                 maxWidth
             }
         ),
-        y = y.coerceIn(if (blockedDirections.contains(SwipingDirection.Up)) {
-            0f
-        } else {
-            -maxHeight
-        },
+        y = y.coerceIn(
+            if (blockedDirections.contains(SwipingDirection.Up)) {
+                0f
+            } else {
+                -maxHeight
+            },
             if (blockedDirections.contains(SwipingDirection.Down)) {
                 0f
             } else {
@@ -122,6 +116,6 @@ private fun hasNotTravelledEnough(
     state: SwipeableCardState,
     offset: Offset,
 ): Boolean {
-    return abs(offset.x) < state.maxWidth / 3 &&
+    return abs(offset.x) < state.maxWidth / 4 &&
             abs(offset.y) < state.maxHeight / 3
 }
