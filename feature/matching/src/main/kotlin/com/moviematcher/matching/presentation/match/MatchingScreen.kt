@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import com.moviematcher.designsystem.component.divider.VerticalDivider
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
@@ -270,7 +271,7 @@ private fun MatchHeader() {
     }
 }
 
-@Preview(showSystemUi = false, showBackground = true)
+@Preview(showBackground = true, showSystemUi = true, wallpaper = Wallpapers.NONE)
 @Composable
 fun PreviewMatchingScreen() {
     MovieMatcherTheme {

@@ -6,7 +6,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
-class MovieClient(val httpClient: HttpClient) : MovieService {
+class MovieClient(private val httpClient: HttpClient) : MovieService {
 
     override suspend fun fetchMovies(
         pageNumber: Int,

@@ -10,7 +10,10 @@ class MovieRepositoryImpl(
     private val movieClient: MovieClient,
 ) : MovieRepository {
     override suspend fun getMovies(): List<Movie> {
-        val filters = mapOf("sort_by" to "popularity.desc")
+        val filters = mapOf(
+            "sort_by" to "popularity.desc",
+            "vote_average.gte" to 6.5f.toString(),
+        )
         return movieClient.fetchMovies(
             pageNumber = 1,
             options = filters
