@@ -4,5 +4,5 @@ import com.moviematcher.domain.models.Movie
 
 interface MovieRepository {
 
-    suspend fun getMovies(): List<Movie>
+    suspend fun getMovies(shouldFetchNextPage: Boolean): List<Movie>
 }

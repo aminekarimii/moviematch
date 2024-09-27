@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+private const val MIN_MOVIES_TO_FETCH_NEXT_PAGE = 10
+
 class MatcherViewModel(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
@@ -23,13 +25,23 @@ class MatcherViewModel(
         fetchRandomMovies()
     }
 
-    private fun fetchRandomMovies() = viewModelScope.launch {
-        _viewState.update { MatcherViewState.Loading }
-        _viewState.update {
-            MatcherViewState.Success(
-                matches = movieRepository.getMovies(),
-                counter = counter.value
-            )
+    private fun fetchRandomMovies(shouldFetchNextPage: Boolean = false) = viewModelScope.launch {
+        if (!shouldFetchNextPage) {
+            _viewState.update { MatcherViewState.Loading }
+        }
+
+        val movies = movieRepository.getMovies(shouldFetchNextPage)
+        _viewState.update { currentState ->
+            when (currentState) {
+                is MatcherViewState.Success -> {
+                    MatcherViewState.Success(
+                        matches = if (shouldFetchNextPage) currentState.matches + movies else movies,
+                        counter = counter.value
+                    )
+                }
+
+                else -> MatcherViewState.Success(matches = movies, counter = counter.value)
+            }
         }
     }
 
@@ -43,8 +55,13 @@ class MatcherViewModel(
                         counter.update { it + 1 }
                     }
 
+                    val updatedMatches = currentState.matches.dropLast(1)
+                    if (updatedMatches.size <= MIN_MOVIES_TO_FETCH_NEXT_PAGE) {
+                        fetchRandomMovies(shouldFetchNextPage = true)
+                    }
+
                     currentState.copy(
-                        matches = currentState.matches.dropLast(1),
+                        matches = updatedMatches,
                         counter = counter.value
                     )
                 }
@@ -53,7 +70,6 @@ class MatcherViewModel(
             }
         }
     }
-
 }
 
 @Immutable
