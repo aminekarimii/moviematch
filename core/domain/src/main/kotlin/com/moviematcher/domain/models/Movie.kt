@@ -12,8 +12,4 @@ data class Movie(
     val posterPath: String?,
     val voteAverage: Double,
     val voteCount: Int,
-) {
-    fun getPosterUrl(): String {
-        return "https://image.tmdb.org/t/p/w500${posterPath.orEmpty()}"
-    }
-}
+)

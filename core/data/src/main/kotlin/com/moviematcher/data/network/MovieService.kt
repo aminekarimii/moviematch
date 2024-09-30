@@ -4,5 +4,4 @@ import com.moviematcher.data.dto.MoviesResponse
 
 interface MovieService {
     suspend fun fetchMovies(pageNumber: Int, options: Map<String, String>): MoviesResponse
-
 }
