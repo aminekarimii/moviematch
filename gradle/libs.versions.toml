@@ -66,6 +66,7 @@ ktorCore = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktorContentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktorOkhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktorSerialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktorLogger = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 jsonSerialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.6.2" }
 
 #googleService
@@ -89,6 +90,6 @@ google-play-services = { id = "com.google.gms.google-services", version.ref = "p
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 [bundles]
-io = ["jsonSerialization", "ktorCore", "ktorContentNegotiation", "ktorOkhttp", "ktorSerialization"]
+io = ["jsonSerialization", "ktorCore", "ktorContentNegotiation", "ktorOkhttp", "ktorSerialization", "ktorLogger"]
 
 
