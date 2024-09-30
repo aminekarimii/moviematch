@@ -24,7 +24,7 @@ private val demoMovie = Movie(
     name = "Glen Robbins",
     originalLanguage = "quod",
     overview = "pretium",
-    posterPath = null,
+    posterUrl = null,
     voteAverage = 6.7,
     voteCount = 6322,
 
@@ -55,9 +55,8 @@ fun DraggableCardView(
     ) {
         Column(Modifier.fillMaxSize()) {
             AsyncImage(
-                model = movie.getPosterUrl(),
+                model = movie.posterUrl,
                 modifier = Modifier.fillMaxWidth(),
-                // painter = painterResource(id = com.moviematcher.designsystem.R.drawable.img_movies_placeholder),
                 contentScale = ContentScale.Crop,
                 contentDescription = null
             )

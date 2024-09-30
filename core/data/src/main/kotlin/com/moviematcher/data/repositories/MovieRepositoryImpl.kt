@@ -3,11 +3,12 @@ package com.moviematcher.data.repositories
 import com.moviematcher.data.dto.MovieResponse
 import com.moviematcher.data.dto.toDomain
 import com.moviematcher.data.network.MovieClient
+import com.moviematcher.data.network.MovieService
 import com.moviematcher.domain.models.Movie
 import com.moviematcher.domain.repositories.MovieRepository
 
 class MovieRepositoryImpl(
-    private val movieClient: MovieClient,
+    private val movieClient: MovieService,
 ) : MovieRepository {
     override suspend fun getMovies(pageNumber: Int): List<Movie> {
 

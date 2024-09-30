@@ -165,7 +165,7 @@ internal fun MatchedMovieItem(movie: Movie) {
         ) {
             val (image, details) = createRefs()
             AsyncImage(
-                model = movie.getPosterUrl(),
+                model = movie.posterUrl,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .width(110.dp)
@@ -263,7 +263,7 @@ fun PreviewMatchedResultListScreen() {
                     name = "Jimmy Wilson",
                     originalLanguage = "sapientem",
                     overview = "dictas",
-                    posterPath = null,
+                    posterUrl = null,
                     voteAverage = 2.3,
                     voteCount = 7278,
                     
