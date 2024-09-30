@@ -11,7 +11,6 @@ import org.koin.dsl.module
 
 
 val repositoryModule = module {
-    single { FirebaseAuth.getInstance() }
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<MovieRepository> { MovieRepositoryImpl(get()) }
 }
@@ -22,5 +21,6 @@ val movieClientModule = module {
 val dataModule = module {
     includes(networkModule)
     includes(movieClientModule)
+    includes(authModule)
     includes(repositoryModule)
 }
