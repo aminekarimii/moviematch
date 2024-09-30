@@ -27,19 +27,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import com.moviematcher.designsystem.component.divider.VerticalDivider
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.backgroundGradient
 import com.moviematcher.designsystem.theme.dimens
-import com.moviematcher.matching.presentation.matched_list.MovieModel
+import com.moviematcher.domain.models.Movie
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
@@ -97,10 +98,10 @@ const val MATCHING_TIME = 60
 @Composable
 fun MatchingContent(
     counter: Int = 0,
-    movies: List<MovieModel>,
+    movies: List<Movie>,
     onSwipe: (SwipingDirection) -> Unit
 ) {
-    var timeLeft by remember { mutableStateOf(MATCHING_TIME) }
+    var timeLeft by remember { mutableIntStateOf(MATCHING_TIME) }
 
     LaunchedEffect(key1 = timeLeft) {
         while (timeLeft > 0) {
@@ -153,13 +154,13 @@ fun MatchingContent(
             ) {
                 Column {
                     Text(
-                        text = movies[0].title,
+                        text = "test",
                         color = Color.White,
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
                         style = MaterialTheme.typography.bodyMedium,
-                        text = movies[0].description,
+                        text = "test",
                         color = Color.White,
                     )
                 }
@@ -176,7 +177,7 @@ fun MatchingContent(
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         style = MaterialTheme.typography.titleMedium,
-                        text = movies[0].rating.toString(),
+                        text = "movies[0].rating.toString()",
                         color = Color.White,
                     )
                 }
@@ -270,7 +271,7 @@ private fun MatchHeader() {
     }
 }
 
-@Preview(showSystemUi = false, showBackground = true)
+@Preview(showBackground = true, showSystemUi = true, wallpaper = Wallpapers.NONE)
 @Composable
 fun PreviewMatchingScreen() {
     MovieMatcherTheme {

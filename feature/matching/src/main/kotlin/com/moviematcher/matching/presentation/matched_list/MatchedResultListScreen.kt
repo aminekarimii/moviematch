@@ -45,6 +45,7 @@ import com.moviematcher.designsystem.theme.DeepBlue20
 import com.moviematcher.designsystem.theme.Grey80Transparent
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.dimens
+import com.moviematcher.domain.models.Movie
 import com.moviematcher.feature.matching.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -96,7 +97,7 @@ fun MatchedResultListScreen(viewState: MatchedResultState) {
 
 @Composable
 internal fun MatchedResultListContent(
-    moviesList: List<MovieModel>
+    moviesList: List<Movie>
 ) {
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.success_icon)
@@ -136,7 +137,7 @@ internal fun MatchedResultListContent(
 }
 
 @Composable
-internal fun MatchedMovieItem(movie: MovieModel) {
+internal fun MatchedMovieItem(movie: Movie) {
     Box {
         Box(
             modifier = Modifier
@@ -195,7 +196,7 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                     Text(
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.fillMaxWidth(),
-                        text = movie.title,
+                        text = movie.title.orEmpty(),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 2
                     )
@@ -207,7 +208,7 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                     Text(
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.fillMaxWidth(),
-                        text = movie.description,
+                        text = movie.title.orEmpty(),
                         color = DeepBlue20
                     )
                 }
@@ -228,7 +229,7 @@ internal fun MatchedMovieItem(movie: MovieModel) {
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             style = MaterialTheme.typography.bodyLarge,
-                            text = movie.rating.toString(),
+                            text = movie.voteAverage.toString(),
                         )
                     }
 
@@ -247,17 +248,6 @@ internal fun MatchedMovieItem(movie: MovieModel) {
     }
 }
 
-data class MovieModel(
-    val index: Int,
-    val title: String,
-    val year: String,
-    val length: String,
-    val posterUrl: String,
-    val rating: Float
-) {
-    val description: String
-        get() = "$year - $length"
-}
 
 @Preview(showSystemUi = false, showBackground = true, backgroundColor = 0xFF000000)
 @Composable
@@ -265,13 +255,18 @@ fun PreviewMatchedResultListScreen() {
     MovieMatcherTheme {
         Surface {
             MatchedMovieItem(
-                movie = MovieModel(
+                movie = Movie(
                     index = 1,
                     title = "Money Heist - La casa de papel 2017 from Netflix",
-                    year = "2021",
-                    length = "2h 30m",
-                    posterUrl = "https://image.tmdb.org/t/p/w500/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg",
-                    rating = 4.5f
+                    id = 2649,
+                    firstAirDate = null,
+                    name = "Jimmy Wilson",
+                    originalLanguage = "sapientem",
+                    overview = "dictas",
+                    posterUrl = null,
+                    voteAverage = 2.3,
+                    voteCount = 7278,
+                    
                 )
             )
         }
