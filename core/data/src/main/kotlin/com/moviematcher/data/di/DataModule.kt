@@ -9,18 +9,18 @@ import com.moviematcher.domain.repositories.MovieRepository
 import io.ktor.client.HttpClient
 import org.koin.dsl.module
 
-
-val repositoryModule = module {
-    single<AuthRepository> { AuthRepositoryImpl(get()) }
-    single<MovieRepository> { MovieRepositoryImpl(get()) }
-}
 val movieClientModule = module {
     single<MovieService> { MovieClient(get<HttpClient>()) }
 }
 
+val repositoryModule = module {
+    single<AuthRepository> { AuthRepositoryImpl(get()) }
+    single<MovieRepository> { MovieRepositoryImpl(get<MovieService>()) }
+}
+
 val dataModule = module {
+    includes(authModule)
     includes(networkModule)
     includes(movieClientModule)
-    includes(authModule)
     includes(repositoryModule)
 }
