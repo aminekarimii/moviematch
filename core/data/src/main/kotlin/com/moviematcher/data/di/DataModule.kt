@@ -1,7 +1,7 @@
 package com.moviematcher.data.di
 
-import com.google.firebase.auth.FirebaseAuth
 import com.moviematcher.data.network.MovieClient
+import com.moviematcher.data.network.MovieService
 import com.moviematcher.data.repositories.AuthRepositoryImpl
 import com.moviematcher.data.repositories.MovieRepositoryImpl
 import com.moviematcher.domain.repositories.AuthRepository
@@ -15,7 +15,7 @@ val repositoryModule = module {
     single<MovieRepository> { MovieRepositoryImpl(get()) }
 }
 val movieClientModule = module {
-    single { MovieClient(get<HttpClient>()) }
+    single<MovieService> { MovieClient(get<HttpClient>()) }
 }
 
 val dataModule = module {
