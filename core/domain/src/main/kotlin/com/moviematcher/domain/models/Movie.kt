@@ -4,7 +4,7 @@ package com.moviematcher.domain.models
 data class Movie(
     val index: Int = 0,
     val id: Int,
-    val firstAirDate: String? = "",
+    val year: String? = "",
     val name: String,
     val title: String,
     val originalLanguage: String,

@@ -36,5 +36,5 @@ fun MovieResponse.toDomain() = Movie(
     voteAverage = Math.round(voteAverage * 10.0) / 10.0,
     originalLanguage = originalLanguage,
     voteCount = voteCount,
-    firstAirDate = firstAirDate,
+    year = firstAirDate?.substring(0, 4),
 )
