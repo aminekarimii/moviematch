@@ -41,6 +41,7 @@ fun Modifier.swipableCard(
                         x = summed.x.coerceIn(-state.maxWidth, state.maxWidth),
                         y = summed.y.coerceIn(-state.maxHeight, state.maxHeight)
                     )
+
                     if (change.positionChange() != Offset.Zero) change.consume()
                     state.drag(newValue.x, newValue.y)
                 }
@@ -59,14 +60,11 @@ fun Modifier.swipableCard(
                         onSwipeCancel()
                     } else {
                         if (state.offset.targetValue.x > 0) {
-                            state.swipe(SwipingDirection.Right)
                             onSwiped(SwipingDirection.Right)
-                            Log.d("SpecialTag", "targetValue.x: ${state.offset.targetValue.x}, Swiped right Right");
+                            state.swipe(SwipingDirection.Right)
                         } else {
-                            state.swipe(SwipingDirection.Left)
                             onSwiped(SwipingDirection.Left)
-                            Log.d("SpecialTag", "targetValue.x: ${state.offset.targetValue.x}, Swiped right Left");
-
+                            state.swipe(SwipingDirection.Left)
                         }
                     }
                 }
