@@ -279,10 +279,39 @@ private fun MatchHeader() {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true, wallpaper = Wallpapers.NONE)
+@Preview(
+    showBackground = true, showSystemUi = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+)
 @Composable
 fun PreviewMatchingScreen() {
     MovieMatcherTheme {
-        MatchingContent(counter = 0, movies = listOf(), onSwipe = {})
+        Surface(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            MatchingContent(
+                counter = 0,
+                movies = buildList {
+                    repeat(5) {
+                        add(
+                            Movie(
+                                index = 6407,
+                                id = 7796,
+                                year = "2017",
+                                name = "Bert Patterson",
+                                title = "It Ends with Us overview",
+                                originalLanguage = "dolor",
+                                overview = "blandit",
+                                posterUrl = null,
+                                voteAverage = 2.3,
+                                voteCount = 4850
+                            )
+                        )
+                    }
+                },
+
+                onSwipe = {}
+            )
+        }
     }
 }
