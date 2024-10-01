@@ -1,6 +1,5 @@
 package com.moviematcher.matching.presentation.match
 
-import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -87,6 +86,10 @@ class MatcherViewModel(
 sealed class MatcherViewState {
     data object Loading : MatcherViewState()
     data object MatchCompleted : MatcherViewState()
-    data class Success(val matches: List<Movie>, val counter: Int) : MatcherViewState()
     data class Error(val message: String) : MatcherViewState()
+
+    data class Success(
+        val matches: List<Movie>,
+        val counter: Int
+    ) : MatcherViewState()
 }
