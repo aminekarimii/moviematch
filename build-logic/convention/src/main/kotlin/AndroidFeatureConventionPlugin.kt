@@ -4,6 +4,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
+ import org.gradle.kotlin.dsl.project
 
 class AndroidFeatureConventionPlugin : Plugin<Project> {
 
@@ -33,6 +34,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                     "implementation",
                     versionCatalog().findLibrary("androidx.lifecycle.runtime.compose").get()
                 )
+                add("implementation", project(":core:domain"))
             }
         }
     }
