@@ -10,13 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-
-const val PREFIX = "⏳ 00:"
+import java.util.Locale
 
 @Composable
 fun AnimatedCounter(
@@ -24,15 +23,19 @@ fun AnimatedCounter(
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.bodyLarge
 ) {
-    var oldCount by remember {
-        mutableStateOf(count)
-    }
+    var oldCount by remember { mutableIntStateOf(count) }
     SideEffect {
         oldCount = count
     }
     Row(modifier = modifier) {
-        val countString = "$PREFIX$count"
-        val oldCountString = "$PREFIX$oldCount"
+        val minutes = count / 60
+        val seconds = count % 60
+        val oldMinutes = oldCount / 60
+        val oldSeconds = oldCount % 60
+
+        val countString = String.format(Locale.US, "%02d:%02d", minutes, seconds)
+        val oldCountString = String.format(Locale.US, "%02d:%02d", oldMinutes, oldSeconds)
+
         for (i in countString.indices) {
             val oldChar = oldCountString.getOrNull(i)
             val newChar = countString[i]
