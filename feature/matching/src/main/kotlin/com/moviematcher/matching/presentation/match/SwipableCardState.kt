@@ -33,7 +33,6 @@ class SwipeableCardState(
     internal val maxWidth: Float,
     internal val maxHeight: Float,
 ) {
-    var isSwiping = false // Flag to prevent swiping overlap
     val offset = Animatable(offset(0f, 0f), Offset.VectorConverter)
 
     /**
@@ -49,8 +48,6 @@ class SwipeableCardState(
     }
 
     suspend fun swipe(direction: SwipingDirection, animationSpec: AnimationSpec<Offset> = tween(300)) {
-        if (isSwiping) return // Prevent another swipe if one is in progress
-        isSwiping = true
         val endX = maxWidth
         val endY = maxHeight
         when (direction) {
@@ -60,8 +57,6 @@ class SwipeableCardState(
             SwipingDirection.Down -> offset.animateTo(offset(y = endY), animationSpec)
         }
         this.swipedDirection = direction
-        isSwiping = false // Allow next swipe after the current one completes
-
     }
 
     private fun offset(x: Float = offset.value.x, y: Float = offset.value.y): Offset {
