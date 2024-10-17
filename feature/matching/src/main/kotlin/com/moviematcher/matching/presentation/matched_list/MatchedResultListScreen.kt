@@ -126,11 +126,11 @@ internal fun MatchedResultListContent(
             }
 
             LottieAnimation(
+                composition = composition,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .fillMaxWidth()
                     .fillMaxHeight(.4f),
-                composition = composition,
             )
         }
     }
