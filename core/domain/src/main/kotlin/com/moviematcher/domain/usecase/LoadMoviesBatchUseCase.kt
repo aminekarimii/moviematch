@@ -4,6 +4,7 @@ import com.moviematcher.domain.models.Movie
 import com.moviematcher.domain.repositories.MovieRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 
 const val PAGES_TO_PULL = 6
@@ -15,10 +16,10 @@ class LoadMoviesBatchUseCase(
     suspend operator fun invoke(): List<Movie> {
         return withContext(dispatcher) {
             val deferredMovieCalls = (1 until PAGES_TO_PULL).map { page ->
-                async { movieRepository.getMovies(page) }.await()
+                async { movieRepository.getMovies(page) }
             }
 
-            deferredMovieCalls.flatten()
+            deferredMovieCalls.awaitAll().flatten()
         }
     }
 }

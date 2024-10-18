@@ -12,19 +12,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-private const val MIN_MOVIES_TO_FETCH_NEXT_PAGE = 10
 
 class MatcherViewModel(
     private val movieRepository: MovieRepository,
     private val loadMoviesBatchUseCase: LoadMoviesBatchUseCase
 ) : ViewModel() {
-    private var pageNumber = 1
 
     private val _viewState = MutableStateFlow<MatcherViewState>(MatcherViewState.Loading)
     val viewState = _viewState.asStateFlow()
 
     private val counter: MutableStateFlow<Int> = MutableStateFlow(0)
-    private val fetchedMovieIds = mutableSetOf<String>()
 
     init {
         viewModelScope.launch {
@@ -39,26 +36,13 @@ class MatcherViewModel(
             _viewState.update { MatcherViewState.Loading }
         }
 
-        val fetchNextPage = if (shouldFetchNextPage) ++pageNumber else pageNumber
-        val movies = movieRepository.getMovies(fetchNextPage)
+        val movies = loadMoviesBatchUseCase()
 
-        val uniqueMovies = movies.filter { movie ->
-            !fetchedMovieIds.contains(movie.id.toString())
-        }
-
-        fetchedMovieIds.addAll(uniqueMovies.map { it.id.toString() })
-
-        _viewState.update { currentState ->
-            when (currentState) {
-                is MatcherViewState.Success -> {
-                    MatcherViewState.Success(
-                        matches = if (shouldFetchNextPage) currentState.matches + uniqueMovies else uniqueMovies,
-                        counter = counter.value
-                    )
-                }
-
-                else -> MatcherViewState.Success(matches = uniqueMovies, counter = counter.value)
-            }
+        _viewState.update {
+            MatcherViewState.Success(
+                matches = movies,
+                counter = counter.value
+            )
         }
     }
 
@@ -73,10 +57,6 @@ class MatcherViewModel(
                     }
 
                     val updatedMatches = currentState.matches.dropLast(1)
-                    if (updatedMatches.size <= MIN_MOVIES_TO_FETCH_NEXT_PAGE) {
-                        fetchRandomMovies(shouldFetchNextPage = true)
-                    }
-
                     currentState.copy(
                         matches = updatedMatches,
                         counter = counter.value
