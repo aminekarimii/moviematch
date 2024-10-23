@@ -68,15 +68,3 @@ class MatcherViewModel(
         }
     }
 }
-
-@Immutable
-sealed class MatcherViewState {
-    data object Loading : MatcherViewState()
-    data object MatchCompleted : MatcherViewState()
-    data class Error(val message: String) : MatcherViewState()
-
-    data class Success(
-        val matches: List<Movie>,
-        val counter: Int
-    ) : MatcherViewState()
-}
