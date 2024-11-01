@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 
 
 class MatcherViewModel(
-    private val movieRepository: MovieRepository,
     private val loadMoviesBatchUseCase: LoadMoviesBatchUseCase
 ) : ViewModel() {
 
@@ -24,10 +23,6 @@ class MatcherViewModel(
     private val counter: MutableStateFlow<Int> = MutableStateFlow(0)
 
     init {
-        viewModelScope.launch {
-            val movies = loadMoviesBatchUseCase.invoke()
-            Log.d("SpecialTag", movies.map { it.id }.toString())
-        }
         fetchRandomMovies()
     }
 
