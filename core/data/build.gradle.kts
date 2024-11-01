@@ -7,7 +7,6 @@ plugins {
 android {
     namespace = "com.moviematcher.data"
 
-
     buildFeatures {
         buildConfig = true
     }

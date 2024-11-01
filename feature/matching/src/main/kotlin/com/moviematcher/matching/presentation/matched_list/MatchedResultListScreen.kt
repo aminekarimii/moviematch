@@ -259,7 +259,7 @@ fun PreviewMatchedResultListScreen() {
                     index = 1,
                     title = "Money Heist - La casa de papel 2017 from Netflix",
                     id = 2649,
-                    firstAirDate = null,
+                    year = "2018",
                     name = "Jimmy Wilson",
                     originalLanguage = "sapientem",
                     overview = "dictas",

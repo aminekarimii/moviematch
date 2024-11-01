@@ -44,11 +44,11 @@ class SwipeableCardState(
         private set
 
     internal suspend fun reset() {
-        offset.animateTo(offset(0f, 0f), tween(400))
+        offset.animateTo(offset(0f, 0f), tween(200))
     }
 
-    suspend fun swipe(direction: SwipingDirection, animationSpec: AnimationSpec<Offset> = tween(400)) {
-        val endX = maxWidth * 1.5f
+    suspend fun swipe(direction: SwipingDirection, animationSpec: AnimationSpec<Offset> = tween(300)) {
+        val endX = maxWidth
         val endY = maxHeight
         when (direction) {
             SwipingDirection.Left -> offset.animateTo(offset(x = -endX), animationSpec)

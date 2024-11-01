@@ -1,5 +1,6 @@
 package com.moviematcher.matching.presentation.match
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,8 +34,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import com.moviematcher.designsystem.component.divider.VerticalDivider
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
@@ -102,6 +103,7 @@ fun MatchingContent(
     onSwipe: (SwipingDirection) -> Unit
 ) {
     var timeLeft by remember { mutableIntStateOf(MATCHING_TIME) }
+    var currentMovieIndex by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(key1 = timeLeft) {
         while (timeLeft > 0) {
@@ -132,54 +134,60 @@ fun MatchingContent(
             val swipeStates = movies.map { rememberSwipeableCardState() }
             Box(modifier = Modifier.padding(horizontal = 12.dp)) {
                 movies.forEachIndexed { index, movie ->
+                    currentMovieIndex = index
                     DraggableCardView(
                         movie = movie,
                         modifier = Modifier
                             .aspectRatio(.7f)
                             .swipableCard(
                                 state = swipeStates[index],
-                                onSwiped = {
-                                    onSwipe(it)
-                                }
+                                onSwiped = onSwipe
                             ),
                     )
                 }
             }
 
-            Row(
-                modifier = Modifier
-                    .animateContentSize()
-                    .padding(horizontal = 8.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Column {
-                    Text(
-                        text = "test",
-                        color = Color.White,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(
-                        style = MaterialTheme.typography.bodyMedium,
-                        text = "test",
-                        color = Color.White,
-                    )
-                }
+            movies[currentMovieIndex].let { currentMovie ->
                 Row(
-                    modifier = Modifier,
-                    verticalAlignment = Alignment.Bottom
+                    modifier = Modifier
+                        .animateContentSize()
+                        .padding(
+                            horizontal = MaterialTheme.dimens.extraBig,
+                            vertical = 12.dp
+                        ),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        imageVector = Icons.Default.Star,
-                        tint = Color.White,
-                        contentDescription = null
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        style = MaterialTheme.typography.titleMedium,
-                        text = "movies[0].rating.toString()",
-                        color = Color.White,
-                    )
+                    Column(modifier = Modifier.weight(.8f)) {
+                        Text(
+                            text = currentMovie.title,
+                            color = Color.White,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = "${currentMovie.year} - ",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White,
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.weight(.2f),
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(24.dp),
+                            imageVector = Icons.Default.Star,
+                            tint = Color.Yellow,
+                            contentDescription = null
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            style = MaterialTheme.typography.titleMedium,
+                            text = currentMovie.voteAverage.toString(),
+                            color = Color.White,
+                        )
+                    }
                 }
             }
 
@@ -271,10 +279,39 @@ private fun MatchHeader() {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true, wallpaper = Wallpapers.NONE)
+@Preview(
+    showBackground = true, showSystemUi = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+)
 @Composable
 fun PreviewMatchingScreen() {
     MovieMatcherTheme {
-        MatchingContent(counter = 0, movies = listOf(), onSwipe = {})
+        Surface(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            MatchingContent(
+                counter = 0,
+                movies = buildList {
+                    repeat(5) {
+                        add(
+                            Movie(
+                                index = 6407,
+                                id = 7796,
+                                year = "2017",
+                                name = "Bert Patterson",
+                                title = "It Ends with Us overview",
+                                originalLanguage = "dolor",
+                                overview = "blandit",
+                                posterUrl = null,
+                                voteAverage = 2.3,
+                                voteCount = 4850
+                            )
+                        )
+                    }
+                },
+
+                onSwipe = {}
+            )
+        }
     }
 }

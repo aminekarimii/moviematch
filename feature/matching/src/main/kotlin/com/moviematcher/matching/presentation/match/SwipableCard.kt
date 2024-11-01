@@ -23,67 +23,63 @@ fun Modifier.swipableCard(
     onSwiped: (SwipingDirection) -> Unit,
     onSwipeCancel: () -> Unit = {},
     blockedDirections: List<SwipingDirection> = listOf(SwipingDirection.Up, SwipingDirection.Down),
-) = pointerInput(Unit) {
-    coroutineScope {
-        detectDragGestures(
-            onDragCancel = {
-                launch {
-                    state.reset()
-                    onSwipeCancel()
-                }
-            },
-            onDrag = { change, dragAmount ->
-                launch {
-                    val original = state.offset.targetValue
-                    val summed = original + dragAmount
-                    val newValue = Offset(
-                        x = summed.x.coerceIn(-state.maxWidth, state.maxWidth),
-                        y = summed.y.coerceIn(-state.maxHeight, state.maxHeight)
-                    )
-                    if (change.positionChange() != Offset.Zero) change.consume()
-                    state.drag(newValue.x, newValue.y)
-                }
-            },
-            onDragEnd = {
-                launch {
-                    val coercedOffset = state.offset.targetValue
-                        .coerceIn(blockedDirections,
-                            maxHeight = state.maxHeight,
-                            maxWidth = state.maxWidth)
-
-                    if (hasNotTravelledEnough(state, coercedOffset)) {
+): Modifier {
+    return this.pointerInput(Unit) {
+        coroutineScope {
+            detectDragGestures(
+                onDragCancel = {
+                    launch {
                         state.reset()
                         onSwipeCancel()
-                    } else {
-                        val horizontalTravel = abs(state.offset.targetValue.x)
-                        val verticalTravel = abs(state.offset.targetValue.y)
+                    }
+                },
+                onDrag = { change, dragAmount ->
+                    launch {
+                        val original = state.offset.targetValue
+                        val summed = original + dragAmount
+                        val newValue = Offset(
+                            x = summed.x.coerceIn(-state.maxWidth, state.maxWidth),
+                            y = summed.y.coerceIn(-state.maxHeight, state.maxHeight)
+                        )
 
-                        if (horizontalTravel > verticalTravel) {
-                            if (state.offset.targetValue.x > 0) {
-                                state.swipe(SwipingDirection.Right)
-                                onSwiped(SwipingDirection.Right)
-                            } else {
-                                state.swipe(SwipingDirection.Left)
-                                onSwiped(SwipingDirection.Left)
-                            }
+                        if (change.positionChange() != Offset.Zero) change.consume()
+                        state.drag(newValue.x, newValue.y)
+                    }
+                },
+                onDragEnd = {
+                    launch {
+                        val coercedOffset = state.offset.targetValue
+                            .coerceIn(
+                                blockedDirections = blockedDirections,
+                                maxHeight = state.maxHeight,
+                                maxWidth = state.maxWidth
+                            )
+
+                        if (hasNotTravelledEnough(state, coercedOffset)) {
+                            state.reset()
+                            onSwipeCancel()
                         } else {
-                            if (state.offset.targetValue.y < 0) {
-                                state.swipe(SwipingDirection.Up)
-                                onSwiped(SwipingDirection.Up)
+                            val swipeDirection = if (state.offset.targetValue.x > 0) {
+                                SwipingDirection.Right
                             } else {
-                                state.swipe(SwipingDirection.Down)
-                                onSwiped(SwipingDirection.Down)
+                                SwipingDirection.Left
+                            }
+
+                            state.swipe(swipeDirection)
+
+                            if (abs(state.offset.value.x) >= state.maxWidth / 3) {
+                                onSwiped(swipeDirection)
                             }
                         }
                     }
                 }
-            }
-        )
+            )
+        }
+    }.graphicsLayer {
+        translationX = state.offset.value.x
+        translationY = state.offset.value.y
+        rotationZ = (state.offset.value.x / 60).coerceIn(-40f, 40f)
     }
-}.graphicsLayer {
-    translationX = state.offset.value.x
-    translationY = state.offset.value.y
-    rotationZ = (state.offset.value.x / 60).coerceIn(-40f, 40f)
 }
 
 private fun Offset.coerceIn(
@@ -104,11 +100,12 @@ private fun Offset.coerceIn(
                 maxWidth
             }
         ),
-        y = y.coerceIn(if (blockedDirections.contains(SwipingDirection.Up)) {
-            0f
-        } else {
-            -maxHeight
-        },
+        y = y.coerceIn(
+            if (blockedDirections.contains(SwipingDirection.Up)) {
+                0f
+            } else {
+                -maxHeight
+            },
             if (blockedDirections.contains(SwipingDirection.Down)) {
                 0f
             } else {

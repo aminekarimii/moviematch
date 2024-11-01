@@ -33,8 +33,8 @@ fun MovieResponse.toDomain() = Movie(
     title = originalTitle,
     overview = overview,
     posterUrl = posterImageUrl,
-    voteAverage = voteAverage,
+    voteAverage = Math.round(voteAverage * 10.0) / 10.0,
     originalLanguage = originalLanguage,
     voteCount = voteCount,
-    firstAirDate = firstAirDate,
+    year = firstAirDate?.substring(0, 4),
 )
