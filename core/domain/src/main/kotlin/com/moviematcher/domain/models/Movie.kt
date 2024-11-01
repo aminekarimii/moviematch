@@ -1,6 +1,9 @@
 package com.moviematcher.domain.models
 
+import kotlinx.serialization.Serializable
 
+
+@Serializable
 data class Movie(
     val index: Int = 0,
     val id: Int,

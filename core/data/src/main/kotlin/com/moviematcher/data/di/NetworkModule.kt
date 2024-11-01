@@ -20,6 +20,7 @@ private const val BASE_URL = "https://api.themoviedb.org/3/"
 val jsonModule = module {
     single {
         Json {
+            isLenient = true
             ignoreUnknownKeys = true
         }
     }
@@ -40,8 +41,8 @@ val okhttpModule = module {
 
     single<HttpClient> {
         HttpClient(get()) {
-            install(Logging) {this.
-                logger = object : Logger {
+            install(Logging) {
+                this.logger = object : Logger {
                     override fun log(message: String) {
                         Log.d("NetworkTag", message)
                     }
