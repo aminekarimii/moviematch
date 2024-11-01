@@ -27,6 +27,7 @@ dependencies {
     implementation(libs.koin.android)
 
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.database.ktx)
     implementation(libs.firebase.auth.ktx)
 
 }
