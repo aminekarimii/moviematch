@@ -20,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -33,18 +35,35 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moviematcher.designsystem.R
 import com.moviematcher.designsystem.component.button.ClickableIcon
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.Red70Transparent
 import com.moviematcher.designsystem.theme.dimens
 import com.moviematcher.designsystem.utils.UiUtils
+import com.moviematcher.session.presentation.start_or_join.StartSessionViewModel
+import com.moviematcher.session.util.RandomUtil.generateUniqueId
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun StartSessionScreen(
-    sessionCode: String = "S5lBW3rEV9I",
+    viewModel: StartSessionViewModel = koinViewModel(),
     onJoinSession: (String) -> Unit = {}
 ) {
+    val sessionCode = generateUniqueId()
+    LaunchedEffect(Unit) {
+        viewModel.createNewSession(sessionCode)
+        viewModel.isGuestReady(sessionCode)
+    }
+
+    val guestUiState by viewModel.guestUiState.collectAsStateWithLifecycle()
+    LaunchedEffect(guestUiState) {
+        if (guestUiState == true) {
+            onJoinSession(sessionCode)
+        }
+    }
+
     Box {
         Canvas(
             modifier = Modifier

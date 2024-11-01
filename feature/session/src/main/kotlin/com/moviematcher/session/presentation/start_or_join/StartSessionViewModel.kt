@@ -1,0 +1,37 @@
+package com.moviematcher.session.presentation.start_or_join
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.moviematcher.domain.repositories.SessionRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+
+class StartSessionViewModel(
+    private val sessionRepository: SessionRepository
+) : ViewModel() {
+
+    private val guestUi = MutableStateFlow(false)
+    val guestUiState = guestUi.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null,
+    )
+
+    fun isGuestReady(sessionId: String) {
+        viewModelScope.launch {
+            sessionRepository.isGuestReady(sessionId)
+                .collectLatest {
+                    guestUi.value = it.getOrNull() ?: false
+                }
+        }
+    }
+
+    fun createNewSession(sessionId: String) {
+        viewModelScope.launch {
+            sessionRepository.createNewSession(sessionId, emptyList())
+        }
+    }
+}
