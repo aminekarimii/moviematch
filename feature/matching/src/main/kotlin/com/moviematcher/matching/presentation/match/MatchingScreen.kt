@@ -77,6 +77,7 @@ fun MatchingScreen(
                 MatchingContent(
                     counter = viewState.counter,
                     movies = viewState.matches,
+                    timeLeft = viewState.timer,
                     onSwipe = { swipingDirection ->
                         onSwipe(swipingDirection == SwipingDirection.Right)
                     }
@@ -94,23 +95,17 @@ fun MatchingScreen(
     }
 }
 
-const val MATCHING_TIME = 60
 
 @Composable
 fun MatchingContent(
     counter: Int = 0,
+    timeLeft: Int,
     movies: List<Movie>,
     onSwipe: (SwipingDirection) -> Unit
 ) {
-    var timeLeft by remember { mutableIntStateOf(MATCHING_TIME) }
     var currentMovieIndex by remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(key1 = timeLeft) {
-        while (timeLeft > 0) {
-            delay(1000L)
-            timeLeft--
-        }
-    }
+
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -291,6 +286,7 @@ fun PreviewMatchingScreen() {
         ) {
             MatchingContent(
                 counter = 0,
+                timeLeft = 10,
                 movies = buildList {
                     repeat(5) {
                         add(
