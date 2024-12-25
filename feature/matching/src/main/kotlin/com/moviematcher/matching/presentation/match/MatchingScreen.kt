@@ -112,7 +112,8 @@ fun LoadingContent() {
     Box(
         modifier = Modifier
             .fillMaxHeight()
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(bottom = MaterialTheme.dimens.bigger),
         contentAlignment = Alignment.Center
     ) {
         Column(
