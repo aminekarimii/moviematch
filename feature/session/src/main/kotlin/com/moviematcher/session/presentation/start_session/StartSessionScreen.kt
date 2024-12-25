@@ -43,7 +43,6 @@ import com.moviematcher.designsystem.theme.Red70Transparent
 import com.moviematcher.designsystem.theme.dimens
 import com.moviematcher.designsystem.utils.UiUtils
 import com.moviematcher.session.presentation.start_or_join.StartSessionViewModel
-import com.moviematcher.session.util.RandomUtil.generateUniqueId
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -51,16 +50,15 @@ fun StartSessionScreen(
     viewModel: StartSessionViewModel = koinViewModel(),
     onJoinSession: (String) -> Unit = {}
 ) {
-    val sessionCode = generateUniqueId()
     LaunchedEffect(Unit) {
-        viewModel.createNewSession(sessionCode)
-        viewModel.isGuestReady(sessionCode)
+        viewModel.createNewSession(viewModel.sessionCode)
+        viewModel.isGuestReady(viewModel.sessionCode)
     }
 
     val guestUiState by viewModel.guestUiState.collectAsStateWithLifecycle()
     LaunchedEffect(guestUiState) {
         if (guestUiState == true) {
-            onJoinSession(sessionCode)
+            onJoinSession(viewModel.sessionCode)
         }
     }
 
@@ -99,7 +97,7 @@ fun StartSessionScreen(
                 contentScale = ContentScale.FillBounds
             )
             Spacer(modifier = Modifier.height(MaterialTheme.dimens.big))
-            Footer(sessionCode = sessionCode, onJoinSession = onJoinSession)
+            Footer(sessionCode = viewModel.sessionCode)
         }
 
     }
@@ -116,10 +114,7 @@ private fun StartSessionScreenPreview() {
 }
 
 @Composable
-private fun Footer(
-    sessionCode: String,
-    onJoinSession: (String) -> Unit = {}
-) {
+private fun Footer(sessionCode: String) {
     val context = LocalContext.current
     ConstraintLayout {
         val (textField, shareBtn) = createRefs()
@@ -165,8 +160,7 @@ private fun Footer(
                 }
                 .aspectRatio(1f),
             onClick = {
-                // UiUtils.shareCode(context = context, text = sessionCode)
-                onJoinSession("test123")
+                UiUtils.shareCode(context = context, text = sessionCode)
             },
         ) {
             Icon(

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moviematcher.domain.repositories.SessionRepository
 import com.moviematcher.domain.usecase.LoadMoviesBatchUseCase
+import com.moviematcher.session.util.RandomUtil.generateUniqueId
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
@@ -14,6 +15,8 @@ class StartSessionViewModel(
     private val sessionRepository: SessionRepository,
     private val loadMoviesBatchUseCase: LoadMoviesBatchUseCase,
 ) : ViewModel() {
+
+    val sessionCode = generateUniqueId()
 
     private val guestUi = MutableStateFlow(false)
     val guestUiState = guestUi.stateIn(
