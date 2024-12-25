@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface SessionRepository {
 
     fun getSession(sessionId: String): Flow<Result<MatchSession>>
-
     fun isGuestReady(sessionId: String): Flow<Result<Boolean>>
 
     suspend fun createNewSession(sessionId: String, movies: List<Movie>)

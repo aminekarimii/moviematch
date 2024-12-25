@@ -30,10 +30,10 @@ class SessionRepositoryImpl(
             decodeProvider = {
                 json.decodeFromString(it)
             }
-        ).map {
+        ).map { result ->
             when {
-                it.isSuccess -> Result.success(it.getOrNull()!!.toMatchSession())
-                else -> Result.failure(it.exceptionOrNull()!!)
+                result.isSuccess && result.getOrNull() != null -> Result.success(result.getOrNull()!!.toMatchSession())
+                else -> Result.failure(Exception("Error getting session"))
             }
         }
     }
@@ -48,7 +48,8 @@ class SessionRepositoryImpl(
     }
 
     override suspend fun createNewSession(sessionId: String, movies: List<Movie>) {
-        database.reference.child(SESSIONS)
+        database.reference
+            .child(SESSIONS)
             .child(sessionId)
             .apply {
                 child(HOST).setValue("ready").await()
