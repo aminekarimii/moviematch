@@ -28,17 +28,16 @@ class MatcherViewModel(
         startTimer()
     }
 
-
     private fun startTimer() = viewModelScope.launch {
         while (timeLeft.value > 0) {
             delay(1000L)
             timeLeft.update { it - 1 }
             _viewState.update {
-                MatcherViewState.Success(
-                    timer = timeLeft.value,
-                    matches = (viewState.value as MatcherViewState.Success).matches,
-                    counter = counter.value
-                )
+                if(it is MatcherViewState.Success) {
+                    it.copy(timer = timeLeft.value)
+                } else {
+                    it
+                }
             }
         }
 
