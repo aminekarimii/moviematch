@@ -44,9 +44,11 @@ import com.moviematcher.designsystem.component.button.PrimaryButton
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.Red70Transparent
 import com.moviematcher.designsystem.theme.dimens
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun JoinSessionScreen(
+    viewModel: JoinSessionViewModel = koinViewModel(),
     onJoinSession: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -113,9 +115,13 @@ fun JoinSessionScreen(
                 text = stringResource(id = R.string.start_or_join_session_screen_join_session),
                 enabled = sessionCode.isNotBlank()
             ) {
-                onJoinSession(sessionCode)
+                viewModel.onJoinSession(sessionCode).also {
+                    onJoinSession(sessionCode)
+                }
             }
             Image(
+                modifier = Modifier
+                    .fillMaxWidth().aspectRatio(1f),
                 painter = painterResource(id = com.moviematcher.session.R.drawable.img_waves),
                 contentDescription = null
             )
@@ -131,7 +137,7 @@ fun JoinSessionScreen(
 private fun JoinSessionScreenPreview() {
     MovieMatcherTheme {
         Surface {
-            JoinSessionScreen({})
+            JoinSessionScreen(onJoinSession = {})
         }
     }
 }

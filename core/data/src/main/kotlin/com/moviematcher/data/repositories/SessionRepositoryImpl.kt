@@ -59,15 +59,15 @@ class SessionRepositoryImpl(
 
     override suspend fun updateSession(
         sessionId: String,
-        host: Boolean?,
-        guest: Boolean?,
+        isHostReady: Boolean?,
+        isGuestReady: Boolean?,
         movies: List<Movie>?
     ) {
         database.reference.child(SESSIONS)
             .child(sessionId)
             .apply {
-                host?.let { child(HOST).setValue("ready").await() }
-                guest?.let { child(GUEST).setValue("ready").await() }
+                isHostReady?.let { child(HOST).setValue("ready").await() }
+                isGuestReady?.let { child(GUEST).setValue("ready").await() }
                 movies?.let {
                     child(MOVIES)
                         .setValue(json.encodeToJsonElement(movies).toString())
