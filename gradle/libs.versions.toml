@@ -28,7 +28,7 @@ firebase-storage-ktx = "20.0.1"
 
 lottie= "4.1.0"
 ktor=  "3.0.0-beta-1"
-firebaseKtx = "0.2.0"
+firebaseKtx = "0.2.1"
 
 [libraries]
 #core
