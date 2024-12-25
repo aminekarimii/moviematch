@@ -3,6 +3,7 @@ package com.moviematcher.session.presentation.start_or_join
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moviematcher.domain.repositories.SessionRepository
+import com.moviematcher.domain.usecase.LoadMoviesBatchUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
@@ -10,7 +11,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class StartSessionViewModel(
-    private val sessionRepository: SessionRepository
+    private val sessionRepository: SessionRepository,
+    private val loadMoviesBatchUseCase: LoadMoviesBatchUseCase,
 ) : ViewModel() {
 
     private val guestUi = MutableStateFlow(false)
@@ -31,7 +33,10 @@ class StartSessionViewModel(
 
     fun createNewSession(sessionId: String) {
         viewModelScope.launch {
-            sessionRepository.createNewSession(sessionId, emptyList())
+            sessionRepository.createNewSession(
+                sessionId = sessionId,
+                movies = loadMoviesBatchUseCase()
+            )
         }
     }
 }
