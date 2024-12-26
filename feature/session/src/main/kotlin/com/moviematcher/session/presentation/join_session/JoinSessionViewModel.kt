@@ -5,8 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.moviematcher.domain.repositories.SessionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.sql.Timestamp
 
 sealed class JoinSessionUiState {
     data object Idle : JoinSessionUiState()
@@ -27,19 +30,19 @@ class JoinSessionViewModel(
         viewModelScope.launch {
             _uiState.update { JoinSessionUiState.Loading }
 
-            sessionRepository.getSession(sessionCode).collect { result ->
-                val newState = if (result.isSuccess) {
-                    sessionRepository.updateSession(
-                        sessionId = sessionCode,
-                        isGuestReady = true
-                    )
-                    JoinSessionUiState.StartMatch
-                } else {
-                    JoinSessionUiState.Error("Session not found")
-                }
-
-                _uiState.update { newState }
+            val result = sessionRepository.getSession(sessionCode).first()
+            val newState = if (result.isSuccess) {
+                sessionRepository.updateSession(
+                    updatedAt = Timestamp(System.currentTimeMillis()),
+                    sessionId = sessionCode,
+                    isGuestReady = true
+                )
+                JoinSessionUiState.StartMatch
+            } else {
+                JoinSessionUiState.Error("Session not found")
             }
+
+            _uiState.update { newState }
         }
     }
 }

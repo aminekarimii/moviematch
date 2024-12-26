@@ -133,9 +133,7 @@ fun JoinSessionScreen(
                 text = stringResource(id = R.string.start_or_join_session_screen_join_session),
                 enabled = sessionCode.isNotBlank()
             ) {
-                viewModel.onJoinSession(sessionCode).also {
-                    onJoinSession(sessionCode)
-                }
+                viewModel.onJoinSession(sessionCode)
             }
             Image(
                 modifier = Modifier
