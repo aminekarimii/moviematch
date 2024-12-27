@@ -2,18 +2,23 @@ package com.moviematcher.matching.presentation.match
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.moviematcher.domain.models.SessionQuery
+import com.moviematcher.domain.repositories.AuthRepository
 import com.moviematcher.domain.repositories.SessionRepository
 import com.moviematcher.domain.usecase.LoadMoviesBatchUseCase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 const val MATCHING_TIME = 60
 
 class MatcherViewModel(
-    sessionRepository: SessionRepository,
+    private val authRepository: AuthRepository,
+    private val sessionRepository: SessionRepository,
     private val loadMoviesBatchUseCase: LoadMoviesBatchUseCase
 ) : ViewModel() {
 
@@ -21,13 +26,22 @@ class MatcherViewModel(
     val viewState = _viewState.asStateFlow()
 
     private val timeLeft: MutableStateFlow<Int> = MutableStateFlow(MATCHING_TIME)
+    private val isHost: MutableStateFlow<Boolean?> = MutableStateFlow(null)
 
     init {
         fetchRandomMovies()
         startTimer()
 
         viewModelScope.launch {
-            sessionRepository.getMatchStatus("SX5lZWBMWzP").collectLatest { likes ->
+            sessionRepository.getSession("IGUQGyf8es7").collectLatest { session ->
+                isHost.update {
+                    session.isSuccess.let {
+                        session.getOrNull()!!.hostId == authRepository.getCurrentUser()?.uuid
+                    }
+                }
+            }
+
+            sessionRepository.getMatchStatus("IGUQGyf8es7").collect { likes ->
                 _viewState.update {
                     if (it is MatcherViewState.Success) {
                         it.copy(likes = likes.isSuccess.let { likes.getOrNull()!! })
@@ -44,7 +58,7 @@ class MatcherViewModel(
             delay(1000L)
             timeLeft.update { it - 1 }
             _viewState.update {
-                if(it is MatcherViewState.Success) {
+                if (it is MatcherViewState.Success) {
                     it.copy(timer = timeLeft.value)
                 } else {
                     it
@@ -76,18 +90,53 @@ class MatcherViewModel(
                     MatcherViewState.MatchCompleted
                 } else {
                     if (updateCounter) {
-                        counter.update { it + 1 }
+                        viewModelScope.launch {
+                            if (isHost.value == true) {
+                                val likedMovies = sessionRepository.getSession(
+                                    "IGUQGyf8es7"
+                                ).first().getOrNull()!!.hostLikes.toMutableList()
+                                val uniqueMovieIds =
+                                    likedMovies.addIfNotExists(currentState.matches.last().id)
+
+                                sessionRepository.updateSession(
+                                    SessionQuery(
+                                        sessionId = "IGUQGyf8es7",
+                                        hostLikedMovies = uniqueMovieIds,
+                                    )
+                                )
+                            } else {
+                                val likedMovies = sessionRepository.getSession(
+                                    "IGUQGyf8es7"
+                                ).first().getOrNull()!!.guestLikes.toMutableList()
+
+                                val uniqueMovieIds =
+                                    likedMovies.addIfNotExists(currentState.matches.last().id)
+
+                                sessionRepository.updateSession(
+                                    SessionQuery(
+                                        sessionId = "IGUQGyf8es7",
+                                        guestLikedMovies = uniqueMovieIds,
+                                    )
+                                )
+                            }
+                        }
                     }
 
                     val updatedMatches = currentState.matches.dropLast(1)
                     currentState.copy(
                         matches = updatedMatches,
-                        counter = counter.value
                     )
                 }
             } else {
                 currentState
             }
         }
+    }
+
+    private fun <T> MutableList<T>.addIfNotExists(element: T): MutableList<T> {
+        if (!this.contains(element)) {
+            this.add(element)
+        }
+        return this
     }
 }

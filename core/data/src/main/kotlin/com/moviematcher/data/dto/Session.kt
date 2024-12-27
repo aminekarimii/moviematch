@@ -12,8 +12,8 @@ data class SessionDto(
     val host: String? = null,
     val guest: String? = null,
     val movies: String? = null,
-    @SerialName("guest_likes") val guestLikes: List<String> = emptyList(),
-    @SerialName("host_likes") val hostLikes: List<String> = emptyList()
+    @SerialName("guest_likes") val guestLikes: List<String>? = emptyList(),
+    @SerialName("host_likes") val hostLikes: List<String>? = emptyList()
 ) {
     @Exclude
     fun getMoviesList() = this.movies?.let { movies ->
@@ -22,9 +22,9 @@ data class SessionDto(
 }
 
 fun SessionDto.toMatchSession() = com.moviematcher.domain.models.MatchSession(
-    host = this.host ?: "",
-    guest = this.guest ?: "",
+    hostId = this.host,
+    guestId = this.guest,
     movies = this.getMoviesList(),
-    guestLikes = this.guestLikes.map { it.toInt() },
-    hostLikes = this.hostLikes.map { it.toInt() }
+    guestLikes = this.guestLikes?.map { it.toInt() } ?: emptyList(),
+    hostLikes = this.hostLikes?.map { it.toInt() } ?: emptyList()
 )

@@ -48,14 +48,21 @@ class SessionRepositoryImpl(
     override fun isGuestReady(sessionId: String): Flow<Result<Boolean>> {
         return this.getSession(sessionId).map {
             when {
-                it.isSuccess -> Result.success(it.getOrNull()?.guest != null)
+                it.isSuccess -> Result.success(it.getOrNull()?.guestId != null)
                 else -> Result.failure(it.exceptionOrNull()!!)
             }
         }
     }
 
     override fun getMatchStatus(sessionId: String): Flow<Result<Int>> {
-        return this.getSession(sessionId).map {
+        return database.reference. flow<SessionDto>(
+            path = { dataSnapshot ->
+                dataSnapshot.child(SESSIONS).child(sessionId)
+            },
+            decodeProvider = {
+                json.decodeFromString(it)
+            }
+        ).map {
             when {
                 it.isSuccess -> {
                     val (hostLikes, guestLikes) = it.getOrNull()?.guestLikes.orEmpty() to it.getOrNull()?.hostLikes.orEmpty()
@@ -84,7 +91,6 @@ class SessionRepositoryImpl(
             .apply {
                 child("createdAt").setValue(Timestamp(System.currentTimeMillis()).time).await()
                 child(HOST).setValue(hostId).await()
-                child(GUEST).setValue(null).await()
                 child(MOVIES).setValue(json.encodeToJsonElement(movies).toString()).await()
             }
     }
