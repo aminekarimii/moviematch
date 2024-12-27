@@ -2,6 +2,7 @@ package com.moviematcher.session.presentation.start_or_join
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.moviematcher.domain.repositories.AuthRepository
 import com.moviematcher.domain.repositories.SessionRepository
 import com.moviematcher.domain.usecase.LoadMoviesBatchUseCase
 import com.moviematcher.session.util.RandomUtil.generateUniqueId
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class StartSessionViewModel(
+    private val authRepository: AuthRepository,
     private val sessionRepository: SessionRepository,
     private val loadMoviesBatchUseCase: LoadMoviesBatchUseCase,
 ) : ViewModel() {

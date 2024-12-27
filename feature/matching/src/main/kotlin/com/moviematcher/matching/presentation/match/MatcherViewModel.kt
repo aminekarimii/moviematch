@@ -21,11 +21,22 @@ class MatcherViewModel(
     val viewState = _viewState.asStateFlow()
 
     private val timeLeft: MutableStateFlow<Int> = MutableStateFlow(MATCHING_TIME)
-    private val counter: MutableStateFlow<Int> = MutableStateFlow(0)
 
     init {
         fetchRandomMovies()
         startTimer()
+
+        viewModelScope.launch {
+            sessionRepository.getMatchStatus("SX5lZWBMWzP").collectLatest { likes ->
+                _viewState.update {
+                    if (it is MatcherViewState.Success) {
+                        it.copy(likes = likes.isSuccess.let { likes.getOrNull()!! })
+                    } else {
+                        it
+                    }
+                }
+            }
+        }
     }
 
     private fun startTimer() = viewModelScope.launch {
@@ -40,7 +51,6 @@ class MatcherViewModel(
                 }
             }
         }
-
         _viewState.update { MatcherViewState.MatchCompleted }
     }
 
@@ -54,7 +64,6 @@ class MatcherViewModel(
         _viewState.update {
             MatcherViewState.Success(
                 matches = movies,
-                counter = counter.value,
                 timer = timeLeft.value
             )
         }
