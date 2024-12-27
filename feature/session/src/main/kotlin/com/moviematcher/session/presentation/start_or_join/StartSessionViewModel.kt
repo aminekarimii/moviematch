@@ -38,7 +38,8 @@ class StartSessionViewModel(
         viewModelScope.launch {
             sessionRepository.createNewSession(
                 sessionId = sessionId,
-                movies = loadMoviesBatchUseCase()
+                movies = loadMoviesBatchUseCase(),
+                hostId = authRepository.getCurrentUser()?.uuid
             )
         }
     }

@@ -1,3 +1,6 @@
 package com.moviematcher.domain.models
 
-data class User(val email: String?)
+data class User(
+    val uuid: String?,
+    val email: String?
+)

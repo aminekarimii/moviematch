@@ -45,7 +45,7 @@ class SessionRepositoryImpl(
     override fun isGuestReady(sessionId: String): Flow<Result<Boolean>> {
         return this.getSession(sessionId).map {
             when {
-                it.isSuccess -> Result.success(it.getOrNull()?.guest == "ready")
+                it.isSuccess -> Result.success(it.getOrNull()?.guest != null)
                 else -> Result.failure(it.exceptionOrNull()!!)
             }
         }

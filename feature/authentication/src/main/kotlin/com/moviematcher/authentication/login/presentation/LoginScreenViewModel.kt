@@ -20,34 +20,27 @@ class LoginScreenViewModel(
     private val _viewState = MutableStateFlow(LoginScreenViewState())
     val viewState = _viewState.asStateFlow()
 
-    fun signIn(activityResult: ActivityResult) {
-
+    fun signIn(
+        signInMethod: SignInMethod,
+        activityResult: ActivityResult? = null
+    ) {
         viewModelScope.launch {
-            try {
-                _viewState.update { it.copy(isLoading = true) }
-                val task = GoogleSignIn.getSignedInAccountFromIntent(activityResult.data).result
-                val account = Account(task.idToken!!)
-                authRepository.login(account)
-                _viewState.update { it.copy(isLoading = false, errorMsg = null, loggedIn = true) }
-            } catch (e: ApiException) {
-                if (e.statusCode == GoogleSignInStatusCodes.SIGN_IN_FAILED) {
-                    _viewState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMsg = R.string.sign_in_screen_error,
-                            loggedIn = false
-                        )
-                    }
-                } else {
-                    _viewState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMsg = null,
-                            loggedIn = false
-                        )
-                    }
-                }
-            } catch (e: Exception) {
+            when (signInMethod) {
+                SignInMethod.GUEST -> authRepository.loginAsGuest()
+                SignInMethod.GOOGLE -> handleGoogleSignInResult(activityResult!!)
+            }
+        }
+    }
+
+    private suspend fun handleGoogleSignInResult(activityResult: ActivityResult) {
+        try {
+            _viewState.update { it.copy(isLoading = true) }
+            val task = GoogleSignIn.getSignedInAccountFromIntent(activityResult.data).result
+            val account = Account(task.idToken!!)
+            authRepository.login(account)
+            _viewState.update { it.copy(isLoading = false, errorMsg = null, loggedIn = true) }
+        } catch (e: ApiException) {
+            if (e.statusCode == GoogleSignInStatusCodes.SIGN_IN_FAILED) {
                 _viewState.update {
                     it.copy(
                         isLoading = false,
@@ -55,6 +48,22 @@ class LoginScreenViewModel(
                         loggedIn = false
                     )
                 }
+            } else {
+                _viewState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMsg = null,
+                        loggedIn = false
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            _viewState.update {
+                it.copy(
+                    isLoading = false,
+                    errorMsg = R.string.sign_in_screen_error,
+                    loggedIn = false
+                )
             }
         }
     }

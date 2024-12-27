@@ -2,10 +2,11 @@ package com.moviematcher.session.presentation.join_session
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.moviematcher.domain.models.SessionQuery
+import com.moviematcher.domain.repositories.AuthRepository
 import com.moviematcher.domain.repositories.SessionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -19,6 +20,7 @@ sealed class JoinSessionUiState {
 }
 
 class JoinSessionViewModel(
+    private val authRepository: AuthRepository,
     private val sessionRepository: SessionRepository,
 ) : ViewModel() {
 
@@ -33,9 +35,11 @@ class JoinSessionViewModel(
             val result = sessionRepository.getSession(sessionCode).first()
             val newState = if (result.isSuccess) {
                 sessionRepository.updateSession(
-                    updatedAt = Timestamp(System.currentTimeMillis()),
-                    sessionId = sessionCode,
-                    isGuestReady = true
+                    SessionQuery(
+                        updatedAt = Timestamp(System.currentTimeMillis()),
+                        sessionId = sessionCode,
+                        guestId = authRepository.getCurrentUser()?.uuid
+                    )
                 )
                 JoinSessionUiState.StartMatch
             } else {

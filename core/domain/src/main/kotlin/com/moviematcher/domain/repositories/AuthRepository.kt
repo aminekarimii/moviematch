@@ -5,6 +5,7 @@ import com.moviematcher.domain.models.User
 
 interface AuthRepository {
     suspend fun login(account: Account)
+    suspend fun loginAsGuest()
     fun getCurrentUser(): User?
     fun logout()
 }
