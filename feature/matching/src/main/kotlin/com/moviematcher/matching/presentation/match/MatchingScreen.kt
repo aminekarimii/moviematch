@@ -82,7 +82,7 @@ fun MatchingScreen(
 
             is MatcherViewState.Success -> {
                 MatchingContent(
-                    counter = viewState.counter,
+                    likes = viewState.likes,
                     movies = viewState.matches,
                     timeLeft = viewState.timer,
                     onSwipe = { swipingDirection ->
@@ -151,10 +151,10 @@ fun LoadingContent() {
 
 @Composable
 fun MatchingContent(
-    counter: Int = 0,
+    likes: Int = 0,
     timeLeft: Int,
     movies: List<Movie>,
-    onSwipe: (SwipingDirection) -> Unit
+    onSwipe: (SwipingDirection) -> Unit,
 ) {
     var currentMovieIndex by remember { mutableIntStateOf(0) }
 
@@ -242,7 +242,7 @@ fun MatchingContent(
         Footer(
             modifier = Modifier
                 .padding(bottom = MaterialTheme.dimens.large),
-            counter = counter
+            counter = likes
         )
     }
 }
@@ -351,7 +351,6 @@ fun PreviewMatchingScreen() {
             modifier = Modifier.fillMaxSize()
         ) {
             MatchingContent(
-                counter = 0,
                 timeLeft = 10,
                 movies = buildList {
                     repeat(5) {
@@ -372,7 +371,8 @@ fun PreviewMatchingScreen() {
                     }
                 },
 
-                onSwipe = {}
+                onSwipe = {},
+                likes = 0
             )
         }
     }

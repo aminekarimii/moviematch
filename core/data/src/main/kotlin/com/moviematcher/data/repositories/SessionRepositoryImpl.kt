@@ -2,13 +2,16 @@ package com.moviematcher.data.repositories
 
 import com.google.firebase.database.FirebaseDatabase
 import com.moviematcher.data.FirebaseDatabaseNodes.GUEST
+import com.moviematcher.data.FirebaseDatabaseNodes.GUEST_LIKES
 import com.moviematcher.data.FirebaseDatabaseNodes.HOST
+import com.moviematcher.data.FirebaseDatabaseNodes.HOST_LIKES
 import com.moviematcher.data.FirebaseDatabaseNodes.MOVIES
 import com.moviematcher.data.FirebaseDatabaseNodes.SESSIONS
 import com.moviematcher.data.dto.SessionDto
 import com.moviematcher.data.dto.toMatchSession
 import com.moviematcher.domain.models.MatchSession
 import com.moviematcher.domain.models.Movie
+import com.moviematcher.domain.models.SessionQuery
 import com.moviematcher.domain.repositories.SessionRepository
 import com.skydoves.firebase.database.ktx.flow
 import kotlinx.coroutines.flow.Flow
@@ -51,9 +54,28 @@ class SessionRepositoryImpl(
         }
     }
 
+    override fun getMatchStatus(sessionId: String): Flow<Result<Int>> {
+        return this.getSession(sessionId).map {
+            when {
+                it.isSuccess -> {
+                    val (hostLikes, guestLikes) = it.getOrNull()?.guestLikes.orEmpty() to it.getOrNull()?.hostLikes.orEmpty()
+                    // Find common movie IDs
+                    val commonLikedMovieIds = guestLikes
+                        .toSet()
+                        .intersect(hostLikes.toSet())
+
+                    Result.success(commonLikedMovieIds.size)
+                }
+
+                else -> Result.failure(it.exceptionOrNull()!!)
+            }
+        }
+    }
+
     override suspend fun createNewSession(
         createdAt: Timestamp?,
         sessionId: String,
+        hostId: String?,
         movies: List<Movie>
     ) {
         database.reference
@@ -61,32 +83,35 @@ class SessionRepositoryImpl(
             .child(sessionId)
             .apply {
                 child("createdAt").setValue(Timestamp(System.currentTimeMillis()).time).await()
-                child(HOST).setValue("ready").await()
+                child(HOST).setValue(hostId).await()
                 child(GUEST).setValue(null).await()
                 child(MOVIES).setValue(json.encodeToJsonElement(movies).toString()).await()
             }
     }
 
-    override suspend fun updateSession(
-        updatedAt: Timestamp?,
-        sessionId: String,
-        isHostReady: Boolean?,
-        isGuestReady: Boolean?,
-        movies: List<Movie>?
-    ) {
-        database.reference.child(SESSIONS)
-            .child(sessionId)
-            .apply {
-                updatedAt?.let { child("updatedAt").setValue(it.time).await() }
-                isHostReady?.let { child(HOST).setValue("ready").await() }
-                isGuestReady?.let { child(GUEST).setValue("ready").await() }
-                movies?.let {
-                    child(MOVIES)
-                        .setValue(json.encodeToJsonElement(movies).toString())
-                        .await()
+    override suspend fun updateSession(sessionQuery: SessionQuery) {
+        with(sessionQuery) {
+            database.reference.child(SESSIONS)
+                .child(sessionId)
+                .apply {
+                    updatedAt.let { child("updatedAt").setValue(it.time).await() }
+                    guestId?.let { child(GUEST).setValue(it).await() }
+                    guestLikedMovies?.let {
+                        child(GUEST_LIKES)
+                            .setValue(guestLikedMovies)
+                            .await()
+                    }
+                    hostLikedMovies?.let {
+                        child(HOST_LIKES)
+                            .setValue(hostLikedMovies)
+                            .await()
+                    }
+                    movies?.let {
+                        child(MOVIES)
+                            .setValue(json.encodeToJsonElement(movies).toString())
+                            .await()
+                    }
                 }
-            }
+        }
     }
-
-
 }

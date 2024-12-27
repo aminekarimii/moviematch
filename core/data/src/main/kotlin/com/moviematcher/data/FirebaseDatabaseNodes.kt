@@ -5,4 +5,6 @@ object FirebaseDatabaseNodes {
     const val MOVIES = "movies"
     const val HOST = "host"
     const val GUEST = "guest"
+    const val GUEST_LIKES = "guest_likes"
+    const val HOST_LIKES = "host_likes"
 }

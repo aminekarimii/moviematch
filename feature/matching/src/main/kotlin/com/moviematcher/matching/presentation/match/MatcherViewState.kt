@@ -10,8 +10,8 @@ sealed class MatcherViewState {
     data class Error(val message: String) : MatcherViewState()
 
     data class Success(
+        val likes: Int = 0,
         val timer: Int,
         val matches: List<Movie>,
-        val counter: Int
     ) : MatcherViewState()
 }
