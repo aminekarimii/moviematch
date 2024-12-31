@@ -1,5 +1,6 @@
 package com.moviematcher.data.network
 
+import com.moviematcher.data.dto.MovieResponse
 import com.moviematcher.data.dto.MoviesResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -7,6 +8,14 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
 class MovieClient(private val httpClient: HttpClient) : MovieService {
+
+    override suspend fun fetchMovie(id: Int): MovieResponse {
+        return httpClient.get("movie/$id") {
+            url {
+                parameters.append("id", id.toString())
+            }
+        }.body()
+    }
 
     override suspend fun fetchMovies(
         pageNumber: Int,

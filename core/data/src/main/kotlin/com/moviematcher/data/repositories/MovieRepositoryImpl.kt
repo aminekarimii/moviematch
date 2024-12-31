@@ -19,4 +19,8 @@ class MovieRepositoryImpl(
             options = filters
         ).movies.map(MovieResponse::toDomain)
     }
+
+    override suspend fun getMovie(id: Int): Movie {
+        return movieClient.fetchMovie(id).toDomain()
+    }
 }
