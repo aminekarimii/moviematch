@@ -1,11 +1,13 @@
 package com.moviematcher.matching.presentation.matched_list
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,6 +42,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.moviematcher.designsystem.theme.DeepBlue20
 import com.moviematcher.designsystem.theme.Grey80Transparent
@@ -67,10 +70,7 @@ fun MatchedResultListScreen(viewState: MatchedResultState) {
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "Loading...",
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                    MatchedResultLoading()
                 }
             }
 
@@ -92,6 +92,51 @@ fun MatchedResultListScreen(viewState: MatchedResultState) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun MatchedResultLoading() {
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.success_anim_icon)
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .padding(bottom = MaterialTheme.dimens.bigger),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            LottieAnimation(
+                iterations = LottieConstants.IterateForever,
+                composition = composition,
+                modifier = Modifier
+                    .fillMaxWidth(.4f)
+                    .height(200.dp)
+            )
+            Text(
+                modifier = Modifier.padding(bottom = 4.dp),
+                text = "And the winners are...",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = "",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        Image(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .aspectRatio(1f)
+                .fillMaxWidth(),
+            painter = painterResource(id = com.moviematcher.designsystem.R.drawable.img_waves),
+            contentDescription = null
+        )
     }
 }
 
@@ -266,8 +311,8 @@ fun PreviewMatchedResultListScreen() {
                     posterUrl = null,
                     voteAverage = 2.3,
                     voteCount = 7278,
-                    
-                )
+
+                    )
             )
         }
     }
