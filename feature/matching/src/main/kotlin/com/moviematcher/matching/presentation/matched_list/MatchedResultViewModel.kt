@@ -2,8 +2,8 @@ package com.moviematcher.matching.presentation.matched_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moviematcher.domain.repositories.MovieRepository
 import com.moviematcher.domain.usecase.GetMatchedMoviesUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
@@ -18,6 +18,7 @@ class MatchedResultViewModel(
     init {
         viewModelScope.launch {
             _viewState.emit(MatchedResultState.Loading)
+            delay(1000L)
             val movies = getMatchedMoviesUseCase("IGUQGyf8es7")
             _viewState.emit(MatchedResultState.MatchedResults(movies))
         }
