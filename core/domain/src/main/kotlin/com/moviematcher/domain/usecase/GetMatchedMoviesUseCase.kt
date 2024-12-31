@@ -25,7 +25,10 @@ class GetMatchedMoviesUseCase(
 
                 val deferredMovieCalls = guestMovies.union(hostMovies).toList().map { id ->
                     async {
-                        movieRepository.getMovie(id)
+                        movieRepository.getMovie(id).let {
+                            val movieTrailer = movieRepository.getMovieTrailer(id)
+                            it.copy(trailerUrl = movieTrailer)
+                        }
                     }
                 }
 

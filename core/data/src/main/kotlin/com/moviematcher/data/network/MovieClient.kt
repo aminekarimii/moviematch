@@ -2,6 +2,7 @@ package com.moviematcher.data.network
 
 import com.moviematcher.data.dto.MovieResponse
 import com.moviematcher.data.dto.MoviesResponse
+import com.moviematcher.data.dto.VideoResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -27,6 +28,14 @@ class MovieClient(private val httpClient: HttpClient) : MovieService {
                 options.forEach {
                     parameter(it.key, it.value)
                 }
+            }
+        }.body()
+    }
+
+    override suspend fun getMovieVideos(movieId: Int): VideoResponse {
+        return httpClient.get("movie/$movieId/videos") {
+            url {
+                parameters.append("id", movieId.toString())
             }
         }.body()
     }
