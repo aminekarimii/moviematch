@@ -26,12 +26,8 @@ class MovieRepositoryImpl(
 
     override suspend fun getMovieTrailer(movieId: Int): String? {
         val videoResponse = movieClient.getMovieVideos(movieId)
-        val trailer = videoResponse.results.firstOrNull { it.type == "Trailer" && it.site == "YouTube" }
-
-        return if (trailer != null) {
-            "https://www.youtube.com/watch?v=${trailer.key}"
-        } else {
-           null
-        }
+        return videoResponse.results.firstOrNull {
+            it.site == "YouTube"
+        }?.key
     }
 }

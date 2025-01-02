@@ -26,7 +26,7 @@ class GetMatchedMoviesUseCase(
                 val deferredMovieCalls = guestMovies.union(hostMovies).toList().map { id ->
                     async {
                         movieRepository.getMovie(id).let {
-                            val movieTrailer = movieRepository.getMovieTrailer(id)
+                            val movieTrailer = movieRepository.getMovieTrailer(id).asTrailer()
                             it.copy(trailerUrl = movieTrailer)
                         }
                     }
@@ -37,5 +37,9 @@ class GetMatchedMoviesUseCase(
 
             emptyList()
         }
+    }
+
+    private fun String?.asTrailer(): String? {
+        return this?.let { "https://www.youtube.com/watch?v=$it" }
     }
 }
