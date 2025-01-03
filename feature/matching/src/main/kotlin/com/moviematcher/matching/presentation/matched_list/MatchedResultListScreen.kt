@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -15,16 +14,13 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -39,11 +35,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -91,6 +87,18 @@ fun MatchedResultListScreen(viewState: MatchedResultState) {
                 ) {
                     Text(
                         text = "There is an error please try again later",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+            }
+
+            MatchedResultState.EmptyResult -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "No matched movies found",
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
@@ -221,20 +229,21 @@ internal fun MatchedMovieItem(movie: Movie) {
         ) {
             val (image, details) = createRefs()
             AsyncImage(
+                contentDescription = null,
                 model = movie.posterUrl,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .width(110.dp)
-                    .height(160.dp)
+                    .heightIn(min = 160.dp, max = 180.dp)
                     .padding(start = MaterialTheme.dimens.medium)
                     .clip(RoundedCornerShape(MaterialTheme.dimens.large))
                     .constrainAs(image) {
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
-                    },
-                contentDescription = null
+                    }
             )
+
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
@@ -248,11 +257,15 @@ internal fun MatchedMovieItem(movie: Movie) {
                     }
                     .padding(MaterialTheme.dimens.default)
             ) {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .padding(bottom = MaterialTheme.dimens.medium),
+
+                    ) {
                     Text(
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.fillMaxWidth(),
-                        text = movie.title.orEmpty(),
+                        text = movie.title,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 2
                     )
@@ -262,47 +275,65 @@ internal fun MatchedMovieItem(movie: Movie) {
                         )
                     )
                     Text(
+                        overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.fillMaxWidth(),
-                        text = movie.title.orEmpty(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 4.dp),
+                        text = movie.overview,
+                        maxLines = 2,
                         color = DeepBlue20
                     )
                 }
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(20.dp),
-                            painter = painterResource(id = com.moviematcher.designsystem.R.drawable.ic_star_colored),
-                            contentDescription = null,
-                            tint = Color.Unspecified
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            style = MaterialTheme.typography.bodyLarge,
-                            text = movie.voteAverage.toString(),
-                        )
-                    }
 
-                    LeadingIconButton(
-                        title = "Trailer"
-                    ) {
-                        context.startActivity(
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse(movie.trailerUrl)
+                    RatingBarContent(
+                        rating = movie.voteAverage,
+                    )
+
+                    movie.trailerUrl?.let {
+                        LeadingIconButton(
+                            title = "Trailer"
+                        ) {
+                            context.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(movie.trailerUrl)
+                                )
                             )
-                        )
-
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun RatingBarContent(
+    modifier: Modifier = Modifier,
+    rating: Double
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier.size(20.dp),
+            painter = painterResource(id = com.moviematcher.designsystem.R.drawable.ic_star_colored),
+            contentDescription = null,
+            tint = Color.Unspecified
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            style = MaterialTheme.typography.titleMedium,
+            text = rating.toString(),
+        )
     }
 }
 
@@ -319,12 +350,12 @@ fun PreviewMatchedResultListScreen() {
                     year = "2018",
                     name = "Jimmy Wilson",
                     originalLanguage = "sapientem",
-                    overview = "dictas",
+                    overview = "Money Heist - La casa de papel 2017 from NetflixMoney Heist - La casa de papel 2017 from NetflixMoney Heist - La casa de papel 2017 from Netflix",
                     posterUrl = null,
                     voteAverage = 2.3,
                     voteCount = 7278,
-
-                    )
+                    trailerUrl = "https://www.youtube.com/watch?v=Zb4O4wv2H2Y"
+                )
             )
         }
     }

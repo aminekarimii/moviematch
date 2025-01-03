@@ -20,7 +20,10 @@ class MatchedResultViewModel(
             _viewState.emit(MatchedResultState.Loading)
             delay(1000L)
             val movies = getMatchedMoviesUseCase("IGUQGyf8es7")
-            _viewState.emit(MatchedResultState.MatchedResults(movies))
+            _viewState.emit(
+                if (movies.isEmpty()) MatchedResultState.EmptyResult
+                else MatchedResultState.MatchedResults(movies)
+            )
         }
     }
 }

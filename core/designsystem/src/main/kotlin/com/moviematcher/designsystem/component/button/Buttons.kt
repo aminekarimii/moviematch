@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.moviematcher.designsystem.theme.MidnightBlue60
 import com.moviematcher.designsystem.theme.White
+import com.moviematcher.designsystem.theme.dimens
 
 /*
 ######################################################
@@ -41,6 +43,7 @@ fun getSocialMediaColorScheme() = ButtonDefaults.buttonColors(
 )
 
 internal val buttonHeight = 44.dp
+internal val smallButtonHeight = 32.dp
 
 @Composable
 fun PrimaryButton(
@@ -147,17 +150,24 @@ fun ClickableIcon(
 
 @Composable
 fun LeadingIconButton(
+    modifier : Modifier = Modifier,
     title: String,
     onClick: () -> Unit
 ) {
     Button(
+        modifier = Modifier
+            .heightIn(min = smallButtonHeight)
+            .then(modifier),
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0x76475467),
             contentColor = Color.White
         ),
-        shape = RoundedCornerShape(24.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+        shape = RoundedCornerShape(50),
+        contentPadding = PaddingValues(
+            horizontal = MaterialTheme.dimens.large,
+            vertical = MaterialTheme.dimens.small
+        )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -167,7 +177,7 @@ fun LeadingIconButton(
                 contentDescription = "Play",
                 tint = Color.White
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(MaterialTheme.dimens.small))
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyMedium.copy(
