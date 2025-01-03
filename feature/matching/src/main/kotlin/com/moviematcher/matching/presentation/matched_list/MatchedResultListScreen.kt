@@ -93,15 +93,7 @@ fun MatchedResultListScreen(viewState: MatchedResultState) {
             }
 
             MatchedResultState.EmptyResult -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "No matched movies found",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                }
+                MatchNotFoundContent()
             }
 
             is MatchedResultState.MatchedResults -> {
@@ -336,6 +328,48 @@ fun RatingBarContent(
         )
     }
 }
+
+@Composable
+fun MatchNotFoundContent() {
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .padding(bottom = MaterialTheme.dimens.bigger),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Icon(
+                painter = painterResource(id = com.moviematcher.designsystem.R.drawable.ic_match_not_found),
+                contentDescription = null,
+                tint = Color.Unspecified,
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                modifier = Modifier.padding(bottom = 4.dp),
+                text = "You haven’t matched any movie\nwith your teammate.",
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = "You can try another session ✌\uFE0F",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        Image(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .aspectRatio(1f)
+                .fillMaxWidth(),
+            painter = painterResource(id = com.moviematcher.designsystem.R.drawable.img_waves),
+            contentDescription = null
+        )
+    }
+}
+
 
 @Preview(showSystemUi = false, showBackground = true, backgroundColor = 0xFF000000)
 @Composable
