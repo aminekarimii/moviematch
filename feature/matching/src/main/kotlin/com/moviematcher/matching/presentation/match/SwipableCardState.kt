@@ -12,26 +12,22 @@ import androidx.compose.ui.unit.dp
 
 
 enum class SwipingDirection {
-    Left, Right, Up, Down
+    Left, Right
 }
+
 
 @Composable
 fun rememberSwipeableCardState(): SwipeableCardState {
     val screenWidth = with(LocalDensity.current) {
         LocalConfiguration.current.screenWidthDp.dp.toPx()
     }
-    val screenHeight = with(LocalDensity.current) {
-        LocalConfiguration.current.screenHeightDp.dp.toPx()
-    }
-    return remember {
-        SwipeableCardState(screenWidth, screenHeight)
+    return remember() {
+        SwipeableCardState(screenWidth)
     }
 }
 
-
 class SwipeableCardState(
     internal val maxWidth: Float,
-    internal val maxHeight: Float,
 ) {
     val offset = Animatable(offset(0f, 0f), Offset.VectorConverter)
 
@@ -40,8 +36,7 @@ class SwipeableCardState(
      *
      * Null value means the card has not been swiped fully yet.
      */
-    var swipedDirection: SwipingDirection? by mutableStateOf(null)
-        private set
+    private var swipedDirection: SwipingDirection? by mutableStateOf(null)
 
     internal suspend fun reset() {
         offset.animateTo(offset(0f, 0f), tween(200))
@@ -49,12 +44,10 @@ class SwipeableCardState(
 
     suspend fun swipe(direction: SwipingDirection, animationSpec: AnimationSpec<Offset> = tween(300)) {
         val endX = maxWidth
-        val endY = maxHeight
         when (direction) {
             SwipingDirection.Left -> offset.animateTo(offset(x = -endX), animationSpec)
             SwipingDirection.Right -> offset.animateTo(offset(x = endX), animationSpec)
-            SwipingDirection.Up -> offset.animateTo(offset(y = -endY), animationSpec)
-            SwipingDirection.Down -> offset.animateTo(offset(y = endY), animationSpec)
+            else -> Unit
         }
         this.swipedDirection = direction
     }
@@ -63,7 +56,7 @@ class SwipeableCardState(
         return Offset(x, y)
     }
 
-    internal suspend fun drag(x: Float, y: Float) {
-        offset.animateTo(offset(x, y))
+     suspend fun drag(x: Float) {
+        offset.animateTo(offset(x, 0f))
     }
 }

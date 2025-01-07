@@ -28,7 +28,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -51,6 +51,7 @@ import com.moviematcher.designsystem.theme.dimens
 import com.moviematcher.domain.models.Movie
 import com.moviematcher.feature.matching.R
 import org.koin.androidx.compose.koinViewModel
+import swipableCard
 
 @Composable
 fun MatchingRoute(
@@ -58,7 +59,7 @@ fun MatchingRoute(
     onMatchingComplete: () -> Unit
 ) {
     MatchingScreen(
-        viewState = viewModel.viewState.collectAsState().value,
+        viewState = viewModel.viewState.collectAsStateWithLifecycle().value,
         onSwipe = viewModel::swipeLatestMovie,
         onMatchingComplete = onMatchingComplete
     )
@@ -177,16 +178,17 @@ fun MatchingContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            val swipeStates = movies.map { rememberSwipeableCardState() }
             Box(modifier = Modifier.padding(horizontal = 12.dp)) {
                 movies.forEachIndexed { index, movie ->
+                    val swipeState = rememberSwipeableCardState()
+
                     currentMovieIndex = index
                     DraggableCardView(
                         movie = movie,
                         modifier = Modifier
                             .aspectRatio(.7f)
                             .swipableCard(
-                                state = swipeStates[index],
+                                state = swipeState,
                                 onSwiped = onSwipe
                             ),
                     )

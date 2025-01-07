@@ -1,124 +1,64 @@
-package com.moviematcher.matching.presentation.match
-
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.positionChange
-import kotlinx.coroutines.coroutineScope
+import com.moviematcher.matching.presentation.match.SwipeableCardState
+import com.moviematcher.matching.presentation.match.SwipingDirection
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-/**
- * Enables Tinder like swiping gestures.
- *
- * @param state The current state of the swipeable card. Use [rememberSwipeableCardState] to create.
- * @param onSwiped will be called once a swipe gesture is completed. The given [SwipingDirection] will indicate which side the gesture was performed on.
- * @param onSwipeCancel will be called when the gesture is stopped before reaching the minimum threshold to be treated as a full swipe
- * @param blockedDirections the directions which will not trigger a swipe. By default only horizontal swipes are allowed.
- */
+@Composable
 fun Modifier.swipableCard(
     state: SwipeableCardState,
     onSwiped: (SwipingDirection) -> Unit,
-    onSwipeCancel: () -> Unit = {},
-    blockedDirections: List<SwipingDirection> = listOf(SwipingDirection.Up, SwipingDirection.Down),
+    onSwipeCancel: () -> Unit = {}
 ): Modifier {
-    return this.pointerInput(Unit) {
-        coroutineScope {
-            detectDragGestures(
+    val scope = rememberCoroutineScope()
+
+    return this
+        .pointerInput(Unit) {
+            detectHorizontalDragGestures(
                 onDragCancel = {
-                    launch {
+                    scope.launch {
                         state.reset()
                         onSwipeCancel()
                     }
                 },
-                onDrag = { change, dragAmount ->
-                    launch {
-                        val original = state.offset.targetValue
-                        val summed = original + dragAmount
-                        val newValue = Offset(
-                            x = summed.x.coerceIn(-state.maxWidth, state.maxWidth),
-                            y = summed.y.coerceIn(-state.maxHeight, state.maxHeight)
-                        )
-
-                        if (change.positionChange() != Offset.Zero) change.consume()
-                        state.drag(newValue.x, newValue.y)
-                    }
-                },
                 onDragEnd = {
-                    launch {
-                        val coercedOffset = state.offset.targetValue
-                            .coerceIn(
-                                blockedDirections = blockedDirections,
-                                maxHeight = state.maxHeight,
-                                maxWidth = state.maxWidth
-                            )
-
-                        if (hasNotTravelledEnough(state, coercedOffset)) {
-                            state.reset()
-                            onSwipeCancel()
-                        } else {
-                            val swipeDirection = if (state.offset.targetValue.x > 0) {
+                    scope.launch {
+                        if (hasTravelledEnough(state)) {
+                            val swipeDirection = if (state.offset.value.x > 0) {
                                 SwipingDirection.Right
                             } else {
                                 SwipingDirection.Left
                             }
-
                             state.swipe(swipeDirection)
-
-                            if (abs(state.offset.value.x) >= state.maxWidth / 3) {
-                                onSwiped(swipeDirection)
-                            }
+                            onSwiped(swipeDirection)
+                        } else {
+                            state.reset()
+                            onSwipeCancel()
                         }
+                    }
+                },
+                onHorizontalDrag = { change, dragAmount ->
+                    scope.launch {
+                        change.consume()
+                        val newX = (state.offset.value.x + dragAmount).coerceIn(-state.maxWidth, state.maxWidth)
+                        state.drag(newX)
                     }
                 }
             )
         }
-    }.graphicsLayer {
-        translationX = state.offset.value.x
-        translationY = state.offset.value.y
-        rotationZ = (state.offset.value.x / 60).coerceIn(-40f, 40f)
-    }
+        .graphicsLayer {
+            translationX = state.offset.value.x
+            rotationZ = (state.offset.value.x / 60).coerceIn(-40f, 40f)
+            alpha = 1f - (abs(state.offset.value.x) / (state.maxWidth / 2)).coerceIn(0f, 0.5f)
+        }
 }
 
-private fun Offset.coerceIn(
-    blockedDirections: List<SwipingDirection>,
-    maxHeight: Float,
-    maxWidth: Float,
-): Offset {
-    return copy(
-        x = x.coerceIn(
-            if (blockedDirections.contains(SwipingDirection.Left)) {
-                0f
-            } else {
-                -maxWidth
-            },
-            if (blockedDirections.contains(SwipingDirection.Right)) {
-                0f
-            } else {
-                maxWidth
-            }
-        ),
-        y = y.coerceIn(
-            if (blockedDirections.contains(SwipingDirection.Up)) {
-                0f
-            } else {
-                -maxHeight
-            },
-            if (blockedDirections.contains(SwipingDirection.Down)) {
-                0f
-            } else {
-                maxHeight
-            }
-        )
-    )
+private fun hasTravelledEnough(state: SwipeableCardState): Boolean {
+    return abs(state.offset.value.x) > state.maxWidth / 10
 }
 
-private fun hasNotTravelledEnough(
-    state: SwipeableCardState,
-    offset: Offset,
-): Boolean {
-    return abs(offset.x) < state.maxWidth / 3 &&
-            abs(offset.y) < state.maxHeight / 3
-}
