@@ -8,6 +8,7 @@ import com.moviematcher.session.presentation.join_session.JoinSessionScreen
 import com.moviematcher.session.presentation.start_or_join.StartOrJoinSessionScreen
 import com.moviematcher.session.presentation.start_session.StartSessionScreen
 import com.moviematcher.session.presentation.tutorial.TutorialScreen
+import com.moviematcher.session.util.NFCSession
 
 enum class SessionScreen {
     START_OR_JOIN_SESSION, TUTORIAL, START_SESSION, JOIN_SESSION
@@ -16,7 +17,8 @@ enum class SessionScreen {
 fun NavGraphBuilder.sessionNavigation(
     graphRoute: String,
     navHostController: NavHostController,
-    onJoinSession: (String) -> Unit
+    onUpdateNFCSession: (NFCSession) -> Unit,
+    onJoinSession: (String) -> Unit,
 ) {
     navigation(startDestination = SessionScreen.START_OR_JOIN_SESSION.name, route = graphRoute) {
         composable(SessionScreen.START_OR_JOIN_SESSION.name) {
@@ -37,7 +39,9 @@ fun NavGraphBuilder.sessionNavigation(
             )
         }
         composable(SessionScreen.START_SESSION.name) {
-            StartSessionScreen(onJoinSession = onJoinSession)
+            StartSessionScreen(
+                onJoinSession = onJoinSession, onUpdateNFCSession = onUpdateNFCSession
+            )
         }
         composable(SessionScreen.JOIN_SESSION.name) {
             JoinSessionScreen(onJoinSession = onJoinSession)

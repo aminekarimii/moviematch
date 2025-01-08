@@ -1,5 +1,6 @@
 package com.moviematcher.session.presentation.join_session
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -26,7 +27,6 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,18 +49,24 @@ import com.moviematcher.designsystem.component.button.PrimaryButton
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.Red70Transparent
 import com.moviematcher.designsystem.theme.dimens
+import com.moviematcher.session.util.NfcBroadcastReceiver
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun JoinSessionScreen(
     viewModel: JoinSessionViewModel = koinViewModel(),
-    onJoinSession: (String) -> Unit
+    onJoinSession: (String) -> Unit,
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     var sessionCode by remember { mutableStateOf("") }
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
+
+    NfcBroadcastReceiver { nfcSession ->
+        Log.d("TAG", "NfcBroadcastReceiver: $nfcSession")
+        sessionCode = nfcSession
+    }
 
     LaunchedEffect(uiState) {
         when (uiState) {
