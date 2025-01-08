@@ -1,5 +1,11 @@
 package com.moviematcher.app
 
+import android.app.PendingIntent
+import android.content.Intent
+import android.content.IntentFilter
+import android.nfc.NfcAdapter
+import android.nfc.Tag
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,6 +30,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.moviematcher.app.navigation.MMNavHost
 import com.moviematcher.app.navigation.StartDestinationUseCase
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
+import com.moviematcher.session.util.INTENT_ACTION_NFC_READ
+import com.moviematcher.session.util.NFCSession
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.core.context.loadKoinModules
@@ -32,8 +40,10 @@ import org.koin.dsl.module
 class MainActivity : ComponentActivity() {
 
     val startDestinationUseCase by inject<StartDestinationUseCase>()
-
+    private var nfcAdapter: NfcAdapter? = null
+    private var nfcSession: NFCSession? = null
     override fun onCreate(savedInstanceState: Bundle?) {
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -55,7 +65,10 @@ class MainActivity : ComponentActivity() {
 
             MovieMatcherApp(
                 navController = navController,
-                startDestination = startDestinationValue
+                startDestination = startDestinationValue,
+                onUpdateNFCSession = { updatedNfcSession ->
+                    nfcSession = updatedNfcSession
+                }
             )
         }
     }
@@ -72,12 +85,72 @@ class MainActivity : ComponentActivity() {
         }
         loadKoinModules(activityModule)
     }
+
+    private fun enableNfcForegroundDispatch() {
+        nfcAdapter?.let { adapter ->
+            if (adapter.isEnabled) {
+                val nfcIntentFilter = arrayOf(
+                    IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED),
+                    IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED),
+                    IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED)
+                )
+
+                val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    PendingIntent.getActivity(
+                        this,
+                        0,
+                        Intent(this, javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+                        PendingIntent.FLAG_MUTABLE
+                    )
+                } else {
+                    PendingIntent.getActivity(
+                        this,
+                        0,
+                        Intent(this, javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                }
+                adapter.enableForegroundDispatch(
+                    this, pendingIntent, nfcIntentFilter, null
+                )
+            }
+        }
+    }
+
+    private fun disableNfcForegroundDispatch() {
+        nfcAdapter?.disableForegroundDispatch(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        enableNfcForegroundDispatch()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        disableNfcForegroundDispatch()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        intent.also {
+            sendBroadcast(Intent(INTENT_ACTION_NFC_READ).apply {
+                putExtra(
+                    NfcAdapter.EXTRA_TAG,
+                    it.getParcelableCompatibility(NfcAdapter.EXTRA_TAG, Tag::class.java)
+                )
+                putExtra("NFC_SESSION", nfcSession)
+                setPackage(packageName)
+            })
+        }
+    }
 }
 
 @Composable
 fun MovieMatcherApp(
     navController: NavHostController,
-    startDestination: String
+    startDestination: String,
+    onUpdateNFCSession: (NFCSession) -> Unit,
 ) {
     MovieMatcherTheme {
         Surface(
@@ -85,7 +158,11 @@ fun MovieMatcherApp(
                 .fillMaxSize()
                 .navigationBarsPadding()
         ) {
-            MMNavHost(navController = navController, startDestination = startDestination)
+            MMNavHost(
+                navController = navController,
+                startDestination = startDestination,
+                onUpdateNFCSession = onUpdateNFCSession
+            )
         }
     }
 }
