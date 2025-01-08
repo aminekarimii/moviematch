@@ -26,7 +26,19 @@ class LoginScreenViewModel(
     ) {
         viewModelScope.launch {
             when (signInMethod) {
-                SignInMethod.GUEST -> authRepository.loginAsGuest()
+                SignInMethod.GUEST -> {
+                    _viewState.value = _viewState.value.copy(isLoading = true, errorMsg = null)
+                    try {
+                        authRepository.loginAsGuest()
+                        _viewState.value = _viewState.value.copy(isLoading = false, loggedIn = true)
+                    } catch (e: Exception) {
+                        _viewState.value = _viewState.value.copy(
+                            isLoading = false,
+                            errorMsg = R.string.sign_in_screen_error,
+                            loggedIn = false
+                        )
+                    }
+                }
                 SignInMethod.GOOGLE -> handleGoogleSignInResult(activityResult!!)
             }
         }

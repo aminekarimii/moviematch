@@ -66,7 +66,6 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun LoginRoute(
     onUserLoggedIn: () -> Unit,
-    onContinueAsGuest: () -> Unit
 ) {
     val signInClient: GoogleSignInClient = get()
     val loginViewModel: LoginScreenViewModel = koinViewModel()
@@ -111,12 +110,13 @@ fun LoginRoute(
                 .fillMaxSize()
         ) {
             LoginScreen(
-                onSignInClicked = {
-                    startForResult.launch(signInClient.signInIntent)
-                },
-                onSignInAsGuestClicked = {
-                    loginViewModel.signIn(SignInMethod.GUEST)
-                    onContinueAsGuest()
+                onSignInClicked = { signInMethod ->
+                    when (signInMethod) {
+                        SignInMethod.GOOGLE -> startForResult.launch(signInClient.signInIntent)
+                        SignInMethod.GUEST -> {
+                            loginViewModel.signIn(SignInMethod.GUEST)
+                        }
+                    }
                 },
                 onTermOfServicesClicked = {},
                 onPrivacyPolicyClicked = {}
@@ -137,7 +137,6 @@ fun LoginRoute(
 @Composable
 fun LoginScreen(
     onSignInClicked: (SignInMethod) -> Unit,
-    onSignInAsGuestClicked: (SignInMethod) -> Unit,
     onTermOfServicesClicked: () -> Unit,
     onPrivacyPolicyClicked: () -> Unit,
 ) {
@@ -171,7 +170,6 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(MaterialTheme.dimens.extraBig))
         Buttons(
             onSignInClicked = onSignInClicked,
-            onSignInAsGuestClicked = onSignInAsGuestClicked
         )
         Footer(
             modifier = Modifier.fillMaxWidth(),
@@ -210,7 +208,7 @@ fun AnimatedImages(modifier: Modifier = Modifier) {
     }
 
     Box(modifier = modifier,
-            contentAlignment = Alignment.Center) {
+        contentAlignment = Alignment.Center) {
         Image(
             painter = painterResource(id = R.drawable.img2),
             contentDescription = null,
@@ -253,7 +251,6 @@ private fun LoginScreenPreview() {
     MovieMatcherTheme {
         LoginScreen(
             onSignInClicked = {},
-            onSignInAsGuestClicked = {},
             onTermOfServicesClicked = {},
             onPrivacyPolicyClicked = {}
         )
@@ -267,13 +264,12 @@ enum class SignInMethod {
 @Composable
 fun Buttons(
     onSignInClicked: (SignInMethod) -> Unit,
-    onSignInAsGuestClicked: (SignInMethod) -> Unit,
 ) {
     PrimaryButton(
         modifier = Modifier.fillMaxWidth(),
         colors = getSocialMediaColorScheme(),
         onClick = {
-            onSignInAsGuestClicked(SignInMethod.GOOGLE)
+            onSignInClicked(SignInMethod.GOOGLE)
         },
     ) {
         Image(
@@ -288,7 +284,7 @@ fun Buttons(
     SecondaryButton(
         text = stringResource(id = R.string.sign_in_screen_guest),
         onClick = {
-            onSignInAsGuestClicked(SignInMethod.GUEST)
+            onSignInClicked(SignInMethod.GUEST)
         }
     )
 }
