@@ -34,21 +34,14 @@ fun NfcBroadcastReceiver(
     DisposableEffect(context) {
         val intentFilter = IntentFilter(INTENT_ACTION_NFC_READ)
         val broadcast = object : BroadcastReceiver() {
-            @RequiresApi(Build.VERSION_CODES.TIRAMISU)
             override fun onReceive(
                 context: Context?,
                 intent: Intent?,
             ) {
-                intent?.getParcelableCompatibility("NFC_SESSION", NFCSession::class.java)
-                    .let { nfcSession ->
-                        nfcSession?.let {
-                            Log.d(
-                                "TAG",
-                                "onReceive: this is the session id received from the user ! $it"
-                            )
-                            currentOnSystemEvent(it.sessionId)
-                        }
-                    }
+                intent?.getParcelableCompatibility("NFC_SESSION", NFCSession::class.java).let {
+                    Log.d("TAG", "onReceive: this is the session id received from the user ! $it")
+                    currentOnSystemEvent(it?.sessionId ?: "no ID found !")
+                }
             }
         }
 
