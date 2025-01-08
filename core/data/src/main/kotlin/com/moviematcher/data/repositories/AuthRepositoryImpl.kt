@@ -17,7 +17,11 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun loginAsGuest() {
-        firebaseAuth.signInAnonymously().await()
+        try {
+            firebaseAuth.signInAnonymously().await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun getCurrentUser(): User? {
