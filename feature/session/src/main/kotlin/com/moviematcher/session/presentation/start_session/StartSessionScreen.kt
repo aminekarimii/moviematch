@@ -1,5 +1,6 @@
 package com.moviematcher.session.presentation.start_session
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,17 +43,37 @@ import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.Red70Transparent
 import com.moviematcher.designsystem.theme.dimens
 import com.moviematcher.designsystem.utils.UiUtils
+import com.moviematcher.session.presentation.NFCActivityContract
 import com.moviematcher.session.presentation.start_or_join.StartSessionViewModel
+import com.moviematcher.session.util.NFCSession
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun StartSessionScreen(
     viewModel: StartSessionViewModel = koinViewModel(),
-    onJoinSession: (String) -> Unit = {}
+    onJoinSession: (String) -> Unit = {},
+    onUpdateNFCSession: (NFCSession) -> Unit,
 ) {
+    /*
+
+    val launcher =
+        rememberLauncherForActivityResult(contract = NFCActivityContract()) { nfcSession ->
+            nfcSession?.let {}
+        }
+     */
+
     LaunchedEffect(Unit) {
         viewModel.createNewSession(viewModel.sessionCode)
         viewModel.isGuestReady(viewModel.sessionCode)
+        val sessionCode = viewModel.sessionCode
+        onUpdateNFCSession(NFCSession(sessionCode))
+
+        /*
+        val sessionCode = viewModel.sessionCode
+        launcher.launchNFCActivity(
+            context = context, session = NFCSession(sessionId = sessionCode)
+        )
+         */
     }
 
     val guestUiState by viewModel.guestUiState.collectAsStateWithLifecycle()
@@ -108,7 +129,7 @@ fun StartSessionScreen(
 private fun StartSessionScreenPreview() {
     MovieMatcherTheme {
         Surface {
-            StartSessionScreen()
+            StartSessionScreen(onUpdateNFCSession = {})
         }
     }
 }
