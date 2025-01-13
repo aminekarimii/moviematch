@@ -109,7 +109,7 @@ class SessionRepositoryImpl(
                     val guestId = guestId?.let { child(GUEST).setValue(it).asDeferred() }
 
                     val updatedAtResult = updatedAt.let {
-                        child("updatedAt").setValue(it.time).asDeferred()
+                        child("updatedAt").setValue(it).asDeferred()
                     }
 
                     val guestLikedMoviesResult = guestLikedMovies?.let {

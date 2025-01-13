@@ -29,6 +29,7 @@ firebase-storage-ktx = "20.0.1"
 lottie= "4.1.0"
 ktor=  "3.0.0-beta-1"
 firebaseKtx = "0.2.1"
+kotlinx-datetime = "0.6.1"
 
 [libraries]
 #core
@@ -83,6 +84,7 @@ firebase-database-ktx = { module = "com.github.skydoves:firebase-database-ktx", 
 # Dependencies of the included build-logic
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
