@@ -14,9 +14,10 @@ import com.moviematcher.domain.models.Movie
 import com.moviematcher.domain.models.SessionQuery
 import com.moviematcher.domain.repositories.SessionRepository
 import com.skydoves.firebase.database.ktx.flow
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.tasks.asDeferred
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import java.sql.Timestamp
@@ -55,7 +56,7 @@ class SessionRepositoryImpl(
     }
 
     override fun getMatchStatus(sessionId: String): Flow<Result<Int>> {
-        return database.reference. flow<SessionDto>(
+        return database.reference.flow<SessionDto>(
             path = { dataSnapshot ->
                 dataSnapshot.child(SESSIONS).child(sessionId)
             },
@@ -87,11 +88,16 @@ class SessionRepositoryImpl(
     ) {
         database.reference
             .child(SESSIONS)
-            .child(sessionId)
-            .apply {
-                child("createdAt").setValue(Timestamp(System.currentTimeMillis()).time).await()
-                child(HOST).setValue(hostId).await()
-                child(MOVIES).setValue(json.encodeToJsonElement(movies).toString()).await()
+            .child(sessionId).apply {
+                val createdAtResult = child("createdAt")
+                    .setValue(Timestamp(System.currentTimeMillis()).time)
+                    .asDeferred()
+                val t1 = child(HOST).setValue(hostId)
+                    .asDeferred()
+                val t2 = child(MOVIES).setValue(json.encodeToJsonElement(movies).toString())
+                    .asDeferred()
+
+                listOfNotNull(createdAtResult, t1, t2).awaitAll()
             }
     }
 
@@ -100,23 +106,36 @@ class SessionRepositoryImpl(
             database.reference.child(SESSIONS)
                 .child(sessionId)
                 .apply {
-                    updatedAt.let { child("updatedAt").setValue(it.time).await() }
-                    guestId?.let { child(GUEST).setValue(it).await() }
-                    guestLikedMovies?.let {
+                    val guestId = guestId?.let { child(GUEST).setValue(it).asDeferred() }
+
+                    val updatedAtResult = updatedAt.let {
+                        child("updatedAt").setValue(it.time).asDeferred()
+                    }
+
+                    val guestLikedMoviesResult = guestLikedMovies?.let {
                         child(GUEST_LIKES)
                             .setValue(guestLikedMovies)
-                            .await()
+                            .asDeferred()
                     }
-                    hostLikedMovies?.let {
+
+                    val hostLikedMoviesResult = hostLikedMovies?.let {
                         child(HOST_LIKES)
                             .setValue(hostLikedMovies)
-                            .await()
+                            .asDeferred()
                     }
-                    movies?.let {
+                    val moviesResult = movies?.let {
                         child(MOVIES)
                             .setValue(json.encodeToJsonElement(movies).toString())
-                            .await()
+                            .asDeferred()
                     }
+
+                    listOfNotNull(
+                        guestId,
+                        updatedAtResult,
+                        guestLikedMoviesResult,
+                        hostLikedMoviesResult,
+                        moviesResult
+                    ).awaitAll()
                 }
         }
     }
