@@ -39,7 +39,7 @@ fun NfcBroadcastReceiver(
                 context: Context?,
                 intent: Intent?,
             ) {
-                intent?.getParcelableCompatibility("NFC_SESSION", NFCSession::class.java)
+                intent?.getParcelableExtra("NFC_SESSION", NFCSession::class.java)
                     .let { nfcSession ->
                         nfcSession?.let {
                             Log.d(
