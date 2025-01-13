@@ -33,7 +33,7 @@ class MatcherViewModel(
         startTimer()
 
         viewModelScope.launch {
-            sessionRepository.getSession("IGUQGyf8es7").collectLatest { session ->
+            sessionRepository.getSession("72FOuqFiO1d").collectLatest { session ->
                 isHost.update {
                     session.isSuccess.let {
                         session.getOrNull()!!.hostId == authRepository.getCurrentUser()?.uuid
@@ -41,7 +41,7 @@ class MatcherViewModel(
                 }
             }
 
-            sessionRepository.getMatchStatus("IGUQGyf8es7").collect { likes ->
+            sessionRepository.getMatchStatus("72FOuqFiO1d").collect { likes ->
                 _viewState.update {
                     if (it is MatcherViewState.Success) {
                         it.copy(likes = likes.isSuccess.let { likes.getOrNull()!! })
@@ -93,20 +93,20 @@ class MatcherViewModel(
                         viewModelScope.launch {
                             if (isHost.value == true) {
                                 val likedMovies = sessionRepository.getSession(
-                                    "IGUQGyf8es7"
+                                    "72FOuqFiO1d"
                                 ).first().getOrNull()!!.hostLikes.toMutableList()
                                 val uniqueMovieIds =
                                     likedMovies.addIfNotExists(currentState.matches.last().id)
 
                                 sessionRepository.updateSession(
                                     SessionQuery(
-                                        sessionId = "IGUQGyf8es7",
+                                        sessionId = "72FOuqFiO1d",
                                         hostLikedMovies = uniqueMovieIds,
                                     )
                                 )
                             } else {
                                 val likedMovies = sessionRepository.getSession(
-                                    "IGUQGyf8es7"
+                                    "72FOuqFiO1d"
                                 ).first().getOrNull()!!.guestLikes.toMutableList()
 
                                 val uniqueMovieIds =
@@ -114,7 +114,7 @@ class MatcherViewModel(
 
                                 sessionRepository.updateSession(
                                     SessionQuery(
-                                        sessionId = "IGUQGyf8es7",
+                                        sessionId = "72FOuqFiO1d",
                                         guestLikedMovies = uniqueMovieIds,
                                     )
                                 )
