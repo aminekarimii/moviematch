@@ -25,9 +25,6 @@ fun MMNavHost(
                 onUserLoggedIn = {
                     navController.navigate(Screen.SESSION.name)
                 },
-                onContinueAsGuest = {
-                    navController.navigate(Screen.SESSION.name)
-                }
             )
         }
         sessionNavigation(
