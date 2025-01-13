@@ -1,6 +1,7 @@
 package com.moviematcher.data.dto
 
 import com.google.firebase.database.Exclude
+import com.moviematcher.domain.models.MatchSession
 import com.moviematcher.domain.models.Movie
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -21,7 +22,7 @@ data class SessionDto(
     } ?: emptyList()
 }
 
-fun SessionDto.toMatchSession() = com.moviematcher.domain.models.MatchSession(
+fun SessionDto.toMatchSession() = MatchSession(
     hostId = this.host,
     guestId = this.guest,
     movies = this.getMoviesList(),
