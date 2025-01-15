@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.sql.Timestamp
+import kotlinx.datetime.Clock
 
 sealed class JoinSessionUiState {
     data object Idle : JoinSessionUiState()
@@ -36,7 +36,7 @@ class JoinSessionViewModel(
             val newState = if (result.isSuccess) {
                 sessionRepository.updateSession(
                     SessionQuery(
-                        updatedAt = Timestamp(System.currentTimeMillis()),
+                        updatedAt = Clock.System.now().toEpochMilliseconds(),
                         sessionId = sessionCode,
                         guestId = authRepository.getCurrentUser()?.uuid
                     )

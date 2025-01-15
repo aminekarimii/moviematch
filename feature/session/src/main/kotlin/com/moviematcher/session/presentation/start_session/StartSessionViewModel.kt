@@ -1,4 +1,4 @@
-package com.moviematcher.session.presentation.start_or_join
+package com.moviematcher.session.presentation.start_session
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -8,6 +8,5 @@ android {
 
 dependencies {
     implementation(libs.koin.android)
-
     api(libs.bundles.io)
 }

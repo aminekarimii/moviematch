@@ -1,5 +1,6 @@
 import com.android.build.gradle.LibraryExtension
 import com.moviematcher.convention.configureKotlinAndroid
+import com.moviematcher.convention.versionCatalog
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
@@ -27,6 +28,9 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 }
             }
             dependencies {
+                add("implementation",
+                    versionCatalog().findLibrary("kotlinx.datetime").get()
+                )
                 add("androidTestImplementation", kotlin("test"))
                 add("testImplementation", kotlin("test"))
             }
