@@ -1,5 +1,6 @@
 package com.moviematcher.session.presentation.join_session
 
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,10 +21,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,25 +36,42 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moviematcher.designsystem.R
 import com.moviematcher.designsystem.component.button.PrimaryButton
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.Red70Transparent
 import com.moviematcher.designsystem.theme.dimens
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun JoinSessionScreen(
+    viewModel: JoinSessionViewModel = koinViewModel(),
     onJoinSession: (String) -> Unit
 ) {
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     var sessionCode by remember { mutableStateOf("") }
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
+
+    LaunchedEffect(uiState) {
+        when (uiState) {
+            is JoinSessionUiState.StartMatch -> onJoinSession(sessionCode)
+            is JoinSessionUiState.Error -> {
+                Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
+            }
+
+            else -> Unit
+        }
+    }
     Box {
         Canvas(
             modifier = Modifier
@@ -113,9 +133,12 @@ fun JoinSessionScreen(
                 text = stringResource(id = R.string.start_or_join_session_screen_join_session),
                 enabled = sessionCode.isNotBlank()
             ) {
-                onJoinSession(sessionCode)
+                viewModel.onJoinSession(sessionCode)
             }
             Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
                 painter = painterResource(id = com.moviematcher.session.R.drawable.img_waves),
                 contentDescription = null
             )
@@ -131,7 +154,7 @@ fun JoinSessionScreen(
 private fun JoinSessionScreenPreview() {
     MovieMatcherTheme {
         Surface {
-            JoinSessionScreen({})
+            JoinSessionScreen(onJoinSession = {})
         }
     }
 }

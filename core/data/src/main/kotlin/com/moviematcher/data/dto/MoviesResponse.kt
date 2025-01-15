@@ -24,7 +24,7 @@ data class MovieResponse(
     @SerialName("vote_average") val voteAverage: Double,
     @SerialName("vote_count") val voteCount: Int,
 ) {
-    val posterImageUrl = "https://image.tmdb.org/t/p/w500${posterPath.orEmpty()}"
+    val posterImageUrl = "https://image.tmdb.org/t/p/w342${posterPath.orEmpty()}"
 }
 
 fun MovieResponse.toDomain() = Movie(

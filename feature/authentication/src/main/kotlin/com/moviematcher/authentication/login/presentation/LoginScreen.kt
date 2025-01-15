@@ -80,7 +80,9 @@ fun LoginRoute(
 
     val startForResult = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
-        onResult = loginViewModel::signIn
+        onResult = {
+            loginViewModel.signIn(SignInMethod.GOOGLE, it)
+        }
     )
 
     val context = LocalContext.current
@@ -112,7 +114,10 @@ fun LoginRoute(
                 onSignInClicked = {
                     startForResult.launch(signInClient.signInIntent)
                 },
-                onSignInAsGuestClicked = onContinueAsGuest,
+                onSignInAsGuestClicked = {
+                    loginViewModel.signIn(SignInMethod.GUEST)
+                    onContinueAsGuest()
+                },
                 onTermOfServicesClicked = {},
                 onPrivacyPolicyClicked = {}
             )
@@ -131,8 +136,8 @@ fun LoginRoute(
 
 @Composable
 fun LoginScreen(
-    onSignInClicked: () -> Unit,
-    onSignInAsGuestClicked: () -> Unit,
+    onSignInClicked: (SignInMethod) -> Unit,
+    onSignInAsGuestClicked: (SignInMethod) -> Unit,
     onTermOfServicesClicked: () -> Unit,
     onPrivacyPolicyClicked: () -> Unit,
 ) {
@@ -255,16 +260,21 @@ private fun LoginScreenPreview() {
     }
 }
 
-
+enum class SignInMethod {
+    GOOGLE,
+    GUEST
+}
 @Composable
 fun Buttons(
-    onSignInClicked: () -> Unit,
-    onSignInAsGuestClicked: () -> Unit,
+    onSignInClicked: (SignInMethod) -> Unit,
+    onSignInAsGuestClicked: (SignInMethod) -> Unit,
 ) {
     PrimaryButton(
         modifier = Modifier.fillMaxWidth(),
         colors = getSocialMediaColorScheme(),
-        onClick = onSignInClicked,
+        onClick = {
+            onSignInAsGuestClicked(SignInMethod.GOOGLE)
+        },
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_google),
@@ -277,7 +287,9 @@ fun Buttons(
 
     SecondaryButton(
         text = stringResource(id = R.string.sign_in_screen_guest),
-        onClick = onSignInAsGuestClicked
+        onClick = {
+            onSignInAsGuestClicked(SignInMethod.GUEST)
+        }
     )
 }
 

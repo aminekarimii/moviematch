@@ -16,8 +16,15 @@ class AuthRepositoryImpl(
         firebaseAuth.signInWithCredential(credential).await()
     }
 
+    override suspend fun loginAsGuest() {
+        firebaseAuth.signInAnonymously().await()
+    }
+
     override fun getCurrentUser(): User? {
-        return firebaseAuth.currentUser?.let { User(it.email) }
+        return firebaseAuth.currentUser?.let { User(
+            uuid = it.uid,
+            email = it.email
+        ) }
     }
 
     override fun logout() {

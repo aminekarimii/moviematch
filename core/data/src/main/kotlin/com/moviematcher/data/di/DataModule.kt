@@ -1,12 +1,16 @@
 package com.moviematcher.data.di
 
+import com.google.firebase.database.FirebaseDatabase
 import com.moviematcher.data.network.MovieClient
 import com.moviematcher.data.network.MovieService
 import com.moviematcher.data.repositories.AuthRepositoryImpl
 import com.moviematcher.data.repositories.MovieRepositoryImpl
+import com.moviematcher.data.repositories.SessionRepositoryImpl
 import com.moviematcher.domain.repositories.AuthRepository
 import com.moviematcher.domain.repositories.MovieRepository
+import com.moviematcher.domain.repositories.SessionRepository
 import io.ktor.client.HttpClient
+import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
 val movieClientModule = module {
@@ -16,11 +20,12 @@ val movieClientModule = module {
 val repositoryModule = module {
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<MovieRepository> { MovieRepositoryImpl(get<MovieService>()) }
+    single<SessionRepository> { SessionRepositoryImpl(get<FirebaseDatabase>(), get<Json>()) }
 }
 
 val dataModule = module {
-    includes(authModule)
     includes(networkModule)
+    includes(firebaseModule)
     includes(movieClientModule)
     includes(repositoryModule)
 }

@@ -20,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -33,18 +35,32 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moviematcher.designsystem.R
 import com.moviematcher.designsystem.component.button.ClickableIcon
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.Red70Transparent
 import com.moviematcher.designsystem.theme.dimens
 import com.moviematcher.designsystem.utils.UiUtils
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun StartSessionScreen(
-    sessionCode: String = "S5lBW3rEV9I",
+    viewModel: StartSessionViewModel = koinViewModel(),
     onJoinSession: (String) -> Unit = {}
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.createNewSession(viewModel.sessionCode)
+        viewModel.isGuestReady(viewModel.sessionCode)
+    }
+
+    val guestUiState by viewModel.guestUiState.collectAsStateWithLifecycle()
+    LaunchedEffect(guestUiState) {
+        if (guestUiState == true) {
+            onJoinSession(viewModel.sessionCode)
+        }
+    }
+
     Box {
         Canvas(
             modifier = Modifier
@@ -80,7 +96,7 @@ fun StartSessionScreen(
                 contentScale = ContentScale.FillBounds
             )
             Spacer(modifier = Modifier.height(MaterialTheme.dimens.big))
-            Footer(sessionCode = sessionCode, onJoinSession = onJoinSession)
+            Footer(sessionCode = viewModel.sessionCode)
         }
 
     }
@@ -97,10 +113,7 @@ private fun StartSessionScreenPreview() {
 }
 
 @Composable
-private fun Footer(
-    sessionCode: String,
-    onJoinSession: (String) -> Unit = {}
-) {
+private fun Footer(sessionCode: String) {
     val context = LocalContext.current
     ConstraintLayout {
         val (textField, shareBtn) = createRefs()
@@ -146,8 +159,7 @@ private fun Footer(
                 }
                 .aspectRatio(1f),
             onClick = {
-                // UiUtils.shareCode(context = context, text = sessionCode)
-                onJoinSession("test123")
+                UiUtils.shareCode(context = context, text = sessionCode)
             },
         ) {
             Icon(

@@ -9,4 +9,5 @@ android {
 
 dependencies {
     implementation(libs.io.coil)
+    implementation(libs.firebase.auth)
 }
