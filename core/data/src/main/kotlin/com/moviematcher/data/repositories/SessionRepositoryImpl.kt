@@ -28,7 +28,9 @@ class SessionRepositoryImpl(
 ) : SessionRepository {
 
     override fun getSession(sessionId: String): Flow<Result<MatchSession>> {
-        return database.reference.flow<SessionDto>(
+        return database.reference.apply {
+            this.limitToFirst(10)
+        }.flow<SessionDto>(
             path = { dataSnapshot ->
                 dataSnapshot.child(SESSIONS).child(sessionId)
             },
@@ -56,7 +58,9 @@ class SessionRepositoryImpl(
     }
 
     override fun getMatchStatus(sessionId: String): Flow<Result<Int>> {
-        return database.reference.flow<SessionDto>(
+        return database.reference.apply {
+            this.limitToFirst(10)
+        }.flow<SessionDto>(
             path = { dataSnapshot ->
                 dataSnapshot.child(SESSIONS).child(sessionId)
             },
