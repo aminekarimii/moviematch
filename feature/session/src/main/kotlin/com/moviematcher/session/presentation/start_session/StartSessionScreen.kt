@@ -59,7 +59,6 @@ import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.Red70Transparent
 import com.moviematcher.designsystem.theme.dimens
 import com.moviematcher.designsystem.utils.UiUtils
-import com.moviematcher.session.presentation.start_or_join.StartSessionViewModel
 import com.moviematcher.session.util.NFCSession
 import org.koin.androidx.compose.koinViewModel
 

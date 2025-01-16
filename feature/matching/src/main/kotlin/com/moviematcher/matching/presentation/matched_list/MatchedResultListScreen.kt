@@ -1,15 +1,20 @@
 package com.moviematcher.matching.presentation.matched_list
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,19 +33,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.max
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.moviematcher.designsystem.component.button.LeadingIconButton
 import com.moviematcher.designsystem.theme.DeepBlue20
 import com.moviematcher.designsystem.theme.Grey80Transparent
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
@@ -48,6 +56,7 @@ import com.moviematcher.designsystem.theme.dimens
 import com.moviematcher.domain.models.Movie
 import com.moviematcher.feature.matching.R
 import org.koin.androidx.compose.koinViewModel
+
 
 @Composable
 fun MatchedResultListRoute(
@@ -67,10 +76,7 @@ fun MatchedResultListScreen(viewState: MatchedResultState) {
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "Loading...",
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                    MatchedResultLoading()
                 }
             }
 
@@ -86,12 +92,61 @@ fun MatchedResultListScreen(viewState: MatchedResultState) {
                 }
             }
 
+            MatchedResultState.EmptyResult -> {
+                MatchNotFoundContent()
+            }
+
             is MatchedResultState.MatchedResults -> {
                 MatchedResultListContent(
                     moviesList = viewState.movies
                 )
             }
         }
+    }
+}
+
+@Composable
+fun MatchedResultLoading() {
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.success_anim_icon)
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .padding(bottom = MaterialTheme.dimens.bigger),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            LottieAnimation(
+                iterations = LottieConstants.IterateForever,
+                composition = composition,
+                modifier = Modifier
+                    .fillMaxWidth(.4f)
+                    .height(200.dp)
+            )
+            Text(
+                modifier = Modifier.padding(bottom = 4.dp),
+                text = "And the winners are...",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = "",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        Image(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .aspectRatio(1f)
+                .fillMaxWidth(),
+            painter = painterResource(id = com.moviematcher.designsystem.R.drawable.img_waves),
+            contentDescription = null
+        )
     }
 }
 
@@ -138,6 +193,7 @@ internal fun MatchedResultListContent(
 
 @Composable
 internal fun MatchedMovieItem(movie: Movie) {
+    val context = LocalContext.current
     Box {
         Box(
             modifier = Modifier
@@ -165,20 +221,21 @@ internal fun MatchedMovieItem(movie: Movie) {
         ) {
             val (image, details) = createRefs()
             AsyncImage(
+                contentDescription = null,
                 model = movie.posterUrl,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .width(110.dp)
-                    .height(160.dp)
+                    .heightIn(min = 160.dp, max = 180.dp)
                     .padding(start = MaterialTheme.dimens.medium)
                     .clip(RoundedCornerShape(MaterialTheme.dimens.large))
                     .constrainAs(image) {
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
-                    },
-                contentDescription = null
+                    }
             )
+
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
@@ -192,11 +249,15 @@ internal fun MatchedMovieItem(movie: Movie) {
                     }
                     .padding(MaterialTheme.dimens.default)
             ) {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .padding(bottom = MaterialTheme.dimens.medium),
+
+                    ) {
                     Text(
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.fillMaxWidth(),
-                        text = movie.title.orEmpty(),
+                        text = movie.title,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 2
                     )
@@ -206,45 +267,106 @@ internal fun MatchedMovieItem(movie: Movie) {
                         )
                     )
                     Text(
+                        overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.fillMaxWidth(),
-                        text = movie.title.orEmpty(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 4.dp),
+                        text = movie.overview,
+                        maxLines = 2,
                         color = DeepBlue20
                     )
                 }
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(20.dp),
-                            painter = painterResource(id = com.moviematcher.designsystem.R.drawable.ic_star_colored),
-                            contentDescription = null,
-                            tint = Color.Unspecified
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            style = MaterialTheme.typography.bodyLarge,
-                            text = movie.voteAverage.toString(),
-                        )
-                    }
 
-                    if (movie.index <= 3) {
-                        Text(
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                fontSize = 28.sp
-                            ),
-                            color = Color.Red,
-                            text = "#${movie.index}",
-                        )
+                    RatingBarContent(
+                        rating = movie.voteAverage,
+                    )
+
+                    movie.trailerUrl?.let {
+                        LeadingIconButton(
+                            title = "Trailer"
+                        ) {
+                            context.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(movie.trailerUrl)
+                                )
+                            )
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun RatingBarContent(
+    modifier: Modifier = Modifier,
+    rating: Double
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier.size(20.dp),
+            painter = painterResource(id = com.moviematcher.designsystem.R.drawable.ic_star_colored),
+            contentDescription = null,
+            tint = Color.Unspecified
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            style = MaterialTheme.typography.titleMedium,
+            text = rating.toString(),
+        )
+    }
+}
+
+@Composable
+fun MatchNotFoundContent() {
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .padding(bottom = MaterialTheme.dimens.bigger),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Icon(
+                painter = painterResource(id = com.moviematcher.designsystem.R.drawable.ic_match_not_found),
+                contentDescription = null,
+                tint = Color.Unspecified,
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                modifier = Modifier.padding(bottom = 4.dp),
+                text = "You haven’t matched any movie\nwith your teammate.",
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = "You can try another session ✌\uFE0F",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        Image(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .aspectRatio(1f)
+                .fillMaxWidth(),
+            painter = painterResource(id = com.moviematcher.designsystem.R.drawable.img_waves),
+            contentDescription = null
+        )
     }
 }
 
@@ -262,11 +384,11 @@ fun PreviewMatchedResultListScreen() {
                     year = "2018",
                     name = "Jimmy Wilson",
                     originalLanguage = "sapientem",
-                    overview = "dictas",
+                    overview = "Money Heist - La casa de papel 2017 from NetflixMoney Heist - La casa de papel 2017 from NetflixMoney Heist - La casa de papel 2017 from Netflix",
                     posterUrl = null,
                     voteAverage = 2.3,
                     voteCount = 7278,
-                    
+                    trailerUrl = "https://www.youtube.com/watch?v=Zb4O4wv2H2Y"
                 )
             )
         }

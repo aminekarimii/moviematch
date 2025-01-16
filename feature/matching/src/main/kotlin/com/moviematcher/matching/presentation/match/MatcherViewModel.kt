@@ -33,7 +33,7 @@ class MatcherViewModel(
         startTimer()
 
         viewModelScope.launch {
-            sessionRepository.getSession("IGUQGyf8es7").collectLatest { session ->
+            sessionRepository.getSession("72FOuqFiO1d").collectLatest { session ->
                 isHost.update {
                     session.isSuccess.let {
                         session.getOrNull()!!.hostId == authRepository.getCurrentUser()?.uuid
@@ -41,7 +41,7 @@ class MatcherViewModel(
                 }
             }
 
-            sessionRepository.getMatchStatus("IGUQGyf8es7").collect { likes ->
+            sessionRepository.getMatchStatus("72FOuqFiO1d").collect { likes ->
                 _viewState.update {
                     if (it is MatcherViewState.Success) {
                         it.copy(likes = likes.isSuccess.let { likes.getOrNull()!! })
@@ -86,51 +86,46 @@ class MatcherViewModel(
     fun swipeLatestMovie(updateCounter: Boolean) {
         _viewState.update { currentState ->
             if (currentState is MatcherViewState.Success) {
-                if (currentState.matches.size == 1) {
-                    MatcherViewState.MatchCompleted
-                } else {
-                    if (updateCounter) {
-                        viewModelScope.launch {
-                            if (isHost.value == true) {
-                                val likedMovies = sessionRepository.getSession(
-                                    "IGUQGyf8es7"
-                                ).first().getOrNull()!!.hostLikes.toMutableList()
-                                val uniqueMovieIds =
-                                    likedMovies.addIfNotExists(currentState.matches.last().id)
-
-                                sessionRepository.updateSession(
-                                    SessionQuery(
-                                        sessionId = "IGUQGyf8es7",
-                                        hostLikedMovies = uniqueMovieIds,
-                                    )
-                                )
-                            } else {
-                                val likedMovies = sessionRepository.getSession(
-                                    "IGUQGyf8es7"
-                                ).first().getOrNull()!!.guestLikes.toMutableList()
-
-                                val uniqueMovieIds =
-                                    likedMovies.addIfNotExists(currentState.matches.last().id)
-
-                                sessionRepository.updateSession(
-                                    SessionQuery(
-                                        sessionId = "IGUQGyf8es7",
-                                        guestLikedMovies = uniqueMovieIds,
-                                    )
-                                )
-                            }
-                        }
+                if (updateCounter) {
+                    viewModelScope.launch {
+                        updateSessionWithLikedMovie(
+                            sessionId = "IGUQGyf8es7",
+                            movieId = currentState.matches.last().id,
+                            isHost = isHost.value == true
+                        )
                     }
-
-                    val updatedMatches = currentState.matches.dropLast(1)
-                    currentState.copy(
-                        matches = updatedMatches,
-                    )
                 }
-            } else {
-                currentState
+
+                val updatedMatches = currentState.matches.dropLast(1)
+                return@update currentState.copy(matches = updatedMatches)
             }
+
+            currentState
         }
+    }
+
+    private suspend fun updateSessionWithLikedMovie(
+        sessionId: String,
+        movieId: Int,
+        isHost: Boolean
+    ) {
+        val likedMovies = sessionRepository.getSession(sessionId)
+            .first()
+            .getOrNull()
+            ?.let { session ->
+                if (isHost) session.hostLikes.toMutableList()
+                else session.guestLikes.toMutableList()
+            } ?: mutableListOf()
+
+        val uniqueMovieIds = likedMovies.addIfNotExists(movieId)
+
+        sessionRepository.updateSession(
+            SessionQuery(
+                sessionId = sessionId,
+                hostLikedMovies = if (isHost) uniqueMovieIds else null,
+                guestLikedMovies = if (!isHost) uniqueMovieIds else null,
+            )
+        )
     }
 
     private fun <T> MutableList<T>.addIfNotExists(element: T): MutableList<T> {
