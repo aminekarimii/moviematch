@@ -3,7 +3,7 @@ package com.moviematcher.session.presentation.join_session
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.util.Log
+import android.media.MediaPlayer
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -24,6 +24,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -34,6 +35,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,6 +67,10 @@ import com.moviematcher.designsystem.component.button.PrimaryButton
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.Red70Transparent
 import com.moviematcher.designsystem.theme.dimens
+import com.moviematcher.session.SnackbarAction
+import com.moviematcher.session.SnackbarController
+import com.moviematcher.session.SnackbarEvent
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -72,12 +78,12 @@ fun JoinSessionScreen(
     viewModel: JoinSessionViewModel = koinViewModel(),
     onJoinSession: (String) -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     var sessionCode by remember { mutableStateOf("") }
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
-    var qrCodeReaderError by remember { mutableStateOf(false) }
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
@@ -98,6 +104,10 @@ fun JoinSessionScreen(
 
     BackHandler(showScanner) {
         showScanner = false
+    }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
 
     LaunchedEffect(key1 = true) {
@@ -124,15 +134,25 @@ fun JoinSessionScreen(
                     capture.initializeFromIntent(context.intent, null)
                     capture.decode()
                     this.decodeContinuous { result ->
+                        /*
+                            MediaPlayer.create(context, com.moviematcher.session.R.raw.manik).apply {
+                                start()
+                                setOnCompletionListener { release() }
+                           }
+                         */
                         val sessionId = extractSessionIdFromQRCode(result.text)
-                        qrCodeReaderError = false
                         showScanner = false
-                        if (sessionId != null) {
-                            qrCodeReaderError = false
-                            sessionCode = sessionId
-                        } else {
-                            qrCodeReaderError = true
-                            sessionCode = ""
+                        sessionCode = sessionId ?: ""
+
+                        if (sessionId == null) {
+                            scope.launch {
+                                SnackbarController.sendEvent(
+                                    SnackbarEvent(
+                                        message = "Failed to parse QR code text",
+                                        duration = SnackbarDuration.Short
+                                    )
+                                )
+                            }
                         }
                     }
                     resume()
@@ -248,12 +268,6 @@ fun JoinSessionScreen(
                     painter = painterResource(id = com.moviematcher.session.R.drawable.img_waves),
                     contentDescription = null
                 )
-                SideEffect {
-                    focusRequester.requestFocus()
-                }
-                if (qrCodeReaderError) {
-                    Toast.makeText(context, "Can't scan this qr code", Toast.LENGTH_SHORT).show()
-                }
             }
         }
     }
@@ -264,7 +278,6 @@ fun extractSessionIdFromQRCode(qrCodeText: String): String? {
         val jsonElement = JsonParser.parseString(qrCodeText)
         jsonElement.asJsonObject.get("sessionId")?.asString
     } catch (e: Exception) {
-        Log.e("QRCode", "Failed to parse QR code text: $qrCodeText", e)
         null
     }
 }
