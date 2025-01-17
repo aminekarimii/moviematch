@@ -15,4 +15,5 @@ data class Movie(
     val posterUrl: String?,
     val voteAverage: Double,
     val voteCount: Int,
+    val trailerUrl: String? = null,
 )

@@ -4,7 +4,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
- import org.gradle.kotlin.dsl.project
+import org.gradle.kotlin.dsl.project
 
 class AndroidFeatureConventionPlugin : Plugin<Project> {
 
@@ -16,7 +16,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             extensions.configure<LibraryExtension> {
                 defaultConfig {
                     testInstrumentationRunner =
-                        "com.google.samples.apps.nowinandroid.core.testing.NiaTestRunner"
+                        "com.moviematcher.testing.NiaTestRunner"
                 }
             }
 
@@ -35,6 +35,9 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                     versionCatalog().findLibrary("androidx.lifecycle.runtime.compose").get()
                 )
                 add("implementation", project(":core:domain"))
+                add("implementation",
+                    versionCatalog().findLibrary("kotlinx.datetime").get()
+                )
             }
         }
     }

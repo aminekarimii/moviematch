@@ -2,6 +2,8 @@ plugins {
     id("moviematcher.android.application")
     id("moviematcher.android.application.compose")
     alias(libs.plugins.google.play.services)
+    id("kotlin-parcelize")
+
 }
 
 android {
