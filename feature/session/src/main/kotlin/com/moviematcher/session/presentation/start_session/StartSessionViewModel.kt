@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 class StartSessionViewModel(
     private val authRepository: AuthRepository,
     private val sessionRepository: SessionRepository,
-    private val loadMoviesBatchUseCase: LoadMoviesBatchUseCase,
 ) : ViewModel() {
 
     val sessionCode = generateUniqueId()
@@ -40,7 +39,6 @@ class StartSessionViewModel(
         viewModelScope.launch {
             sessionRepository.createNewSession(
                 sessionId = sessionId,
-                movies = loadMoviesBatchUseCase(),
                 hostId = authRepository.getCurrentUser()?.uuid
             )
         }

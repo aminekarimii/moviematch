@@ -16,7 +16,6 @@ interface SessionRepository {
         createdAt: Timestamp? = null,
         sessionId: String,
         hostId: String?,
-        movies: List<Movie>
     )
 
     suspend fun updateSession(sessionQuery: SessionQuery)
