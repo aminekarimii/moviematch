@@ -1,11 +1,13 @@
 [versions]
 agp = "8.4.2"
+core = "3.4.1"
+gson = "2.10.1"
 kotlin = "1.9.20"
 composeCompiler = "1.5.4"
 
 compileSdk = "34"
 targetSdk = "34"
-minSdk = "23"
+minSdk = "24"
 
 coreKtx = "1.13.1"
 activityCompose = "1.9.0"
@@ -29,6 +31,8 @@ firebase-storage-ktx = "20.0.1"
 lottie= "4.1.0"
 ktor=  "3.0.0-beta-1"
 firebaseKtx = "0.2.1"
+zxingAndroidEmbedded = "4.2.0"
+kotlinx-datetime = "0.6.1"
 
 [libraries]
 #core
@@ -47,6 +51,8 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-ui-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraint" }
 
+core = { module = "com.google.zxing:core", version.ref = "core" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 io-coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
@@ -83,7 +89,8 @@ firebase-database-ktx = { module = "com.github.skydoves:firebase-database-ktx", 
 # Dependencies of the included build-logic
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-
+zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }

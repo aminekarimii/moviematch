@@ -19,4 +19,15 @@ class MovieRepositoryImpl(
             options = filters
         ).movies.map(MovieResponse::toDomain)
     }
+
+    override suspend fun getMovie(id: Int): Movie {
+        return movieClient.fetchMovie(id).toDomain()
+    }
+
+    override suspend fun getMovieTrailer(movieId: Int): String? {
+        val videoResponse = movieClient.getMovieVideos(movieId)
+        return videoResponse.results.firstOrNull {
+            it.site == "YouTube"
+        }?.key
+    }
 }

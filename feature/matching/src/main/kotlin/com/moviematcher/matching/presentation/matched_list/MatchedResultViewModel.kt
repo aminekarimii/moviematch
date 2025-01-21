@@ -2,13 +2,14 @@ package com.moviematcher.matching.presentation.matched_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moviematcher.domain.repositories.MovieRepository
+import com.moviematcher.domain.usecase.GetMatchedMoviesUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
 class MatchedResultViewModel(
-    private val movieRepository: MovieRepository
+    private val getMatchedMoviesUseCase: GetMatchedMoviesUseCase
 ) : ViewModel() {
 
     private val _viewState = MutableSharedFlow<MatchedResultState>()
@@ -17,7 +18,12 @@ class MatchedResultViewModel(
     init {
         viewModelScope.launch {
             _viewState.emit(MatchedResultState.Loading)
-            // TODO implement fetching the matched movies
+            delay(1000L)
+            val movies = getMatchedMoviesUseCase("05aTQJ8S7nr")
+            _viewState.emit(
+                if (movies.isEmpty()) MatchedResultState.EmptyResult
+                else MatchedResultState.MatchedResults(movies)
+            )
         }
     }
 }
