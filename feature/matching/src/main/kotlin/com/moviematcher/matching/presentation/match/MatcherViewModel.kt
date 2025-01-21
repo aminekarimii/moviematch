@@ -39,18 +39,23 @@ class MatcherViewModel(
         viewModelScope.launch {
             sessionRepository.getSession("0PCKNwrbtzc").collectLatest { session ->
                 isHost.update {
-                    session.isSuccess.let {
-                        session.getOrNull()!!.hostId == authRepository.getCurrentUser()?.uuid
+                    when {
+                        session.isSuccess -> session.getOrNull()?.hostId == authRepository.getCurrentUser()?.uuid
+                        else -> {
+                            _viewState.emit(MatcherViewState.Error("Failed to fetch session"))
+                            null
+                        }
                     }
+
                 }
             }
 
             sessionRepository.getMatchStatus("0PCKNwrbtzc").collect { likes ->
-                _viewState.update {
-                    if (it is MatcherViewState.Success) {
-                        it.copy(likes = likes.isSuccess.let { likes.getOrNull()!! })
+                _viewState.update { currentState ->
+                    if (currentState is MatcherViewState.Success) {
+                        currentState.copy(likes = likes.isSuccess.let { likes.getOrDefault(0) })
                     } else {
-                        it
+                        currentState
                     }
                 }
             }
@@ -134,6 +139,7 @@ class MatcherViewModel(
                         matches = nextBatch + currentState.matches
                     )
                 }
+
                 else -> {
                     MatcherViewState.Success(
                         matches = nextBatch,
