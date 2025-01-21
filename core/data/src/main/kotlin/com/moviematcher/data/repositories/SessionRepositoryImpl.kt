@@ -88,7 +88,6 @@ class SessionRepositoryImpl(
         createdAt: Timestamp?,
         sessionId: String,
         hostId: String?,
-        movies: List<Movie>
     ) {
         database.reference
             .child(SESSIONS)
@@ -98,10 +97,8 @@ class SessionRepositoryImpl(
                     .asDeferred()
                 val t1 = child(HOST).setValue(hostId)
                     .asDeferred()
-                val t2 = child(MOVIES).setValue(json.encodeToJsonElement(movies).toString())
-                    .asDeferred()
 
-                listOfNotNull(createdAtResult, t1, t2).awaitAll()
+                listOfNotNull(createdAtResult, t1).awaitAll()
             }
     }
 

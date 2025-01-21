@@ -2,6 +2,7 @@ package com.moviematcher.matching.presentation.match
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.moviematcher.domain.models.Movie
 import com.moviematcher.domain.models.SessionQuery
 import com.moviematcher.domain.repositories.AuthRepository
 import com.moviematcher.domain.repositories.SessionRepository
@@ -27,26 +28,34 @@ class MatcherViewModel(
 
     private val timeLeft: MutableStateFlow<Int> = MutableStateFlow(MATCHING_TIME)
     private val isHost: MutableStateFlow<Boolean?> = MutableStateFlow(null)
+    private val allMovies: MutableList<Movie> = mutableListOf()
+    private var currentBatchIndex = 0
 
     init {
         fetchRandomMovies()
+
         startTimer()
 
         viewModelScope.launch {
-            sessionRepository.getSession("72FOuqFiO1d").collectLatest { session ->
+            sessionRepository.getSession("0PCKNwrbtzc").collectLatest { session ->
                 isHost.update {
-                    session.isSuccess.let {
-                        session.getOrNull()!!.hostId == authRepository.getCurrentUser()?.uuid
+                    when {
+                        session.isSuccess -> session.getOrNull()?.hostId == authRepository.getCurrentUser()?.uuid
+                        else -> {
+                            _viewState.emit(MatcherViewState.Error("Failed to fetch session"))
+                            null
+                        }
                     }
+
                 }
             }
 
-            sessionRepository.getMatchStatus("72FOuqFiO1d").collect { likes ->
-                _viewState.update {
-                    if (it is MatcherViewState.Success) {
-                        it.copy(likes = likes.isSuccess.let { likes.getOrNull()!! })
+            sessionRepository.getMatchStatus("0PCKNwrbtzc").collect { likes ->
+                _viewState.update { currentState ->
+                    if (currentState is MatcherViewState.Success) {
+                        currentState.copy(likes = likes.isSuccess.let { likes.getOrDefault(0) })
                     } else {
-                        it
+                        currentState
                     }
                 }
             }
@@ -74,13 +83,8 @@ class MatcherViewModel(
         }
 
         val movies = loadMoviesBatchUseCase()
-
-        _viewState.update {
-            MatcherViewState.Success(
-                matches = movies,
-                timer = timeLeft.value
-            )
-        }
+        allMovies.addAll(movies)
+        updateViewStateWithNextBatch()
     }
 
     fun swipeLatestMovie(updateCounter: Boolean) {
@@ -89,7 +93,7 @@ class MatcherViewModel(
                 if (updateCounter) {
                     viewModelScope.launch {
                         updateSessionWithLikedMovie(
-                            sessionId = "IGUQGyf8es7",
+                            sessionId = "0PCKNwrbtzc",
                             movieId = currentState.matches.last().id,
                             isHost = isHost.value == true
                         )
@@ -97,10 +101,52 @@ class MatcherViewModel(
                 }
 
                 val updatedMatches = currentState.matches.dropLast(1)
+
+                // Load next batch if there's only 1 item left
+                if (updatedMatches.size <= 1) {
+                    loadNextBatch()
+                }
+
                 return@update currentState.copy(matches = updatedMatches)
             }
 
             currentState
+        }
+    }
+
+    private fun loadNextBatch() {
+        viewModelScope.launch {
+            if (currentBatchIndex < allMovies.size) {
+                updateViewStateWithNextBatch()
+            } else {
+                fetchRandomMovies(shouldFetchNextPage = true)
+            }
+        }
+    }
+
+    private fun updateViewStateWithNextBatch() {
+        val nextBatch = allMovies.subList(
+            currentBatchIndex,
+            (currentBatchIndex + 15).coerceAtMost(allMovies.size)
+        )
+
+        currentBatchIndex += nextBatch.size
+
+        _viewState.update { currentState ->
+            when (currentState) {
+                is MatcherViewState.Success -> {
+                    currentState.copy(
+                        matches = nextBatch + currentState.matches
+                    )
+                }
+
+                else -> {
+                    MatcherViewState.Success(
+                        matches = nextBatch,
+                        timer = timeLeft.value
+                    )
+                }
+            }
         }
     }
 
