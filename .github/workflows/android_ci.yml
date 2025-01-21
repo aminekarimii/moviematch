@@ -22,5 +22,8 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+    - name: Provide Default Config
+      run: echo "TMDB_KEY_API=test" > keys.properties
+
     - name: Build with Gradle
       run: ./gradlew build
