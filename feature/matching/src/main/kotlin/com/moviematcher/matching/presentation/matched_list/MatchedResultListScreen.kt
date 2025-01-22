@@ -2,6 +2,7 @@ package com.moviematcher.matching.presentation.matched_list
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +40,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -60,11 +60,19 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun MatchedResultListRoute(
-    viewModel: MatchedResultViewModel = koinViewModel()
+    viewModel: MatchedResultViewModel = koinViewModel(),
+    onNavigateToCreateSession: () -> Unit
 ) {
+    HandleBackButton(onNavigateToCreateSession)
     MatchedResultListScreen(
         viewState = viewModel.viewState.collectAsStateWithLifecycle(MatchedResultState.Loading).value
     )
+}
+@Composable
+fun HandleBackButton(onNavigateToCreateSession: () -> Unit){
+    BackHandler {
+        onNavigateToCreateSession()
+    }
 }
 
 @Composable
