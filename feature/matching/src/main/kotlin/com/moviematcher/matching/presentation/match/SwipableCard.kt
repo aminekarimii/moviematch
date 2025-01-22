@@ -45,11 +45,11 @@ fun Modifier.swipableCard(
                 onHorizontalDrag = { change, dragAmount ->
                     scope.launch {
                         change.consume()
-                        val newX = (state.offset.value.x + dragAmount * 1.5f).coerceIn(
+                        val newX = (state.offset.value.x + dragAmount * 2f).coerceIn(
                             -state.maxWidth,
                             state.maxWidth
                         )
-                        state.drag(newX)
+                        state.drag(newX * 2F)
                     }
                 }
             )
