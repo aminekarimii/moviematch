@@ -1,5 +1,5 @@
 package com.moviematcher.app.navigation
 
 enum class Screen {
-    AUTH, SESSION, MATCHING
+    AUTH, SESSION
 }

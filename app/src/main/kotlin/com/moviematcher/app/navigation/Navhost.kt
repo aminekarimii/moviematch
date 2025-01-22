@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.moviematcher.authentication.login.presentation.LoginRoute
+import com.moviematcher.matching.navigation.MatcherScreen
 import com.moviematcher.matching.navigation.matcherNavigation
 import com.moviematcher.session.navigation.sessionNavigation
 
@@ -31,11 +32,12 @@ fun MMNavHost(
             graphRoute = Screen.SESSION.name,
             navHostController = navController,
             onJoinSession = {
-                navController.navigate(Screen.MATCHING.name)
+                val route = MatcherScreen.GRAPH_ROUTE.replace(MatcherScreen.ARG_SESSION_ID, it)
+                navController.navigate(route)
             }
         )
         matcherNavigation(
-            graphRoute = Screen.MATCHING.name,
+            graphRoute = MatcherScreen.GRAPH_ROUTE,
             navHostController = navController,
         )
     }

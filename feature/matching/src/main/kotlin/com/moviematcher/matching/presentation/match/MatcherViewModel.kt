@@ -1,5 +1,6 @@
 package com.moviematcher.matching.presentation.match
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moviematcher.domain.models.Movie
@@ -7,6 +8,7 @@ import com.moviematcher.domain.models.SessionQuery
 import com.moviematcher.domain.repositories.AuthRepository
 import com.moviematcher.domain.repositories.SessionRepository
 import com.moviematcher.domain.usecase.LoadMoviesBatchUseCase
+import com.moviematcher.matching.navigation.MatcherScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,10 +20,16 @@ import kotlinx.coroutines.launch
 const val MATCHING_TIME = 60
 
 class MatcherViewModel(
+    savedStateHandle: SavedStateHandle,
     private val authRepository: AuthRepository,
     private val sessionRepository: SessionRepository,
     private val loadMoviesBatchUseCase: LoadMoviesBatchUseCase
 ) : ViewModel() {
+
+    private val sessionId =
+        requireNotNull(savedStateHandle.get<String>(MatcherScreen.ARG_SESSION_ID)) {
+            "The ARG_SESSION_ID should be passed in navigation !!"
+        }
 
     private val _viewState = MutableStateFlow<MatcherViewState>(MatcherViewState.Loading)
     val viewState = _viewState.asStateFlow()
@@ -37,15 +45,15 @@ class MatcherViewModel(
         startTimer()
 
         viewModelScope.launch {
-            sessionRepository.getSession("0PCKNwrbtzc").collectLatest { session ->
+            sessionRepository.getSession(sessionId).collectLatest { session ->
                 isHost.update {
                     session.isSuccess.let {
-                        session.getOrNull()!!.hostId == authRepository.getCurrentUser()?.uuid
+                        session.getOrNull()?.hostId == authRepository.getCurrentUser()?.uuid
                     }
                 }
             }
 
-            sessionRepository.getMatchStatus("0PCKNwrbtzc").collect { likes ->
+            sessionRepository.getMatchStatus(sessionId).collect { likes ->
                 _viewState.update {
                     if (it is MatcherViewState.Success) {
                         it.copy(likes = likes.isSuccess.let { likes.getOrNull()!! })
@@ -69,7 +77,7 @@ class MatcherViewModel(
                 }
             }
         }
-        _viewState.update { MatcherViewState.MatchCompleted }
+        _viewState.update { MatcherViewState.MatchCompleted(sessionId) }
     }
 
     private fun fetchRandomMovies(shouldFetchNextPage: Boolean = false) = viewModelScope.launch {
@@ -88,7 +96,7 @@ class MatcherViewModel(
                 if (updateCounter) {
                     viewModelScope.launch {
                         updateSessionWithLikedMovie(
-                            sessionId = "0PCKNwrbtzc",
+                            sessionId = sessionId,
                             movieId = currentState.matches.last().id,
                             isHost = isHost.value == true
                         )
