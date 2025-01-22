@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.moviematcher.matching.presentation.match.MatchingRoute
 import com.moviematcher.matching.presentation.matched_list.MatchedResultListRoute
+import com.moviematcher.session.navigation.SessionScreen
 
 enum class MatcherScreen {
     Matcher, MoviesList
@@ -17,13 +18,21 @@ fun NavGraphBuilder.matcherNavigation(
 ) {
     navigation(startDestination = MatcherScreen.Matcher.name, route = graphRoute) {
         composable(MatcherScreen.Matcher.name) {
-            MatchingRoute(onMatchingComplete = {
-                navHostController.navigate(MatcherScreen.MoviesList.name)
-            })
+            MatchingRoute(
+                onMatchingComplete = {
+                    navHostController.navigate(MatcherScreen.MoviesList.name)
+                }
+            )
         }
 
         composable(MatcherScreen.MoviesList.name) {
-            MatchedResultListRoute()
+            MatchedResultListRoute(
+                onNavigateToCreateSession = {
+                    navHostController.popBackStack(
+                        SessionScreen.START_OR_JOIN_SESSION.name ,false
+                    )
+                }
+            )
         }
     }
 

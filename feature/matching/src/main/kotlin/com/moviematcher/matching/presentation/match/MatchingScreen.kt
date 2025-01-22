@@ -1,6 +1,7 @@
 package com.moviematcher.matching.presentation.match
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -71,6 +72,7 @@ fun MatchingScreen(
     onSwipe: (Boolean) -> Unit,
     onMatchingComplete: () -> Unit,
 ) {
+    HandleBackButton()
     Surface(
         modifier = Modifier
             .background(backgroundGradient)
@@ -103,6 +105,11 @@ fun MatchingScreen(
     }
 }
 
+@Composable
+fun HandleBackButton(){
+    // TODO Update it when the UI logic is ready
+    BackHandler {}
+}
 
 @Composable
 fun LoadingContent() {
