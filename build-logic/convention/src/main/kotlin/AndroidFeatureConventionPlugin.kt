@@ -22,10 +22,16 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
 
             dependencies {
                 add("implementation", project(":core:designsystem"))
+                add("implementation", project(":core:domain"))
 
-                add("implementation", versionCatalog().findLibrary("koin.android").get())
-                add("implementation", versionCatalog().findLibrary("koin.androidx.compose").get())
+                add("implementation", platform(versionCatalog().findLibrary("koin.bom").get()))
+                add("implementation", versionCatalog().findLibrary("koin.compose").get())
+                add("implementation", versionCatalog().findLibrary("koin.compose.viewmodel").get())
 
+                add(
+                    "implementation",
+                    versionCatalog().findLibrary("androidx.navigation").get()
+                )
                 add(
                     "implementation",
                     versionCatalog().findLibrary("androidx.lifecycle.runtime.ktx").get()
@@ -34,7 +40,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                     "implementation",
                     versionCatalog().findLibrary("androidx.lifecycle.runtime.compose").get()
                 )
-                add("implementation", project(":core:domain"))
                 add("implementation",
                     versionCatalog().findLibrary("kotlinx.datetime").get()
                 )

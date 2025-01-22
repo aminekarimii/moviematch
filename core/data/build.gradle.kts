@@ -24,7 +24,8 @@ android {
 dependencies {
     implementation(project(":core:domain"))
 
-    implementation(libs.koin.android)
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
 
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database.ktx)
