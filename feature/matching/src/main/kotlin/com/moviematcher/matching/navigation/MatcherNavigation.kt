@@ -36,12 +36,15 @@ fun NavGraphBuilder.matcherNavigation(
             MatchingRoute(
                 onMatchingComplete = {
                     val route =
-                        MatcherScreen.MOVIES_LIST.route.replace(MatcherScreen.ARG_SESSION_ID, it)
+                        MatcherScreen.MOVIES_LIST.route.replace(
+                            "{${MatcherScreen.ARG_SESSION_ID}}",
+                            it
+                        )
                     navHostController.navigate(
                         route = route,
                         navOptions = navOptions {
-                            popUpTo(route = MatcherScreen.GRAPH_ROUTE) {
-                                inclusive = true
+                            popUpTo(route = graphRoute) {
+                                inclusive = false
                             }
                         }
                     )
