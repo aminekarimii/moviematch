@@ -60,7 +60,7 @@ import com.moviematcher.designsystem.theme.Red70Transparent
 import com.moviematcher.designsystem.theme.dimens
 import com.moviematcher.designsystem.utils.UiUtils
 import com.moviematcher.session.util.NFCSession
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun StartSessionScreen(

@@ -60,14 +60,14 @@ import com.moviematcher.designsystem.component.button.getSocialMediaColorScheme
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.dimens
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.get
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginRoute(
     onUserLoggedIn: () -> Unit,
 ) {
-    val signInClient: GoogleSignInClient = get()
+    val signInClient: GoogleSignInClient = koinInject()
     val loginViewModel: LoginScreenViewModel = koinViewModel()
     val viewState by loginViewModel.viewState.collectAsState()
 

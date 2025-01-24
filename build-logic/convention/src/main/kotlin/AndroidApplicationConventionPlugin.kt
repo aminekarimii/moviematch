@@ -38,8 +38,9 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 configureAndroidCompose(extension)
             }
             dependencies {
+                add("implementation", platform(versionCatalog().findLibrary("koin.bom").get()))
+                add("implementation", versionCatalog().findLibrary("koin.core").get())
                 add("implementation", versionCatalog().findLibrary("koin.android").get())
-                add("implementation", versionCatalog().findLibrary("koin.androidx.compose").get())
             }
         }
     }

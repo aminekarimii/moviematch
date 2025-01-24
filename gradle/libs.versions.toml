@@ -16,7 +16,7 @@ composeBom = "2024.02.01"
 coil = "2.6.0"
 constraint = "1.1.0-alpha13"
 
-koin = "3.4.0"
+koin = "4.0.1"
 
 lifecycle = "2.8.4"
 navigationCompose = "2.8.5"
@@ -58,8 +58,11 @@ io-coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 
 #koin
-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
-koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-android = { module = "io.insert-koin:koin-android" }
+koin-compose = { module = "io.insert-koin:koin-compose" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 
 #lifeCycle
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
