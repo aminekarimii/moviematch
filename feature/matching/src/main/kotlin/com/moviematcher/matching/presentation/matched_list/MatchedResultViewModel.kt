@@ -1,10 +1,13 @@
 package com.moviematcher.matching.presentation.matched_list
 
+import androidx.compose.material3.SnackbarDuration
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moviematcher.domain.usecase.GetMatchedMoviesUseCase
 import com.moviematcher.matching.navigation.MatcherScreen
+import com.moviematcher.session.SnackbarController
+import com.moviematcher.session.SnackbarEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -17,7 +20,14 @@ class MatchedResultViewModel(
 
     private val sessionId =
         requireNotNull(savedStateHandle.get<String>(MatcherScreen.ARG_SESSION_ID)) {
-            "The ARG_SESSION_ID should be passed in navigation !!"
+            viewModelScope.launch {
+                SnackbarController.sendEvent(
+                    SnackbarEvent(
+                        message = "There is a problem in the session, please try to create another one",
+                        duration = SnackbarDuration.Short
+                    )
+                )
+            }
         }
 
     private val _viewState = MutableSharedFlow<MatchedResultState>()
