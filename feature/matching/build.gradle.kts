@@ -10,4 +10,5 @@ android {
 dependencies {
     implementation(libs.io.coil)
     implementation(libs.lottie.compose)
+    implementation(project(":feature:session"))
 }
