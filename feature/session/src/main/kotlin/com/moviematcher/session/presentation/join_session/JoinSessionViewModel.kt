@@ -32,21 +32,26 @@ class JoinSessionViewModel(
         viewModelScope.launch {
             _uiState.update { JoinSessionUiState.Loading }
 
-            val result = sessionRepository.getSession(sessionCode).first()
-            val newState = if (result.isSuccess) {
-                sessionRepository.updateSession(
-                    SessionQuery(
-                        updatedAt = Clock.System.now().toEpochMilliseconds(),
-                        sessionId = sessionCode,
-                        guestId = authRepository.getCurrentUser()?.uuid
-                    )
-                )
-                JoinSessionUiState.StartMatch
+            val isGuestAlreadyJoinedResponse = sessionRepository.isGuestReady(sessionCode).first()
+            val newState = if (isGuestAlreadyJoinedResponse.isSuccess) {
+                JoinSessionUiState.Error("The session has started already, you can't join right now !")
             } else {
-                JoinSessionUiState.Error("Session not found")
+                val result = sessionRepository.getSession(sessionCode).first()
+                if (result.isSuccess) {
+                    sessionRepository.updateSession(
+                        SessionQuery(
+                            updatedAt = Clock.System.now().toEpochMilliseconds(),
+                            sessionId = sessionCode,
+                            guestId = authRepository.getCurrentUser()?.uuid
+                        )
+                    )
+                    JoinSessionUiState.StartMatch
+                } else {
+                    JoinSessionUiState.Error("Session not found")
+                }
             }
-
             _uiState.update { newState }
         }
     }
+
 }
