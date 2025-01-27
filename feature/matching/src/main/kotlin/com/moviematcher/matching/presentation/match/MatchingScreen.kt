@@ -51,13 +51,13 @@ import com.moviematcher.designsystem.theme.backgroundGradient
 import com.moviematcher.designsystem.theme.dimens
 import com.moviematcher.domain.models.Movie
 import com.moviematcher.feature.matching.R
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import swipableCard
 
 @Composable
 fun MatchingRoute(
     viewModel: MatcherViewModel = koinViewModel(),
-    onMatchingComplete: () -> Unit
+    onMatchingComplete: (String) -> Unit
 ) {
     MatchingScreen(
         viewState = viewModel.viewState.collectAsStateWithLifecycle().value,
@@ -70,7 +70,7 @@ fun MatchingRoute(
 fun MatchingScreen(
     viewState: MatcherViewState,
     onSwipe: (Boolean) -> Unit,
-    onMatchingComplete: () -> Unit,
+    onMatchingComplete: (String) -> Unit,
 ) {
     HandleBackButton()
     Surface(
@@ -95,7 +95,7 @@ fun MatchingScreen(
             }
 
             is MatcherViewState.MatchCompleted -> {
-                LaunchedEffect(Unit) { onMatchingComplete() }
+                LaunchedEffect(Unit) { onMatchingComplete(viewState.sessionId) }
             }
 
             is MatcherViewState.Error -> {

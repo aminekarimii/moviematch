@@ -14,10 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navOptions
 import com.moviematcher.authentication.login.presentation.LoginRoute
+import com.moviematcher.matching.navigation.MatcherScreen
 import com.moviematcher.matching.navigation.matcherNavigation
 import com.moviematcher.session.ObserveAsEvents
 import com.moviematcher.session.SnackbarController
+import com.moviematcher.session.navigation.SessionScreen
 import com.moviematcher.session.navigation.sessionNavigation
 import kotlinx.coroutines.launch
 
@@ -44,7 +47,7 @@ fun MMNavHost(
                 duration = event.duration ?: SnackbarDuration.Long
             )
 
-            if(result == SnackbarResult.ActionPerformed) {
+            if (result == SnackbarResult.ActionPerformed) {
                 event.action?.action?.invoke()
             }
         }
@@ -73,11 +76,20 @@ fun MMNavHost(
                 graphRoute = Screen.SESSION.name,
                 navHostController = navController,
                 onJoinSession = {
-                    navController.navigate(Screen.MATCHING.name)
+                    val route =
+                        MatcherScreen.GRAPH_ROUTE.replace("{${MatcherScreen.ARG_SESSION_ID}}", it)
+                    navController.navigate(
+                        route = route,
+                        navOptions = navOptions {
+                            popUpTo(route = SessionScreen.START_OR_JOIN_SESSION.name) {
+                                inclusive = false
+                            }
+                        }
+                    )
                 }
             )
             matcherNavigation(
-                graphRoute = Screen.MATCHING.name,
+                graphRoute = MatcherScreen.GRAPH_ROUTE,
                 navHostController = navController,
             )
         }

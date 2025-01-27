@@ -55,7 +55,7 @@ import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.dimens
 import com.moviematcher.domain.models.Movie
 import com.moviematcher.feature.matching.R
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 
 @Composable

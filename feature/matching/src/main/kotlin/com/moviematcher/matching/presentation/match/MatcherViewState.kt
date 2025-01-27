@@ -6,7 +6,7 @@ import com.moviematcher.domain.models.Movie
 @Immutable
 sealed class MatcherViewState {
     data object Loading : MatcherViewState()
-    data object MatchCompleted : MatcherViewState()
+    data class MatchCompleted(val sessionId: String) : MatcherViewState()
     data class Error(val message: String) : MatcherViewState()
 
     data class Success(

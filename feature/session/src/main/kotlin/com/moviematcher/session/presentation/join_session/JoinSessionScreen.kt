@@ -71,7 +71,7 @@ import com.moviematcher.session.SnackbarAction
 import com.moviematcher.session.SnackbarController
 import com.moviematcher.session.SnackbarEvent
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun JoinSessionScreen(
