@@ -2,6 +2,7 @@ package com.moviematcher.matching.presentation.matched_list
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -59,11 +60,19 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MatchedResultListRoute(
-    viewModel: MatchedResultViewModel = koinViewModel()
+    viewModel: MatchedResultViewModel = koinViewModel(),
+    onNavigateToCreateSession: () -> Unit
 ) {
+    HandleBackButton(onNavigateToCreateSession)
     MatchedResultListScreen(
         viewState = viewModel.viewState.collectAsStateWithLifecycle(MatchedResultState.Loading).value
     )
+}
+@Composable
+fun HandleBackButton(onNavigateToCreateSession: () -> Unit){
+    BackHandler {
+        onNavigateToCreateSession()
+    }
 }
 
 @Composable

@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import com.moviematcher.matching.presentation.match.MatchingRoute
 import com.moviematcher.matching.presentation.matched_list.MatchedResultListRoute
+import com.moviematcher.session.navigation.SessionScreen
 
 enum class MatcherScreen(val route: String) {
     MATCHER("matcher"), MOVIES_LIST("movies_list/{arg_session_id}");
@@ -23,6 +24,7 @@ fun NavGraphBuilder.matcherNavigation(
     graphRoute: String,
     navHostController: NavHostController,
 ) {
+
     navigation(
         startDestination = MatcherScreen.MATCHER.route,
         route = graphRoute,
@@ -60,7 +62,13 @@ fun NavGraphBuilder.matcherNavigation(
                 }
             )
         ) {
-            MatchedResultListRoute()
+            MatchedResultListRoute(
+                onNavigateToCreateSession = {
+                    navHostController.popBackStack(
+                        SessionScreen.START_OR_JOIN_SESSION.name ,false
+                    )
+                }
+            )
         }
     }
 }
