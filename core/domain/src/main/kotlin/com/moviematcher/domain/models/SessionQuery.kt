@@ -5,6 +5,7 @@ import kotlinx.datetime.Clock
 data class SessionQuery(
     val updatedAt: Long = Clock.System.now().toEpochMilliseconds(),
     val sessionId: String,
+    val status : SessionStatus? = null,
     val isHostReady: Boolean? = null,
     val guestId: String? = null,
     val movies: List<Movie>? = null,
