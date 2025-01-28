@@ -7,11 +7,13 @@ import com.moviematcher.data.FirebaseDatabaseNodes.HOST
 import com.moviematcher.data.FirebaseDatabaseNodes.HOST_LIKES
 import com.moviematcher.data.FirebaseDatabaseNodes.MOVIES
 import com.moviematcher.data.FirebaseDatabaseNodes.SESSIONS
+import com.moviematcher.data.FirebaseDatabaseNodes.SESSION_STATUS
 import com.moviematcher.data.dto.SessionDto
 import com.moviematcher.data.dto.toMatchSession
 import com.moviematcher.domain.models.MatchSession
 import com.moviematcher.domain.models.Movie
 import com.moviematcher.domain.models.SessionQuery
+import com.moviematcher.domain.models.SessionStatus
 import com.moviematcher.domain.repositories.SessionRepository
 import com.skydoves.firebase.database.ktx.flow
 import kotlinx.coroutines.awaitAll
@@ -92,13 +94,16 @@ class SessionRepositoryImpl(
         database.reference
             .child(SESSIONS)
             .child(sessionId).apply {
+                val host = child(HOST).setValue(hostId)
+                    .asDeferred()
+                val sessionStatus = child(SESSION_STATUS)
+                    .setValue(SessionStatus.WAITING)
+                    .asDeferred()
                 val createdAtResult = child("createdAt")
                     .setValue(Timestamp(System.currentTimeMillis()).time)
                     .asDeferred()
-                val t1 = child(HOST).setValue(hostId)
-                    .asDeferred()
 
-                listOfNotNull(createdAtResult, t1).awaitAll()
+                listOfNotNull(createdAtResult, host,sessionStatus).awaitAll()
             }
     }
 
@@ -119,6 +124,13 @@ class SessionRepositoryImpl(
                             .asDeferred()
                     }
 
+                    val sessionStatus = status?.let {
+                        child(SESSION_STATUS)
+                            .setValue(status)
+                            .asDeferred()
+                    }
+
+
                     val hostLikedMoviesResult = hostLikedMovies?.let {
                         child(HOST_LIKES)
                             .setValue(hostLikedMovies)
@@ -135,6 +147,7 @@ class SessionRepositoryImpl(
                         updatedAtResult,
                         guestLikedMoviesResult,
                         hostLikedMoviesResult,
+                        sessionStatus,
                         moviesResult
                     ).awaitAll()
                 }
