@@ -17,5 +17,5 @@ val presentationModule = module {
     viewModel { MatchedResultViewModel(get(), get()) }
     viewModel { MatcherViewModel(get(), get(), get(), get()) }
     viewModel { StartSessionViewModel(get(), get()) }
-    viewModel { JoinSessionViewModel(get(), get()) }
+    viewModel { JoinSessionViewModel(get(), get(), get()) }
 }
