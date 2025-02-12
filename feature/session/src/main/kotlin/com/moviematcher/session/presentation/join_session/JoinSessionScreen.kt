@@ -67,12 +67,10 @@ import com.moviematcher.designsystem.component.button.PrimaryButton
 import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.Red70Transparent
 import com.moviematcher.designsystem.theme.dimens
-import com.moviematcher.session.SnackbarAction
 import com.moviematcher.session.SnackbarController
 import com.moviematcher.session.SnackbarEvent
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
-
 @Composable
 fun JoinSessionScreen(
     viewModel: JoinSessionViewModel = koinViewModel(),
@@ -120,7 +118,14 @@ fun JoinSessionScreen(
         when (uiState) {
             is JoinSessionUiState.StartMatch -> onJoinSession(sessionCode)
             is JoinSessionUiState.Error -> {
-                Toast.makeText(context, uiState.message, Toast.LENGTH_SHORT).show()
+                scope.launch {
+                    SnackbarController.sendEvent(
+                        SnackbarEvent(
+                            message = uiState.message,
+                            duration = SnackbarDuration.Short
+                        )
+                    )
+                }
             }
 
             else -> Unit
