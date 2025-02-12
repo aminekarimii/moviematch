@@ -29,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,7 +60,10 @@ import com.moviematcher.designsystem.theme.MovieMatcherTheme
 import com.moviematcher.designsystem.theme.Red70Transparent
 import com.moviematcher.designsystem.theme.dimens
 import com.moviematcher.designsystem.utils.UiUtils
+import com.moviematcher.session.SnackbarController
+import com.moviematcher.session.SnackbarEvent
 import com.moviematcher.session.util.NFCSession
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -199,6 +203,7 @@ private fun StartSessionScreenPreview() {
 @Composable
 private fun Footer(sessionCode: String) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     ConstraintLayout {
         val (textField, shareBtn) = createRefs()
         TextField(
@@ -219,6 +224,13 @@ private fun Footer(sessionCode: String) {
                             context = context,
                             text = sessionCode
                         )
+                        scope.launch {
+                            SnackbarController.sendEvent(
+                                event = SnackbarEvent(
+                                    message = "Session id $sessionCode is copied !"
+                                )
+                            )
+                        }
                     },
                     painter = painterResource(id = R.drawable.ic_content_copy),
                     contentDescription = null,
