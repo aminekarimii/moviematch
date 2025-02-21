@@ -2,7 +2,7 @@ package com.moviematcher.domain.models
 
 import kotlinx.serialization.Serializable
 
-
+// TODO Remove this serialization and create another model to store in session.
 @Serializable
 data class Movie(
     val index: Int = 0,

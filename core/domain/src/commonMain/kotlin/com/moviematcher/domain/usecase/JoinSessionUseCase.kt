@@ -2,16 +2,14 @@ package com.moviematcher.domain.usecase
 
 import com.moviematcher.domain.models.SessionQuery
 import com.moviematcher.domain.models.SessionStatus
-import com.moviematcher.domain.repositories.AuthRepository
-import com.moviematcher.domain.repositories.SessionRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 
 class JoinSessionUseCase(
-    private val sessionRepository: SessionRepository,
-    private val authRepository: AuthRepository,
+    private val sessionRepository: com.moviematcher.domain.repositories.SessionRepository,
+    private val authRepository: com.moviematcher.domain.repositories.AuthRepository,
     private val dispatcher: CoroutineDispatcher,
 ) {
     suspend operator fun invoke(sessionId: String): JoinSessionResult {

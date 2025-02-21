@@ -2,9 +2,6 @@ package com.moviematcher.session.presentation.start_session
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moviematcher.domain.repositories.AuthRepository
-import com.moviematcher.domain.repositories.SessionRepository
-import com.moviematcher.domain.usecase.LoadMoviesBatchUseCase
 import com.moviematcher.session.util.RandomUtil.generateUniqueId
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,8 +10,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class StartSessionViewModel(
-    private val authRepository: AuthRepository,
-    private val sessionRepository: SessionRepository,
+    private val authRepository: com.moviematcher.domain.repositories.AuthRepository,
+    private val sessionRepository: com.moviematcher.domain.repositories.SessionRepository,
 ) : ViewModel() {
 
     val sessionCode = generateUniqueId()

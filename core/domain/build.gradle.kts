@@ -1,13 +1,21 @@
+import com.moviematcher.convention.setFrameworkBaseName
+
 plugins {
-    id("moviematcher.android.library")
+    id("moviematcher.kmp.library")
+}
+
+kotlin {
+    setFrameworkBaseName("domain")
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(libs.kotlinx.serialization)
+            }
+        }
+    }
 }
 
 android {
     namespace = "com.moviematcher.domain"
-}
-
-dependencies {
-    implementation(platform(libs.koin.bom))
-    implementation(libs.koin.core)
-    api(libs.bundles.io)
 }

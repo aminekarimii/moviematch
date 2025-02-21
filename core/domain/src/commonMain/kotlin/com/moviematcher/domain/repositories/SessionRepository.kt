@@ -1,10 +1,8 @@
 package com.moviematcher.domain.repositories
 
 import com.moviematcher.domain.models.MatchSession
-import com.moviematcher.domain.models.Movie
 import com.moviematcher.domain.models.SessionQuery
 import kotlinx.coroutines.flow.Flow
-import java.sql.Timestamp
 
 interface SessionRepository {
 
@@ -13,7 +11,6 @@ interface SessionRepository {
     fun getMatchStatus(sessionId: String): Flow<Result<Int>>
 
     suspend fun createNewSession(
-        createdAt: Timestamp? = null,
         sessionId: String,
         hostId: String?,
     )

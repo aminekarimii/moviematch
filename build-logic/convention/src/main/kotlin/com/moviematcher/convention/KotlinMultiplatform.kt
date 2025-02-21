@@ -26,6 +26,7 @@ internal fun Project.configureKotlinMultiplatform(
                 )
                 implementation(versionCatalog().findLibrary("koin.core").get())
                 implementation(versionCatalog().findLibrary("kotlinx.datetime").get())
+                implementation(versionCatalog().findLibrary("kotlinx.coroutines").get())
             }
         }
 

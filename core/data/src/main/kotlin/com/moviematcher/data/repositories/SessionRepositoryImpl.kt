@@ -11,10 +11,8 @@ import com.moviematcher.data.FirebaseDatabaseNodes.SESSION_STATUS
 import com.moviematcher.data.dto.SessionDto
 import com.moviematcher.data.dto.toMatchSession
 import com.moviematcher.domain.models.MatchSession
-import com.moviematcher.domain.models.Movie
 import com.moviematcher.domain.models.SessionQuery
 import com.moviematcher.domain.models.SessionStatus
-import com.moviematcher.domain.repositories.SessionRepository
 import com.skydoves.firebase.database.ktx.flow
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +25,7 @@ import java.sql.Timestamp
 class SessionRepositoryImpl(
     private val database: FirebaseDatabase,
     private val json: Json,
-) : SessionRepository {
+) : com.moviematcher.domain.repositories.SessionRepository {
 
     override fun getSession(sessionId: String): Flow<Result<MatchSession>> {
         return database.reference.apply {
@@ -87,7 +85,6 @@ class SessionRepositoryImpl(
     }
 
     override suspend fun createNewSession(
-        createdAt: Timestamp?,
         sessionId: String,
         hostId: String?,
     ) {

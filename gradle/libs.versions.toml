@@ -26,6 +26,7 @@ koin = "4.0.1"
 ktor = "3.0.0-beta-1"
 kotlinx-serialization = "1.6.2"
 kotlinx-datetime = "0.6.1"
+kotlinx-coroutines = "1.10.1"
 
 playServices = "4.4.1"
 playServicesAuth = "20.1.0"
@@ -77,8 +78,9 @@ ktorSerialization = { module = "io.ktor:ktor-serialization-kotlinx-json", versio
 ktorLogger = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 
 #kotlinx
-jsonSerialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "kotlinx-serialization" }
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 
 #googleService
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
@@ -104,8 +106,5 @@ jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "composePlugin
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-play-services = { id = "com.google.gms.google-services", version.ref = "playServices" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-
-[bundles]
-io = ["jsonSerialization", "ktorCore", "ktorContentNegotiation", "ktorOkhttp", "ktorSerialization", "ktorLogger"]
 
 

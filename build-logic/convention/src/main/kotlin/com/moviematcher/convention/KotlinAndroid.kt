@@ -4,9 +4,6 @@ import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
  * Configure base Kotlin with Android options
@@ -29,8 +26,6 @@ internal fun Project.configureKotlinAndroid(
         }
     }
 
-    configureKotlin()
-
     dependencies {
 
         add("implementation", platform(versionCatalog().findLibrary("koin.bom").get()))
@@ -38,15 +33,3 @@ internal fun Project.configureKotlinAndroid(
     }
 }
 
-/**
- * Configure base Kotlin options
- */
-private fun Project.configureKotlin() {
-    // Use withType to workaround https://youtrack.jetbrains.com/issue/KT-55947
-    tasks.withType<KotlinCompile>().configureEach {
-        compilerOptions {
-            // Set JVM target to 17
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-    }
-}

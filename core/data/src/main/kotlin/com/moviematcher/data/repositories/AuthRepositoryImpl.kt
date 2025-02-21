@@ -2,16 +2,14 @@ package com.moviematcher.data.repositories
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.moviematcher.domain.models.Account
 import com.moviematcher.domain.models.User
-import com.moviematcher.domain.repositories.AuthRepository
 import kotlinx.coroutines.tasks.await
 
 class AuthRepositoryImpl(
     private val firebaseAuth: FirebaseAuth,
-) : AuthRepository {
+) : com.moviematcher.domain.repositories.AuthRepository {
 
-    override suspend fun login(account: Account) {
+    override suspend fun login(account: com.moviematcher.domain.models.Account) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         firebaseAuth.signInWithCredential(credential).await()
     }

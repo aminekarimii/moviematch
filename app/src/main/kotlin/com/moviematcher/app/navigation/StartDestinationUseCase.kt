@@ -1,10 +1,8 @@
 package com.moviematcher.app.navigation
 
-import com.moviematcher.domain.repositories.AuthRepository
-
 
 class StartDestinationUseCase(
-    private val authRepository: AuthRepository,
+    private val authRepository: com.moviematcher.domain.repositories.AuthRepository,
 ) {
     operator fun invoke(): String {
         val isConnected = authRepository.getCurrentUser() != null

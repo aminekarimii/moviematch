@@ -7,15 +7,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
 import com.google.android.gms.common.api.ApiException
 import com.moviematcher.designsystem.R
-import com.moviematcher.domain.models.Account
-import com.moviematcher.domain.repositories.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginScreenViewModel(
-    private val authRepository: AuthRepository
+    private val authRepository: com.moviematcher.domain.repositories.AuthRepository
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(LoginScreenViewState())
     val viewState = _viewState.asStateFlow()
@@ -48,7 +46,7 @@ class LoginScreenViewModel(
         try {
             _viewState.update { it.copy(isLoading = true) }
             val task = GoogleSignIn.getSignedInAccountFromIntent(activityResult.data).result
-            val account = Account(task.idToken!!)
+            val account = com.moviematcher.domain.models.Account(task.idToken!!)
             authRepository.login(account)
             _viewState.update { it.copy(isLoading = false, errorMsg = null, loggedIn = true) }
         } catch (e: ApiException) {

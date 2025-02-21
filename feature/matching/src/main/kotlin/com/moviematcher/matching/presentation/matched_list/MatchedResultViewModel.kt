@@ -4,7 +4,6 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moviematcher.domain.usecase.GetMatchedMoviesUseCase
 import com.moviematcher.matching.navigation.MatcherScreen
 import com.moviematcher.session.SnackbarController
 import com.moviematcher.session.SnackbarEvent
@@ -15,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class MatchedResultViewModel(
     savedStateHandle: SavedStateHandle,
-    private val getMatchedMoviesUseCase: GetMatchedMoviesUseCase
+    private val getMatchedMoviesUseCase: com.moviematcher.domain.usecase.GetMatchedMoviesUseCase
 ) : ViewModel() {
 
     private val sessionId =

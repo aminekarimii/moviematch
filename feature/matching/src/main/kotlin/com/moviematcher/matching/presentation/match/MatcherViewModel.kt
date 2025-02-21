@@ -6,8 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moviematcher.domain.models.Movie
 import com.moviematcher.domain.models.SessionQuery
-import com.moviematcher.domain.repositories.AuthRepository
-import com.moviematcher.domain.repositories.SessionRepository
 import com.moviematcher.domain.usecase.LoadMoviesBatchUseCase
 import com.moviematcher.matching.navigation.MatcherScreen
 import com.moviematcher.session.SnackbarController
@@ -24,8 +22,8 @@ const val MATCHING_TIME = 60
 
 class MatcherViewModel(
     savedStateHandle: SavedStateHandle,
-    private val authRepository: AuthRepository,
-    private val sessionRepository: SessionRepository,
+    private val authRepository: com.moviematcher.domain.repositories.AuthRepository,
+    private val sessionRepository: com.moviematcher.domain.repositories.SessionRepository,
     private val loadMoviesBatchUseCase: LoadMoviesBatchUseCase
 ) : ViewModel() {
 

@@ -4,7 +4,6 @@ import com.moviematcher.domain.models.Movie
 import com.moviematcher.domain.models.SessionQuery
 import com.moviematcher.domain.models.SessionStatus
 import com.moviematcher.domain.repositories.MovieRepository
-import com.moviematcher.domain.repositories.SessionRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -13,7 +12,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 
 class GetMatchedMoviesUseCase(
-    private val sessionRepository: SessionRepository,
+    private val sessionRepository: com.moviematcher.domain.repositories.SessionRepository,
     private val movieRepository: MovieRepository,
     private val dispatcher: CoroutineDispatcher
 ) {

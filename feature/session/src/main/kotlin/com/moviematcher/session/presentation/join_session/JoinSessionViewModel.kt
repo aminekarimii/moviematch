@@ -2,17 +2,12 @@ package com.moviematcher.session.presentation.join_session
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moviematcher.domain.models.SessionQuery
-import com.moviematcher.domain.models.SessionStatus
-import com.moviematcher.domain.repositories.AuthRepository
-import com.moviematcher.domain.repositories.SessionRepository
 import com.moviematcher.domain.usecase.JoinSessionResult
 import com.moviematcher.domain.usecase.JoinSessionUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 
 sealed class JoinSessionUiState {
     data object Idle : JoinSessionUiState()
@@ -22,8 +17,8 @@ sealed class JoinSessionUiState {
 }
 
 class JoinSessionViewModel(
-    private val authRepository: AuthRepository,
-    private val sessionRepository: SessionRepository,
+    private val authRepository: com.moviematcher.domain.repositories.AuthRepository,
+    private val sessionRepository: com.moviematcher.domain.repositories.SessionRepository,
     private val joinSessionUseCase: JoinSessionUseCase,
 ) : ViewModel() {
 
