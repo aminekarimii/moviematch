@@ -1,0 +1,32 @@
+import com.moviematcher.convention.versionCatalog
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+
+class KotlinMultiplatformFeatureConventionPlugin : Plugin<Project> {
+    override fun apply(target: Project) {
+        with(target) {
+            pluginManager.apply {
+                apply("hackertab.kmp.library")
+                apply("hackertab.kmp.compose")
+            }
+            extensions.configure<KotlinMultiplatformExtension> {
+                sourceSets.commonMain.dependencies {
+                    implementation(project(":core:designsystem"))
+                    implementation(project(":core:domain"))
+
+                    implementation(
+                        project.dependencies.platform(
+                            versionCatalog().findLibrary("koin.bom").get()
+                        )
+                    )
+                    implementation(versionCatalog().findLibrary("koin.compose").get())
+                    implementation(versionCatalog().findLibrary("koin.compose.viewmodel").get())
+
+                    implementation(versionCatalog().findLibrary("androidx.navigation").get())
+                }
+            }
+        }
+    }
+}

@@ -32,14 +32,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                     "implementation",
                     versionCatalog().findLibrary("androidx.navigation").get()
                 )
-                add(
-                    "implementation",
-                    versionCatalog().findLibrary("androidx.lifecycle.runtime.ktx").get()
-                )
-                add(
-                    "implementation",
-                    versionCatalog().findLibrary("androidx.lifecycle.runtime.compose").get()
-                )
+
                 add("implementation",
                     versionCatalog().findLibrary("kotlinx.datetime").get()
                 )

@@ -9,7 +9,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.io.coil)
     implementation(libs.firebase.auth)
     implementation(libs.zxing.android.embedded)
     implementation(libs.core)

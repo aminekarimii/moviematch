@@ -1,9 +1,10 @@
 [versions]
+kotlin = "2.0.0"
 agp = "8.4.2"
-core = "3.4.1"
-gson = "2.10.1"
-kotlin = "1.9.20"
+composePlugin = "1.7.0"
 composeCompiler = "1.5.4"
+gson = "2.10.1"
+core = "3.4.1"
 
 compileSdk = "34"
 targetSdk = "34"
@@ -13,13 +14,18 @@ coreKtx = "1.13.1"
 activityCompose = "1.9.0"
 splashScreen = "1.0.1"
 composeBom = "2024.02.01"
-coil = "2.6.0"
+coil = "3.0.4"
 constraint = "1.1.0-alpha13"
+lottie = "4.1.0"
+lifecycle = "2.8.2"
+navigation = "2.8.5"
+
+zxingAndroidEmbedded = "4.2.0"
 
 koin = "4.0.1"
-
-lifecycle = "2.8.4"
-navigationCompose = "2.8.5"
+ktor = "3.0.0-beta-1"
+kotlinx-serialization = "1.6.2"
+kotlinx-datetime = "0.6.1"
 
 playServices = "4.4.1"
 playServicesAuth = "20.1.0"
@@ -27,12 +33,7 @@ playServicesAuth = "20.1.0"
 firebase-auth = "21.1.0"
 firebase-firestore-ktx = "24.4.2"
 firebase-storage-ktx = "20.0.1"
-
-lottie= "4.1.0"
-ktor=  "3.0.0-beta-1"
 firebaseKtx = "0.2.1"
-zxingAndroidEmbedded = "4.2.0"
-kotlinx-datetime = "0.6.1"
 
 [libraries]
 #core
@@ -50,12 +51,15 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-ui-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraint" }
-
+androidx-navigation = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+androidx-viewmodel-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
+#zxing
+zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
 core = { module = "com.google.zxing:core", version.ref = "core" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-io-coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
-
-lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 
 #koin
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
@@ -64,20 +68,17 @@ koin-android = { module = "io.insert-koin:koin-android" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 
-#lifeCycle
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
-androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
-
-#navigation
-androidx-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
-
 #ktor
 ktorCore = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktorContentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktorOkhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktorDarwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktor" }
 ktorSerialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktorLogger = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
-jsonSerialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.6.2" }
+
+#kotlinx
+jsonSerialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "kotlinx-serialization" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
 #googleService
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
@@ -92,12 +93,15 @@ firebase-database-ktx = { module = "com.github.skydoves:firebase-database-ktx", 
 # Dependencies of the included build-logic
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+compose-gradlePlugin = { module = "org.jetbrains.compose:org.jetbrains.compose.gradle.plugin", version.ref = "composePlugin" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "composePlugin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-play-services = { id = "com.google.gms.google-services", version.ref = "playServices" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
