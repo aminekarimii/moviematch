@@ -1,0 +1,40 @@
+# Kotlin Multiplatform
+*.iml
+.kotlin
+.gradle
+**/build/
+!src/**/build/
+
+# Android
+local.properties
+.idea
+captures
+.externalNativeBuild
+.cxx
+
+# iOS
+xcuserdata
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+**/xcshareddata/WorkspaceSettings.xcsettings
+
+# macOS
+.DS_Store
+
+# Firebase (keep these secret!)
+google-services.json
+GoogleService-Info.plist
+
+# API Keys
+*.properties
+!gradle.properties
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp

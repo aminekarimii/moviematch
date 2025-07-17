@@ -1,0 +1,11 @@
+# Copy this file to local.properties and fill in your values
+# This file should NOT be committed to version control
+
+# Android SDK location (will be auto-detected by Android Studio)
+# sdk.dir=/path/to/your/android/sdk
+
+# TMDB API Key - Get from https://www.themoviedb.org/settings/api
+TMDB_API_KEY=your_tmdb_api_key_here
+
+# Google Client ID for authentication (if needed later)
+# GOOGLE_CLIENT_ID=your_google_client_id_here
