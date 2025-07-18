@@ -100,7 +100,7 @@ Movie-Match-KMP/
 ### Prerequisites
 - Android Studio
 - Xcode (for iOS)
-- JDK 11+
+- JDK 17+
 
 ### Getting Started
 1. Clone the repository

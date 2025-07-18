@@ -1,51 +1,82 @@
 package com.moviematcher
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.moviematcher.navigation.Screen
+import com.moviematcher.screens.*
+import com.moviematcher.theme.MovieMatcherTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun App() {
-    MaterialTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            // App Title
-            Text(
-                text = "Movie Match",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 48.dp)
-            )
+fun App(padding: PaddingValues? = null) {
+    MovieMatcherTheme {
+        var currentScreen by remember { mutableStateOf<Screen>(Screen.Home) }
 
-            // Create Session Button
-            Button(
-                onClick = {
-                    // TODO: Navigate to session creation
-                    println("Create Session clicked!")
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-            ) {
-                Text(
-                    text = "Create Session",
-                    fontSize = 18.sp
+        when (currentScreen) {
+            Screen.Home -> {
+                HomeScreen(
+                    onCreateSession = {
+                        currentScreen = Screen.StartOrJoin
+                    },
+                    onJoinSession = {
+                        currentScreen = Screen.StartOrJoin
+                    }
+                )
+            }
+
+            Screen.StartOrJoin -> {
+                StartOrJoinSessionScreen(
+                    onStartSession = {
+                        currentScreen = Screen.StartSession
+                    },
+                    onJoinSession = {
+                        currentScreen = Screen.JoinSession
+                    }
+                )
+            }
+
+            Screen.StartSession -> {
+                StartSessionScreen(
+                    onStartSession = {
+                        currentScreen = Screen.Session
+                    },
+                    onBackToHome = {
+                        currentScreen = Screen.Home
+                    }
+                )
+            }
+
+            Screen.JoinSession -> {
+                JoinSessionScreen(
+                    onJoinSession = {
+                        currentScreen = Screen.Session
+                    },
+                    onBackToHome = {
+                        currentScreen = Screen.Home
+                    }
+                )
+            }
+
+            Screen.Session -> {
+                SessionScreen(
+                    onBackToHome = {
+                        currentScreen = Screen.Home
+                    },
+                    onShowResults = {
+                        currentScreen = Screen.Results
+                    }
+                )
+            }
+
+            Screen.Results -> {
+                ResultsScreen(
+                    onBackToHome = {
+                        currentScreen = Screen.Home
+                    },
+                    onNewSession = {
+                        currentScreen = Screen.Session
+                    }
                 )
             }
         }
