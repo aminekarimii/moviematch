@@ -1,32 +1,31 @@
 package com.moviematcher.screens
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.Row
 import com.moviematcher.resources.MR
 import dev.icerock.moko.resources.compose.painterResource
 
@@ -39,18 +38,6 @@ fun StartSessionScreen(
     val sessionCode = remember { (1000..9999).random().toString() }
 
     Box(modifier = Modifier.padding(bottom = 24.dp)) {
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .scale(1.5f)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(Color(0x70FF0000), Color(0x00000000)),
-                    ),
-                )
-        ) {
-            // Empty body
-        }
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -66,26 +53,24 @@ fun StartSessionScreen(
             Spacer(modifier = Modifier.height(32.dp))
             Image(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f),
-                painter = painterResource(MR.images.img_movies_placeholder),
+                    .fillMaxWidth(),
+                painter = painterResource(MR.images.img_app_preview),
                 contentDescription = null,
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.FillWidth
             )
             Spacer(modifier = Modifier.height(32.dp))
             Footer(sessionCode = sessionCode)
             Spacer(modifier = Modifier.height(96.dp))
         }
 
-        Button(
+        PrimaryButton(
+            text = "Show QR Code",
+            onClick = { showQRCode = !showQRCode },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(horizontal = 32.dp)
-                .fillMaxWidth(),
-            onClick = { showQRCode = !showQRCode }
-        ) {
-            Text(text = "Show QR Code")
-        }
+                .fillMaxWidth()
+        )
     }
 }
 
@@ -111,11 +96,11 @@ private fun Footer(sessionCode: String) {
             ),
         )
 
-        Button(
+        ClickableIcon(
+            onClick = { /* TODO: Share functionality */ },
             modifier = Modifier
                 .weight(0.2f)
-                .aspectRatio(1f),
-            onClick = { /* TODO: Share functionality */ }
+                .aspectRatio(1f)
         ) {
             Text("Share")
         }

@@ -1,29 +1,22 @@
 package com.moviematcher
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.*
 import com.moviematcher.navigation.Screen
-import com.moviematcher.screens.*
+import com.moviematcher.screens.JoinSessionScreen
+import com.moviematcher.screens.ResultsScreen
+import com.moviematcher.screens.SessionScreen
+import com.moviematcher.screens.StartOrJoinSessionScreen
+import com.moviematcher.screens.StartSessionScreen
 import com.moviematcher.theme.MovieMatcherTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun App(padding: PaddingValues? = null) {
+fun MovieMatchApp() {
     MovieMatcherTheme {
-        var currentScreen by remember { mutableStateOf<Screen>(Screen.Home) }
+        var currentScreen by remember { mutableStateOf<Screen>(Screen.StartOrJoin) }
 
         when (currentScreen) {
-            Screen.Home -> {
-                HomeScreen(
-                    onCreateSession = {
-                        currentScreen = Screen.StartOrJoin
-                    },
-                    onJoinSession = {
-                        currentScreen = Screen.StartOrJoin
-                    }
-                )
-            }
 
             Screen.StartOrJoin -> {
                 StartOrJoinSessionScreen(
@@ -42,7 +35,7 @@ fun App(padding: PaddingValues? = null) {
                         currentScreen = Screen.Session
                     },
                     onBackToHome = {
-                        currentScreen = Screen.Home
+                        currentScreen = Screen.StartOrJoin
                     }
                 )
             }
@@ -53,7 +46,7 @@ fun App(padding: PaddingValues? = null) {
                         currentScreen = Screen.Session
                     },
                     onBackToHome = {
-                        currentScreen = Screen.Home
+                        currentScreen = Screen.StartOrJoin
                     }
                 )
             }
@@ -61,7 +54,7 @@ fun App(padding: PaddingValues? = null) {
             Screen.Session -> {
                 SessionScreen(
                     onBackToHome = {
-                        currentScreen = Screen.Home
+                        currentScreen = Screen.StartOrJoin
                     },
                     onShowResults = {
                         currentScreen = Screen.Results
@@ -72,7 +65,7 @@ fun App(padding: PaddingValues? = null) {
             Screen.Results -> {
                 ResultsScreen(
                     onBackToHome = {
-                        currentScreen = Screen.Home
+                        currentScreen = Screen.StartOrJoin
                     },
                     onNewSession = {
                         currentScreen = Screen.Session

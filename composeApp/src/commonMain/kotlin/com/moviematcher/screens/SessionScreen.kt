@@ -1,7 +1,6 @@
 package com.moviematcher.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,31 +41,19 @@ fun SessionScreen(
         )
         
         // Show Results Button (temporary for navigation)
-        Button(
+        PrimaryButton(
+            text = "Show Results",
             onClick = onShowResults,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-        ) {
-            Text(
-                text = "Show Results",
-                fontSize = 18.sp
-            )
-        }
-        
+            modifier = Modifier.fillMaxWidth()
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
-        
+
         // Back Button
-        Button(
+        SecondaryButton(
+            text = "Back to Home",
             onClick = onBackToHome,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-        ) {
-            Text(
-                text = "Back to Home",
-                fontSize = 18.sp
-            )
-        }
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }

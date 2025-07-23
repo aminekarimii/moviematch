@@ -1,4 +1,4 @@
-package com.moviematcher.designsystem.theme
+package com.moviematcher.theme
 
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color

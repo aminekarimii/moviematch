@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -42,20 +41,7 @@ fun JoinSessionScreen(
     val focusManager = LocalFocusManager.current
     var sessionCode by remember { mutableStateOf("") }
 
-    // Preserve your original UI design
     Box {
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .scale(1.5f)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(Color(0x70FF0000), Color(0x00000000)),
-                    ),
-                )
-        ) {
-            // Empty body
-        }
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -102,33 +88,30 @@ fun JoinSessionScreen(
                     ),
                 )
 
-                Button(
+                ClickableIcon(
+                    onClick = { /* TODO: QR Code scanner */ },
                     modifier = Modifier
                         .weight(0.2f)
-                        .aspectRatio(1f),
-                    onClick = { /* TODO: QR Code scanner */ }
+                        .aspectRatio(1f)
                 ) {
                     Text("QR")
                 }
             }
 
             Spacer(modifier = Modifier.height(32.dp))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp),
+            PrimaryButton(
+                text = "Join Session",
+                onClick = onJoinSession,
                 enabled = sessionCode.isNotBlank(),
-                onClick = onJoinSession
-            ) {
-                Text("Join Session")
-            }
-            Image(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f),
-                painter = painterResource(MR.images.img_movies_placeholder),
+                    .padding(horizontal = 32.dp)
+            )
+            Image(
+                modifier = Modifier.fillMaxWidth(),
+                painter = painterResource(MR.images.img_waves),
+                alignment = Alignment.BottomCenter,
                 contentDescription = null,
-                contentScale = ContentScale.FillBounds
             )
         }
     }

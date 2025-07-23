@@ -1,7 +1,6 @@
 package com.moviematcher.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +23,6 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // App Title
         Text(
             text = "Movie Match",
             fontSize = 32.sp,
@@ -33,32 +31,18 @@ fun HomeScreen(
             modifier = Modifier.padding(bottom = 48.dp)
         )
         
-        // Create Session Button
-        Button(
+        PrimaryButton(
+            text = "Create Session",
             onClick = onCreateSession,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-        ) {
-            Text(
-                text = "Create Session",
-                fontSize = 18.sp
-            )
-        }
+            modifier = Modifier.fillMaxWidth()
+        )
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Join Session Button
-        Button(
+        PrimaryButton(
+            text = "Join Session",
             onClick = onJoinSession,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-        ) {
-            Text(
-                text = "Join Session",
-                fontSize = 18.sp
-            )
-        }
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }

@@ -58,16 +58,17 @@ fun StartOrJoinSessionScreen(
             contentScale = ContentScale.FillBounds
         )
         Spacer(modifier = Modifier.weight(1f))
-        Button(
+        PrimaryButton (
             modifier = Modifier.fillMaxWidth(),
             onClick = onStartSession
         ) {
             Text(text = stringResource(MR.strings.start_or_join_session_screen_start_session))
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
+        PrimaryButton(
             modifier = Modifier.fillMaxWidth(),
-            onClick = onJoinSession
+            colors = getSocialMediaColorScheme(),
+            onClick = onJoinSession,
         ) {
             Text(text = stringResource(MR.strings.start_or_join_session_screen_join_session))
         }
