@@ -7,6 +7,7 @@ import com.moviematcher.screens.ResultsScreen
 import com.moviematcher.screens.SessionScreen
 import com.moviematcher.screens.StartOrJoinSessionScreen
 import com.moviematcher.screens.StartSessionScreen
+import com.moviematcher.screens.tutorial.TutorialScreen
 import com.moviematcher.theme.MovieMatcherTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -21,10 +22,18 @@ fun MovieMatchApp() {
             Screen.StartOrJoin -> {
                 StartOrJoinSessionScreen(
                     onStartSession = {
-                        currentScreen = Screen.StartSession
+                        currentScreen = Screen.Tutorial
                     },
                     onJoinSession = {
                         currentScreen = Screen.JoinSession
+                    }
+                )
+            }
+
+            Screen.Tutorial -> {
+                TutorialScreen(
+                    onStartSession = {
+                        currentScreen = Screen.StartSession
                     }
                 )
             }

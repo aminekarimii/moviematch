@@ -78,9 +78,9 @@ Movie-Match-KMP/
 ## 🚀 MVP Development Plan
 
 ### Phase 1: Basic Setup (Week 1)
-- [ ] Set up KMP project structure
-- [ ] Configure Firebase for Android & iOS
-- [ ] Create basic navigation (3 screens: Home, Session, Results)
+- [x] Set up KMP project structure
+- [x] Configure Firebase for Android & iOS
+- [x] Create basic navigation (3 screens: Home, Session, Results)
 - [ ] Implement UUID user identification
 
 ### Phase 2: Core Features (Week 2)
