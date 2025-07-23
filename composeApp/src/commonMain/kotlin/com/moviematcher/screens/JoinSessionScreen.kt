@@ -41,9 +41,11 @@ fun JoinSessionScreen(
     val focusManager = LocalFocusManager.current
     var sessionCode by remember { mutableStateOf("") }
 
-    Box {
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+    ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -55,12 +57,10 @@ fun JoinSessionScreen(
             )
             Spacer(modifier = Modifier.height(32.dp))
             Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f),
-                painter = painterResource(MR.images.img_movies_placeholder),
+                modifier = Modifier.fillMaxWidth(),
+                painter = painterResource(MR.images.img_app_preview),
                 contentDescription = null,
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.height(32.dp))
             Row(
@@ -107,12 +107,12 @@ fun JoinSessionScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp)
             )
-            Image(
-                modifier = Modifier.fillMaxWidth(),
-                painter = painterResource(MR.images.img_waves),
-                alignment = Alignment.BottomCenter,
-                contentDescription = null,
-            )
         }
+        Image(
+            modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
+            contentScale = ContentScale.Crop,
+            painter = painterResource(MR.images.img_waves),
+            contentDescription = null,
+        )
     }
 }

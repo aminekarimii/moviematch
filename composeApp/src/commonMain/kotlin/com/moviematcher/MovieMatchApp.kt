@@ -7,6 +7,7 @@ import com.moviematcher.screens.ResultsScreen
 import com.moviematcher.screens.SessionScreen
 import com.moviematcher.screens.StartOrJoinSessionScreen
 import com.moviematcher.screens.StartSessionScreen
+import com.moviematcher.screens.WelcomeScreen
 import com.moviematcher.screens.tutorial.TutorialScreen
 import com.moviematcher.theme.MovieMatcherTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -15,9 +16,20 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun MovieMatchApp() {
     MovieMatcherTheme {
-        var currentScreen by remember { mutableStateOf<Screen>(Screen.StartOrJoin) }
+        var currentScreen by remember { mutableStateOf<Screen>(Screen.Welcome) }
 
         when (currentScreen) {
+
+            Screen.Welcome -> {
+                WelcomeScreen(
+                    onSignInWithGoogle = {
+                        currentScreen = Screen.StartOrJoin
+                    },
+                    onContinueAsGuest = {
+                        currentScreen = Screen.StartOrJoin
+                    }
+                )
+            }
 
             Screen.StartOrJoin -> {
                 StartOrJoinSessionScreen(

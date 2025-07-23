@@ -1,6 +1,7 @@
 package com.moviematcher.navigation
 
 sealed class Screen(val route: String) {
+    data object Welcome : Screen("welcome")
     data object StartOrJoin : Screen("start_or_join")
     data object Tutorial : Screen("tutorial")
     data object StartSession : Screen("start_session")
