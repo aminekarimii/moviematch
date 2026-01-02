@@ -1,10 +1,14 @@
-# 🎬 MovieMatch
-
-MovieMatch is an open source Android app that helps people discover
+<div align="center">
+    <h1>🎬 MovieMatch</h1>
+    <p>MovieMatch is an open source Android app that helps people discover
 movies together by swiping through movie suggestions and matching the
 ones both users like.
 
-It focuses on simple UX, smooth animations, and a modern Android stack.
+Simple UX, smooth animations, and a modern Android stack.</p>
+<img src="https://github.com/user-attachments/assets/02faad6f-fbf3-4992-bbed-cea92e8f2ca4" width="30%" />
+
+</div>
+
 
 ------------------------------------------------------------------------
 
