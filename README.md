@@ -28,7 +28,7 @@ Simple UX, smooth animations, and a modern Android stack.</p>
 | UI             | Jetpack Compose                  |
 | Architecture   | MVVM                             |
 | DI             | Koin                             |
-| Network & Data | Retrofit / Room (if used)        |
+| Network & Data | Ktor                             |
 | Navigation     | Navigation-Compose               |
 | Design         | Material3 + custom design system |
 | Language       | Kotlin                           |
